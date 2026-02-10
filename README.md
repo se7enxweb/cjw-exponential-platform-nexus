@@ -1,10 +1,10 @@
-# CJW Exponential Platform Nexus 1.0.0.0
+# Exponential Platform Nexus 1.0.0.2
 
-# CJW Exponential Platform Nexus Project Notice : 2025.08.12
+# Exponential Platform Nexus Project Notice : 2025.08.12
 
 "Please Note: This project is not associated with the original eZ Publish software or its original developer, eZ Systems or Ibexa".
 
-# CJW Exponential Platform Nexus Project Status
+# Exponential Platform Nexus Project Status
 
 **Exponential Platform has made it beyond it's end of life in 2022 and survived. Current releases are primarily aimed at easing the requirements to support current versions of the PHP language like PHP 8.3, 8.4, 8.5 and beyond php9**
 
@@ -18,22 +18,22 @@
 
 Previously before 2022, 7x was called Brookins Consulting who was the outspoken leader in the active Exponential Platform Community and it's Portals for the past 24 years.
 
-# What is CJW Exponential Platform Nexus?
+# What is Exponential Platform Nexus?
 
-CJW Exponential Platform Nexus is made up of the latest Exponential Platform Legacy + Netgen Bundles for Media Site + Layouts + 7x Symfony 3.4 + PHP 8.5+ Bugfixes from 7x.
+Exponential Platform Nexus is made up of the latest Exponential Platform Legacy + Netgen Bundles for Media Site + Layouts + 7x Symfony 3.4 + PHP 8.5+ Bugfixes from 7x.
 
 It's #1 Goal is to be the stable basis for building all Exponential Platform (Legacy) Based Web Applications.
 
-## Recent improvements to CJW Exponential Platform Nexus
+## Recent improvements to Exponential Platform Nexus
 
-CJW Exponential Platform Nexus (the application of interest) delivered to users worldwide by a web server (PHP built-in, Apache, Nginx, lighttpd, Among others).
+Exponential Platform Nexus (the application of interest) delivered to users worldwide by a web server (PHP built-in, Apache, Nginx, lighttpd, Among others).
 
-With PHP we require composer to install CJW Exponential Platform Nexus software and no other software required to run
-the application. This is an incredible improvement to the kernel (core) of CJW Exponential Platform Nexus.
+With PHP we require composer to install Exponential Platform Nexus software and no other software required to run
+the application. This is an incredible improvement to the kernel (core) of Exponential Platform Nexus.
 
-## What does CJW Exponential Platform Nexus provide for end users building websites?
+## What does Exponential Platform Nexus provide for end users building websites?
 
-CJW Exponential Platform Nexus is a professional PHP application framework with advanced CMS (content management system) functionality. As a CMS its most notable feature
+Exponential Platform Nexus is a professional PHP application framework with advanced CMS (content management system) functionality. As a CMS its most notable feature
 is its fully customizable and extendable content model.
 It is also suitable as a platform for general PHP development, allowing
 you to develop professional Internet applications, fast.
@@ -42,7 +42,7 @@ Standard CMS functionality, like news publishing and forums is
 built in and ready for you to use. Its stand-alone libraries can be
 used for cross-platform, secure, database independent PHP projects.
 
-CJW Exponential Platform Nexus is database, platform and browser independent. Because it is
+Exponential Platform Nexus is database, platform and browser independent. Because it is
 browser based it can be used and updated from anywhere as long as you have
 access to the Internet.
 
@@ -52,14 +52,14 @@ access to the Internet.
 - PHP
 - (Optional) Web server. Used to deliver the website to the end user.
 - (Required) Database server. Used to store website content (and application information)
-- Composer. Used to download CJW Exponential Platform Nexus software packages for installation, also notebly installs the required Zeta Components php libraries.
+- Composer. Used to download Exponential Platform Nexus software packages for installation, also notebly installs the required Zeta Components php libraries.
 - Computer to run the PHP website application.
 
 ## What version of PHP is required
 
-CJW Exponential Platform Nexus supports PHP 7.3 -> 8.5 please use the latest version of PHP available on your OS.
+Exponential Platform Nexus supports PHP 7.3 -> 8.5 please use the latest version of PHP available on your OS.
 
-# Main CJW Exponential Platform Nexus features
+# Main Exponential Platform Nexus features
 
 - User defined content classes and objects
 - Version control
@@ -119,9 +119,9 @@ Support Exponential Platform! Project extension support Website: [support.expone
 Share Exponential! Telegram Community Support Chat
 [https://t.me/exponentialcms](https://t.me/exponentialcms)
 
-# How to contribute new features and bugfixes into CJW Exponential Platform Nexus
+# How to contribute new features and bugfixes into Exponential Platform Nexus
 
-Everyone is encouraged to [contribute](CONTRIBUTING.md) to the development of new features and bugfixes for CJW Exponential Platform Nexus.
+Everyone is encouraged to [contribute](CONTRIBUTING.md) to the development of new features and bugfixes for Exponential Platform Nexus.
 
 # Donate and make a support subscription. 
 ## Help fund Exponential Platform!
@@ -168,4 +168,4 @@ You can not choose between the GNU GPL and the Ibexa Professional License. The G
 
 Using Exponential Platform under the terms of the GNU GPL is free of charge.
 
-This effectively makes Exponential Platform GNU GPL ONLY. 
+This effectively makes Exponential Platform GNU GPL ONLY.
