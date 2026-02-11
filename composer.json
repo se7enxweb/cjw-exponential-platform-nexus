@@ -1,13 +1,13 @@
 {
-    "name": "se7enxweb/cjw-exponential-platform-nexus",
-    "description": "CJW Exponential Platform Nexus is an Netgen Layouts, Media Site, eZ Platform (+Legacy) distribution with Demo Site Provided Starter Bundle.",
+    "name": "se7enxweb/exponential-platform-nexus",
+    "description": "7x Exponential Platform Nexus is an Netgen Layouts, Media Site, eZ Platform (+Legacy) distribution with Demo Site Provided Starter Bundle.",
     "homepage": "https://github.com/se7enxweb/exponential-platform-nexus",
     "license": "GPL-2.0-or-later",
     "type": "project",
     "authors": [
         {
-            "name": "Cjw + 7x and Exponential Community",
-            "homepage": "https://github.com/se7enxweb/cjw-exponential-platform-nexus/contributors"
+            "name": "7x, CJW and Exponential Community",
+            "homepage": "https://github.com/se7enxweb/exponential-platform-nexus/contributors"
         }
     ],
     "replace": {
