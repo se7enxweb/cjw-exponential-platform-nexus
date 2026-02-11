@@ -1,0 +1,5 @@
+{{ encore_entry_script_tags('app', null, 'app') }}
+{# PhotoSwipe initialization - Must load BEFORE app.js #}
+<script type="text/javascript" src="/bundles/netgenlayouts/js/photoswipe-init.js"></script>
+<script type="text/javascript" src="{{ asset('app.js', 'nglayouts_' ~ (nglayouts.debug ? 'dev_' : '') ~ 'js') }}"></script>
+<script type="text/javascript" src="{{ asset('app.js', 'nglayouts_standard_' ~ (nglayouts.debug ? 'dev_' : '') ~ 'js') }}"></script>
