@@ -28,7 +28,7 @@ Encore
       options.implementation = require('sass'); // eslint-disable-line no-param-reassign
       options.sassOptions = { // eslint-disable-line no-param-reassign
         loadPaths: [path.resolve(__dirname, 'node_modules')],
-        style: 'compressed',
+        outputStyle: Encore.isProduction() ? 'compressed' : 'expanded',
       };
   })
 

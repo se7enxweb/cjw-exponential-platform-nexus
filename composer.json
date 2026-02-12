@@ -170,18 +170,17 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "@legacy-scripts",
-            "@php bin/console cache:clear --no-warmup",
-            "@php bin/console assets:install --symlink --relative",
-            "@php bin/console ezpublish:legacy:assets_install --symlink --relative",
-            "@php bin/console ezpublish:legacybundles:install_extensions --relative",
-            "@php bin/console ngsite:symlink:project",
-            "@php bin/console ngsite:symlink:legacy",
-            "@php bin/console ezpublish:legacy:script bin/php/ezpgenerateautoloads.php",
-            "@php bin/console bazinga:js-translation:dump web/assets --merge-domains",
-            "@php bin/console assetic:dump",
+            "@php -d memory_limit=2000M bin/console cache:clear --no-warmup",
+            "@php -d memory_limit=2000M bin/console assets:install --symlink --relative",
+            "@php -d memory_limit=2000M bin/console ezpublish:legacy:assets_install --symlink --relative",
+            "@php -d memory_limit=2000M bin/console ezpublish:legacybundles:install_extensions --relative",
+            "@php -d memory_limit=2000M bin/console ngsite:symlink:project",
+            "@php -d memory_limit=2000M bin/console ngsite:symlink:legacy",
+            "@php -d memory_limit=2000M bin/console ezpublish:legacy:script bin/php/ezpgenerateautoloads.php",
+            "@php -d memory_limit=2000M bin/console bazinga:js-translation:dump web/assets --merge-domains",
             "yarn install",
             "EzSystems\\EzPlatformEncoreBundle\\Composer\\ScriptHandler::compileAssets",
-            "@php bin/security-checker security:check"
+            "@@php -d memory_limit=2000M bin/security-checker security:check"
         ],
         "post-install-cmd": [
             "@symfony-scripts"
@@ -193,10 +192,10 @@
             "eZ\\Bundle\\EzPublishCoreBundle\\Composer\\ScriptHandler::installWelcomeText"
         ],
         "ezplatform-install": [
-            "@php bin/console ezplatform:install netgen-media"
+            "@@php -d memory_limit=2000M bin/console ezplatform:install netgen-media"
         ],
         "ezplatform-assets": [
-            "@php bin/console bazinga:js-translation:dump web/assets --merge-domains",
+            "@@php -d memory_limit=2000M bin/console bazinga:js-translation:dump web/assets --merge-domains",
             "yarn ezplatform"
         ]
     },
