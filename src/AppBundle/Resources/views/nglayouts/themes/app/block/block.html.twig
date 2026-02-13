@@ -6,14 +6,14 @@
 #}
 
 {% set css_id = css_id|default(block.parameter('css_id').value) %}
-{% set set_container = block.parameter('set_container').value %}
-{% set container_size = block.parameter('set_container:size').value %}
+{% set set_container = block.hasParameter('set_container') ? block.parameter('set_container').value : false %}
+{% set container_size = block.hasParameter('set_container:size') ? block.parameter('set_container:size').value : null %}
 
-{% set use_whitespace = block.parameter('vertical_whitespace:enabled').value is same as(true) %}
-{% set whitespace_position = block.parameter('vertical_whitespace:position').value %}
-{% set whitespace_size = block.parameter('vertical_whitespace:size').value %}
+{% set use_whitespace = block.hasParameter('vertical_whitespace:enabled') and block.parameter('vertical_whitespace:enabled').value is same as(true) %}
+{% set whitespace_position = block.hasParameter('vertical_whitespace:position') ? block.parameter('vertical_whitespace:position').value : null %}
+{% set whitespace_size = block.hasParameter('vertical_whitespace:size') ? block.parameter('vertical_whitespace:size').value : null %}
 
-{% set bg_image = block.dynamicParameter('background_image:image_content') %}
+{% set bg_image = block.hasDynamicParameter('background_image:image_content') ? block.dynamicParameter('background_image:image_content') : null %}
 {% set use_bg_image = block.hasParameter('background_image:enabled') and block.parameter('background_image:enabled').value is same as(true) %}
 {% set use_bg_image = use_bg_image and bg_image is not null and bg_image.fields.image is defined %}
 
@@ -21,7 +21,7 @@
 {% set use_bg_color = block.hasParameter('background_color:enabled') and block.parameter('background_color:enabled').value is same as(true) %}
 {% set use_bg_color = use_bg_color and bg_color is not empty %}
 
-{% set css_classes = ['ngl-block', 'ngl-' ~ block.definition.identifier, 'ngl-vt-' ~ block.viewType, css_class|default(block.parameter('css_class').value)] %}
+{% set css_classes = ['ngl-block', 'ngl-' ~ block.definition.identifier, 'ngl-vt-' ~ block.viewType, css_class|default(block.hasParameter('css_class') ? block.parameter('css_class').value : '')] %}
 
 {% if use_whitespace and whitespace_position is not null and whitespace_size is not null %}
     {% set css_classes = css_classes|merge(['whitespace-' ~ whitespace_position, 'whitespace-' ~ whitespace_size]) %}
