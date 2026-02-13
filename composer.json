@@ -98,7 +98,7 @@
         "willdurand/js-translation-bundle": "^2.6.6",
         "symfony/http-client": "*",
         "se7enxweb/admin-ui-bundle": "^2.9.13",
-        "se7enxweb/site-bundle": "^1.7.3",
+        "se7enxweb/site-bundle": "^1.7.4",
         "se7enxweb/doctrine-bundle": "^1.12.14",
         "nyholm/psr7": "*",
         "se7enxweb/tagsbundle": "^3.4",
