@@ -110,7 +110,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
-
+    paths:
+            '%kernel.project_dir%/src/AppBundle/Resources/views/nglayouts/themes/app': 'nglayouts'
 #    globals:
 #        site_bundle_name: 'AppBundle'
 
