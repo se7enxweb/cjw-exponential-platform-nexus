@@ -1,0 +1,66 @@
+{
+    "name": "netgen/remote-media-bundle",
+    "description": "Remote media field type implementation",
+    "type": "ezplatform-bundle",
+    "keywords": [
+        "ezpublish",
+        "ezplatform",
+        "remote media",
+        "netgen",
+        "remote-media-bundle"
+    ],
+    "homepage": "https://github.com/netgen/NetgenRemoteMediaBundle",
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "http://netgen.io",
+            "email": "info@netgen.io"
+        },
+        {
+            "name": "Ivan Herak",
+            "email": "ivan@netgen.io"
+        },
+        {
+            "name": "Jurica Hladek",
+            "email": "jurica@netgen.io"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "ezsystems/ezpublish-kernel": "^7.4",
+        "doctrine/orm": "^2.4",
+        "cloudinary/cloudinary_php": "^1.10"
+    },
+    "require-dev": {
+        "ezsystems/legacy-bridge": "^2.0",
+        "netgen/open-graph-bundle": "^1.2",
+        "netgen/admin-ui-bundle": "^2.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^3.0",
+        "mikey179/vfsstream": "^1.2",
+        "phpunit/phpunit": "^7.0",
+        "friendsofphp/php-cs-fixer": "^2.18",
+        "rector/rector": "^0.5.22"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netgen\\Bundle\\RemoteMediaBundle\\": "bundle"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netgen\\Bundle\\Tests\\": "tests",
+            "Netgen\\Bundle\\OpenGraphBundle\\Tests\\": "vendor/netgen/open-graph-bundle/tests"
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/phpunit --colors=always",
+        "fix": "@php vendor/bin/php-cs-fixer fix"
+    },
+    "extra": {
+        "ezpublish-legacy-dir": "ezpublish_legacy",
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}

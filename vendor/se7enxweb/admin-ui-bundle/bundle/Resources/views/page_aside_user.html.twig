@@ -1,0 +1,100 @@
+{% macro user_avatar( content ) %}{% spaceless %}
+    {% include 'design:page_aside_user.tpl' %}
+{% endspaceless %}{% endmacro %}
+
+{% import _self as macros %}
+
+{% set user_content = app.user is not null and app.user.APIUser is not null ? app.user.APIUser.content : null %}
+
+{% if user_content is not null %}
+<div class="aside-footer">
+    {% set user_avatar = macros.user_avatar( user_content ) %}
+    {% if user_avatar|trim is empty %}
+        {% set user_avatar = asset( 'bundles/netgenadminui/images/a0.jpg' ) %}
+    {% endif %}
+
+    <a href="#" class="user-dropdown-toggle" data-toggle="dropdown">
+        <span class="user-avatar" style="background-image:url({{ user_avatar }})"></span>
+    </a>
+
+    <!-- dropdown -->
+    <ul class="dropdown-menu user-dropdown">
+
+        <li>
+            <div class="user-avatar" style="background-image:url({{ user_avatar }})">
+            </div>
+            <h4 class="user-name">{{ ez_content_name( user_content ) }}</h4>
+            <p class="user-role">{{ app.user.APIUser.login }}</p>
+        </li>
+
+        <li class="divider"></li>
+
+        {% if ui_context != 'edit' and ui_context != 'browse' %}
+            {% if is_granted( 'ez:content:read', user_content ) %}
+                <li><a href="{{ path( 'ez_urlalias', { 'contentId': user_content.id } ) }}">{{ 'netgen_admin_ui.user.view_profile'|trans }}</a></li>
+            {% endif %}
+
+            {% if is_granted( 'ez:content:edit', user_content ) %}
+                <li>
+                    <a href="{{ path( 'ez_legacy', { module_uri: '/content/edit/' ~ user_content.id } ) }}">{{ 'netgen_admin_ui.user.change_information'|trans }}</a>
+                </li>
+            {% endif %}
+
+            <li>
+                <a href="{{ path( 'ez_legacy', { module_uri: '/user/password' } ) }}">{{ 'netgen_admin_ui.user.change_password'|trans }}</a>
+            </li>
+        {% else %}
+            <li><span class="disabled">{{ 'netgen_admin_ui.user.view_profile'|trans }}</span></li>
+            <li><span class="disabled">{{ 'netgen_admin_ui.user.change_information'|trans }}</span></li>
+            <li><span class="disabled">{{ 'netgen_admin_ui.user.change_password'|trans }}</span></li>
+        {% endif %}
+
+        <li class="divider"></li>
+
+        {% if ui_context != 'edit' or ui_context != 'browse' %}
+            <li><span>{{ 'netgen_admin_ui.user.interface_settings'|trans }}</span></li>
+        {% endif %}
+        {% if ui_context != 'edit' %}
+            <li><span class="tt">{{ 'netgen_admin_ui.user.show_locations'|trans }}</span>
+                <span class="control-toggle">
+                    {% if ngadmin_ezpreference( 'admin_edit_show_locations' ) %}
+                        <strong>{{ 'netgen_admin_ui.user.on'|trans }}</strong>
+                        <a href="{{ path( 'ez_legacy', { module_uri: '/user/preferences/set/admin_edit_show_locations/0' } ) }}" title="Disable location window when editing content.">{{ 'netgen_admin_ui.user.off'|trans }}</a>
+                    {% else %}
+                        <a href="{{ path( 'ez_legacy', { module_uri: '/user/preferences/set/admin_edit_show_locations/1' } ) }}" title="Enable location window when editing content.">{{ 'netgen_admin_ui.user.on'|trans }}</a>
+                        <strong>{{ 'netgen_admin_ui.user.off'|trans }}</strong>
+                    {% endif %}
+                </span>
+            </li>
+        {% endif %}
+
+        {% if ui_context != 'browse' %}
+            <li><span class="tt">{{ 'netgen_admin_ui.user.enable_reedit'|trans }}</span>
+                <span class="control-toggle">
+                    {% if ngadmin_ezpreference( 'admin_edit_show_re_edit' ) %}
+                        <strong>{{ 'netgen_admin_ui.user.on'|trans }}</strong>
+                        <a href="{{ path( 'ez_legacy', { module_uri: '/user/preferences/set/admin_edit_show_re_edit/0' } ) }}" title="Disable &quot;Back to edit&quot; checkbox when editing content.">{{ 'netgen_admin_ui.user.off'|trans }}</a>
+                    {% else %}
+                        <a href="{{ path( 'ez_legacy', { module_uri: '/user/preferences/set/admin_edit_show_re_edit/1' } ) }}" title="Enable &quot;Back to edit&quot; checkbox when editing content.">{{ 'netgen_admin_ui.user.on'|trans }}</a>
+                        <strong>{{ 'netgen_admin_ui.user.off'|trans }}</strong>
+                    {% endif %}
+                </span>
+            </li>
+        {% endif %}
+        {% if ui_context != 'edit' or ui_context != 'browse' %}
+            <li class="divider"></li>
+        {% endif %}
+
+        <li>
+            {% if ui_context_edit %}
+                <span class="disabled">{{ 'netgen_admin_ui.user.logout'|trans }}</span>
+            {% else %}
+                <a href="{{ path( 'logout' ) }}">{{ 'netgen_admin_ui.layout.logout'|trans }}</a>
+            {% endif %}
+        </li>
+
+    </ul>
+    <!-- / dropdown -->
+
+</div>
+{% endif %}

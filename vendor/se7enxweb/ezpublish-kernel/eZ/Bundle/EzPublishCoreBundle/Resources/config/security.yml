@@ -1,0 +1,46 @@
+parameters:
+    ezpublish.security.user_provider.class: eZ\Publish\Core\MVC\Symfony\Security\User\Provider
+    ezpublish.security.voter.core.class: eZ\Publish\Core\MVC\Symfony\Security\Authorization\Voter\CoreVoter
+    ezpublish.security.voter.value_object.class: eZ\Publish\Core\MVC\Symfony\Security\Authorization\Voter\ValueObjectVoter
+    ezpublish.security.controller.class: eZ\Publish\Core\MVC\Symfony\Controller\SecurityController
+    ezpublish.security.login_listener.class: eZ\Publish\Core\MVC\Symfony\Security\EventListener\SecurityListener
+
+    # Constant authentication execution time in seconds (float). Blocks timing attacks.
+    # Must be larger than expected real execution time, with a good margin.
+    # If set to zero, constant time authentication is disabled. Do not do this on production environments.
+    ibexa.security.authentication.constant_auth_time: !php/const eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Compiler\SecurityPass::CONSTANT_AUTH_TIME_DEFAULT
+
+services:
+    ezpublish.security.user_provider:
+        class: "%ezpublish.security.user_provider.class%"
+        arguments: ["@ezpublish.api.repository"]
+
+    ezpublish.security.voter.core:
+        class: "%ezpublish.security.voter.core.class%"
+        arguments: ["@ezpublish.api.repository"]
+        public: false
+        tags:
+            - { name: security.voter }
+
+    ezpublish.security.voter.value_object:
+        class: "%ezpublish.security.voter.value_object.class%"
+        arguments: ["@ezpublish.api.repository"]
+        public: false
+        tags:
+            - { name: security.voter }
+
+    ezpublish.security.controller:
+        class: "%ezpublish.security.controller.class%"
+        arguments: ["@templating", "@ezpublish.config.resolver", "@security.authentication_utils"]
+
+    ezpublish.security.login_listener:
+        class: "%ezpublish.security.login_listener.class%"
+        arguments:
+            - "@ezpublish.api.repository"
+            - "@ezpublish.config.resolver"
+            - "@event_dispatcher"
+            - "@security.token_storage"
+            - "@security.authorization_checker"
+            - "%fragment.path%"
+        tags:
+            - { name: kernel.event_subscriber }

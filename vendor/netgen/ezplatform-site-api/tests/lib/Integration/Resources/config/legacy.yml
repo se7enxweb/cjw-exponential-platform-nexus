@@ -1,0 +1,4 @@
+parameters:
+    netgen.ezplatform_site.prioritized_languages:
+        - 'eng-GB'
+        - 'ger-DE'

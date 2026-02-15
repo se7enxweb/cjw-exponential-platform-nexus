@@ -1,0 +1,15 @@
+{% set left_menu %}{% spaceless %}
+    {% if current_menu_plugin != false and menu_plugins[current_menu_plugin].templates.left is defined %}
+        {% include menu_plugins[current_menu_plugin].templates.left ignore missing %}
+    {% endif %}
+{% endspaceless %}{% endset %}
+
+{% if left_menu|striptags|trim is not empty %}
+    <div id="left-column" class="left-column layout-column">
+        <div class="layout-column-inner">
+            <div class="inner-cell">
+                {{ left_menu|raw }}
+            </div>
+        </div>
+    </div>
+{% endif %}

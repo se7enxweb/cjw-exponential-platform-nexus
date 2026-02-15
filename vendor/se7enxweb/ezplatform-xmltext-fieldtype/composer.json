@@ -1,0 +1,52 @@
+{
+    "name": "se7enxweb/ezplatform-xmltext-fieldtype",
+    "description": "XmlText field type implementation for eZ Platform",
+    "license": "GPL-2.0-only",
+    "type": "ezplatform-bundle",
+    "authors": [
+        {
+            "name": "eZ dev-team & eZ Community",
+            "homepage": "https://github.com/ezsystems/ezplatform-xmltext-fieldtype/contributors"
+        }
+    ],
+    "require": {
+        "ext-xsl": "*",
+        "ext-dom": "*",
+        "se7enxweb/ezpublish-kernel": "^6.13.6@dev || ^7.4.1",
+        "se7enxweb/repository-forms": "^1.9 || ^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7",
+        "matthiasnoback/symfony-dependency-injection-test": "^1.2.0",
+        "se7enxweb/ezplatform-solr-search-engine": "^1.5.7",
+        "friendsofphp/php-cs-fixer": "v2.14.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "EzSystems\\EzPlatformXmlTextFieldTypeBundle\\": "bundle",
+            "eZ\\Publish\\Core\\FieldType\\XmlText\\": "lib/FieldType/XmlText",
+            "eZ\\Publish\\Core\\Persistence\\Legacy\\Content\\FieldValue\\Converter\\": "lib/Persistence/Legacy/Content/FieldValue/Converter",
+            "eZ\\Publish\\Core\\REST\\Common\\FieldTypeProcessor\\": "lib/REST/Common/FieldTypeProcessor"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EzSystems\\EzPlatformXmlTextFieldTypeBundle\\Tests\\": "tests/bundle",
+            "EzSystems\\EzPlatformXmlTextFieldType\\Tests\\": "tests/lib"
+        }
+    },
+    "scripts": {
+        "fix-cs": "php-cs-fixer fix -v --show-progress=estimating",
+        "unit": "phpunit -c phpunit.xml",
+        "integration": "phpunit -c phpunit-integration-legacy.xml",
+        "test": [
+            "@unit",
+            "@integration"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.9.x-dev"
+        }
+    }
+}

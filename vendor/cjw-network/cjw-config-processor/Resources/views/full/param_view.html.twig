@@ -1,0 +1,77 @@
+{% extends "@CJWConfigProcessor/pagelayout.html.twig" %}
+
+{% block line_template_stylesheets %}
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/parameter_display.css") }}>
+{% endblock %}
+
+{% block child_help_text %}
+    {% set locale = app.request.getLocale() %}
+    {% set context = "param_view_overview" %}
+    {{ getHelpText(context, locale)|raw }}
+{% endblock %}
+
+{% block param_breadcrumbs %}
+    <li class="breadcrumb-item">Admin</li>
+    <li class="breadcrumb-item">CJW Config Processing</li>
+    <li class="breadcrumb-item active">Parameterlist</li>
+{% endblock %}
+
+{% block param_title_and_icon %}
+{#    <svg class="ez-icon ez-icon-content-type">#}
+{#        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>#}
+{#    </svg>#}
+    <h1 class="ez-page-title__content-name">
+        Parameterlist: All Parameters
+    </h1>
+{% endblock %}
+
+{% block help_teaser %}
+    <span>
+        This view is responsible for displaying the entirety of the processed parameters
+        of your Symfony server.
+        {{ parent() }}
+    </span>
+{% endblock %}
+
+{% block param_update_time %}
+    -&nbsp;Last&nbsp;Update:&nbsp;{{ lastUpdated }}
+{% endblock %}
+
+{% block param_content %}
+    <div class="param_list tab-content container mt-4 px-5">
+        <div class="ez-table-header ez-sticky-container cjw_table_head_with_searchbar">
+            <div class="ez-table-header__headline">
+                Parameterlist
+            </div>
+            {% block search_bar %}
+                {{ parent() }}
+            {% endblock %}
+            <div class="m-sub-items__actions">
+                <button id="download_button" class="c-action-btn c-action-btn--reveal" title="download parameters">
+                    <svg class="ez-icon ez-icon--medium-large">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#download"></use>
+                    </svg>
+                </button>
+                <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal" title="open key-tree">
+                    <svg class="ez-icon ez-icon--medium-large">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <svg class="ez-icon ez-icon--large" id="loading_circle">
+            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>
+        </svg>
+       {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
+    </div>
+{% endblock %}
+
+{% block line_template_javascripts %}
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterBranchDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/ParameterLocationRetrieval.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/DownloadParametersUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/FavourButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/CopyButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/FavouritesHandlingUtility.js") }}></script>
+{% endblock %}

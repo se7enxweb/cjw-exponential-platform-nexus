@@ -1,0 +1,24 @@
+item_types:
+    remote_media:
+        name: item_types.remote_media
+        preview:
+            template: '@NetgenLayoutsRemoteMedia/ngcb/remote_media.html.twig'
+        columns:
+            name:
+                name: columns.name
+                value_provider: name
+            type:
+                name: columns.remote_media.type
+                value_provider: remote_media\type
+            resolution:
+                name: columns.remote_media.resolution
+                value_provider: remote_media\resolution
+            tags:
+                name: columns.remote_media.tags
+                value_provider: remote_media\tags
+            size:
+                name: columns.remote_media.size
+                value_provider: remote_media\size
+        default_columns:
+            - name
+            - type

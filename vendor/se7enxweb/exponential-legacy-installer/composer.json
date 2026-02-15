@@ -1,0 +1,33 @@
+{
+    "name": "se7enxweb/exponential-legacy-installer",
+    "type": "composer-plugin",
+    "description": "Installer for eZ Publish legacy extensions and legacy kernel itself.",
+    "license": "GPL-2.0",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Jérôme Vieilledent",
+            "email": "jerome.vieilledent@ez.no"
+        },
+        {
+            "name": "Gaetano Giunta",
+            "email": "gaetano.giunta@ez.no"
+        }
+    ],
+    "autoload": {
+        "psr-0": {"eZ\\Publish\\Composer": "src/"}
+    },
+    "extra": {
+        "class": "eZ\\Publish\\Composer\\InstallerPlugin",
+        "branch-alias": {
+            "dev-master": "2.x-dev"
+        }
+    },
+    "require": {
+        "php": "^7.4 || ^8.1 || ^8.2",
+        "composer-plugin-api": "^1.0 || ^2.0"
+    },
+    "replace": {
+        "ezsystems/ezpublish-legacy-installer": "*"
+    }
+}

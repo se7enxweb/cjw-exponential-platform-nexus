@@ -1,0 +1,66 @@
+.ez-main-nav {
+    padding: 0;
+    background-color: $ez-ground-base-medium;
+
+    > .container-fluid {
+        padding-right: 0;
+    }
+
+    .navbar-brand {
+        padding-top: 0;
+	aspect-ratio: 338 / 105;
+        max-width: 136px;
+    }
+
+    .navbar-brand svg {
+        max-width: 100%;
+	height: auto;
+    }
+
+    .nav-tabs {
+        background-color: $ez-ground-base-medium;
+        border: none;
+        margin-bottom: 0;
+
+        .nav-link {
+            padding: 1rem 2rem;
+            color: $ez-black;
+            display: flex;
+            transition: all 0.3s $ez-admin-transition;
+
+            .ez-icon {
+                margin-right: 0.5rem;
+            }
+
+            &:hover {
+                background-color: $ez-ground-base-pale;
+                border-color: transparent;
+            }
+
+            &.active {
+                background-color: $white;
+                border-color: $white;
+                color: $ez-black;
+            }
+        }
+    }
+}
+
+.ez-main-sub-nav {
+    background-color: $white;
+    padding: 0;
+    font-size: 0.875rem;
+
+    .navbar-nav {
+        .nav-link {
+            padding: 0.625rem 1rem;
+            color: $ez-black;
+
+            &.active {
+                border-bottom: 3px solid $ez-color-primary;
+                font-weight: bold;
+                padding-bottom: 0.4375rem;
+            }
+        }
+    }
+}

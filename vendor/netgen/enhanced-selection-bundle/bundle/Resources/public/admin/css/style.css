@@ -1,0 +1,5 @@
+.icon-close:before {
+    content: "\d7";
+    font-size: 28px;
+    cursor: pointer;
+}

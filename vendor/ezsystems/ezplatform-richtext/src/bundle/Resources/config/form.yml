@@ -1,0 +1,25 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    EzSystems\EzPlatformRichText\Form\Type\RichTextFieldType:
+        arguments:
+            $docbookToXhtml5EditConverter: '@ezrichtext.converter.edit.xhtml5'
+
+    EzSystems\EzPlatformRichText\Form\Type\RichTextType:
+        arguments:
+            $docbookToXhtml5EditConverter: '@ezrichtext.converter.edit.xhtml5'
+
+    EzSystems\EzPlatformRichText\Validator\Constraints\RichTextValidator:
+        tags:
+            - { name: validator.constraint_validator }
+
+    EzSystems\RepositoryForms\Form\Type\FieldType\RichTextFieldType:
+        alias: EzSystems\EzPlatformRichText\Form\Type\RichTextFieldType
+
+    EzSystems\EzPlatformRichText\Form\Mapper\RichTextFormMapper:
+        tags:
+            - { name: ez.fieldFormMapper.value, fieldType: ezrichtext }
+

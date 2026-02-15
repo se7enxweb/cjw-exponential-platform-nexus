@@ -1,0 +1,108 @@
+{% extends '@ezdesign/layout.html.twig' %}
+
+{% trans_default_domain "cjw_processed_parameters_view" %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/bundle.css") }}>
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/github-markdown-css.css") }}>
+    {% block line_template_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block navigation %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <!--
+    @ezdesign/layout.html.twig:
+    Can be found under vendor/ezsystems/ezplatform-admin-ui/src/bundle/Resources/views and then layout.html.twig and more specific /admin/base.html.twig
+    -->
+    <div class="cjw_config_processing_content">
+        {% block help_text %}
+            <div class="cjw_help_container dont_display">
+                <button id="close_help_button" title="close help">
+                    <svg class="ez-icon ez-icon--medium-large">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#circle-close"></use>
+                    </svg>
+                </button>
+                <div class="markdown-body">
+                    {% block child_help_text %} {% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+
+        <div class="cjw_main_body ez-main-row row">
+            <!-- Left Side Menu -->
+            {% block left_sidebar %}
+                <div class="bg-dark pt-4 px-0 ez-side-menu">
+                    <div class="ez-sticky-container">
+                        {{ knp_menu_render('cjw_config_processing.menu.sidebar_left', {'template': '@ezdesign/parts/menu/sidebar_left.html.twig'}) }}
+                    </div>
+                </div>
+            {% endblock %}
+            <!-- Section Header -->
+            <div class="cjw_main_section ez-sticky-container ez-content-container pb-4">
+                <div class="ez-header">
+                    <div class="container">
+                        <ol class="breadcrumb px-4">
+                            {% block param_breadcrumbs %} {% endblock %}
+                        </ol>
+                        <div class="ez-page-title py-3 px-4">
+                            <div class="ez-page-title__content-item">
+                                {% block param_title_and_icon %} {% endblock %}
+                            </div>
+                            <div class="cjw_help_teaser px-4 ez-page-title__content-type-name">
+                                {% block help_teaser %}
+                                    {% block param_update_time %} {% endblock %}
+                                    <!-- Extra Help Button Section -->
+                                    <button id="display_help" title="show help">
+                                        <svg class="ez-icon ez-icon--medium">
+                                            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#about-info"></use>
+                                        </svg>
+                                    </button>
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Section Content -->
+                {% block param_content %}
+                    <!-- Extra Search Bar Section -->
+                    {% block search_bar %}
+                        <form class="searchbar form-inline">
+                            <div class="cjw_searchbar_container input-group-btn d-inline-flex">
+                                <label class="cjw_searchbar_label" id="cjw_searchbar_clear" for="cjw_searchbar" title="clear input">
+                                    <svg class="ez-icon ez-icon--small-medium">
+                                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#discard"></use>
+                                    </svg>
+                                </label>
+                                <label class="cjw_searchbar_label" id="cjw_searchbar_swap_mode" for="cjw_searchbar" title="switch search mode (Alt + M), green: value search, blue: key search">
+                                    <svg class="ez-icon ez-icon--small-medium">
+                                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#filters"></use>
+                                    </svg>
+                                </label>
+                                <input id="cjw_searchbar" name="cjw_searchbar" class="form-control cjw_key_search" type="text" placeholder="Search Key..." title="search parameters / values depending on selected mode (Alt + M) | short delay!">
+                            </div>
+                            <input id="cjw_copy_to_clipboard" type="text">
+                        </form>
+                    {% endblock %}
+                {% endblock %}
+            </div>
+            <!-- Right Side Menu -->
+            {% block right_sidebar %}{% endblock %}
+        </div>
+        <!-- Scroll To Top Button And Downloader-Link -->
+        <div class="scroll_up_button" title="scroll to top">
+            <button class="dont_display">^</button>
+        </div>
+        <a id="downloader"></a>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/pagelayoutElements/SearchBarUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/pagelayoutElements/HelpAndScrollUpButtonDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/utility/Utility.js") }}></script>
+    {% block line_template_javascripts %}{% endblock %}
+{% endblock %}

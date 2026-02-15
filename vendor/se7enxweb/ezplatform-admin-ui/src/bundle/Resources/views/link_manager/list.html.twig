@@ -1,0 +1,107 @@
+{% extends '@ezdesign/layout.html.twig' %}
+
+{% form_theme form '@ezdesign/form_fields.html.twig'  %}
+
+{% trans_default_domain "linkmanager" %}
+
+{% block title %}{{ 'url.list'|trans }}{% endblock %}
+
+{%- block breadcrumbs -%}
+    {% include '@ezdesign/parts/breadcrumbs.html.twig' with { items: [
+        { value: 'url.list'|trans|desc('Link manager') }
+    ]} %}
+{%- endblock -%}
+
+{%- block page_title -%}
+    {% include '@ezdesign/parts/page_title.html.twig' with {
+        title: 'url.list'|trans|desc('Link manager'),
+        iconName: 'link'
+    } %}
+{%- endblock -%}
+
+{%- block content -%}
+    <section class="container mt-4">
+        {{ form_start(form, {'attr': {'class': 'form-inline justify-content-between'}}) }}
+            <div class="input-group">
+                {{ form_widget(form.searchQuery, { attr: {
+                    'placeholder': 'url.search.placeholder'|trans,
+                }}) }}
+
+                <span class="input-group-btn">
+                    <button class="btn btn-primary">
+                        {{ 'url.search'|trans }}
+                    </button>
+                </span>
+            </div>
+            <div class="d-inline-flex">
+                {{ form_label(form.status) }} &nbsp;
+                {{ form_widget(form.status) }}
+            </div>
+
+        {{ form_widget(form.page, { attr: { value: '1' }}) }}
+        {{ form_end(form) }}
+    </section>
+
+    <section class="container mt-4">
+        <div class="ez-table-header">
+            <div class="ez-table-header__headline">{{ 'url.list.title'|trans({ '%count%': urls.count })|desc('Links (%count%)') }}</div>
+        </div>
+        <table class="ez-table table">
+            <thead>
+                <tr>
+                    <th>{{ 'url.label.address'|trans }}</th>
+                    <th>{{ 'url.label.status'|trans }}</th>
+                    <th>{{ 'url.label.last_checked'|trans }}</th>
+                    <th>{{ 'url.label.modified'|trans }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for url in urls %}
+                {% set edit_url = path('ezplatform.link_manager.edit', {urlId: url.id}) %}
+                {% set view_url = path('ezplatform.link_manager.view', {urlId: url.id}) %}
+                <tr>
+                    <td class="ez-table__cell">
+                        <a href="{{ view_url }}">{{ url.url|truncate(50) }}</a>
+                        (<a href="{{ url.url }}" target="_blank">{{ 'url.open'|trans }}</a>)
+                    </td>
+                    <td class="ez-table__cell">{{ url.isValid ? 'url.status.valid'|trans : 'url.status.invalid'|trans }}</td>
+                    <td class="ez-table__cell">
+                        {% if url.lastChecked %}
+                            {{ url.lastChecked|ez_full_datetime }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </td>
+                    <td class="ez-table__cell">{{ url.modified|ez_full_datetime }}</td>
+                    <td class="ez-table__cell ez-table__cell--has-action-btns text-right">
+                        {% if can_edit %}
+                            <a href="{{ edit_url }}" class="btn btn-icon mx-2" title="{{ 'url.action.edit'|trans|desc('Edit URL') }}">
+                                <svg class="ez-icon ez-icon-edit">
+                                    <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#edit"></use>
+                                </svg>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="ez-table__cell ez-table__cell--no-content" colspan="5">
+                        <span class="mb-0 py-1 pl-0">{{ 'url.list.no_urls'|trans }}</span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if urls.haveToPaginate %}
+            <div class="row justify-content-center align-items-center ez-pagination__spacing mb-5">
+                {{ pagerfanta(urls, 'ez', {'pageParameter': '[search_data][page]'}) }}
+            </div>
+        {% endif %}
+    </section>
+{%- endblock -%}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('ezplatform-admin-ui-link-manager-list-js', null, 'ezplatform') }}
+{% endblock %}

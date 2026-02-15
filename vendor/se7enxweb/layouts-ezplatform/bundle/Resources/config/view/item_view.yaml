@@ -1,0 +1,29 @@
+view:
+    item_view:
+        default:
+            ezcontent:
+                template: "@nglayouts/item/ezcontent.html.twig"
+                match:
+                    item\value_type: ezcontent
+            ezlocation:
+                template: "@nglayouts/item/ezlocation.html.twig"
+                match:
+                    item\value_type: ezlocation
+        ajax:
+            ezcontent:
+                template: "@nglayouts/item/ezcontent.html.twig"
+                match:
+                    item\value_type: ezcontent
+            ezlocation:
+                template: "@nglayouts/item/ezlocation.html.twig"
+                match:
+                    item\value_type: ezlocation
+        app:
+            ezcontent:
+                template: "@nglayouts_admin/app/item/ezcontent.html.twig"
+                match:
+                    item\value_type: ezcontent
+            ezlocation:
+                template: "@nglayouts_admin/app/item/ezlocation.html.twig"
+                match:
+                    item\value_type: ezlocation

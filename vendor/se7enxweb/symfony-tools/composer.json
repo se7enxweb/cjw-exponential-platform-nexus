@@ -1,0 +1,53 @@
+{
+  "name": "se7enxweb/symfony-tools",
+  "license": "MIT",
+  "type": "ezplatform-bundle",
+  "description": "eZ Systems Symfony Tools",
+  "authors": [
+    {
+      "name": "eZ Systems",
+      "email": "dev-team@ez.no"
+    }
+  ],
+  "autoload": {
+    "classmap": ["src/lib/Symfony"],
+    "psr-4": {
+      "EzSystems\\SymfonyToolsBundle\\": "src/bundle/",
+      "EzSystems\\SymfonyTools\\": "src/lib/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "EzSystems\\SymfonyTools\\Tests\\": "src/lib/Tests"
+    }
+  },
+  "require": {
+    "php": "^7.1 || ^8.1 || ^8.2",
+    "se7enxweb/symfony": "^3.4.24"
+  },
+  "require-dev": {
+    "cache/integration-tests": "dev-master",
+    "friendsofphp/php-cs-fixer": "v2.14.0",
+    "phpdocumentor/reflection-docblock": "^3.0|^4.0",
+    "phpunit/phpunit": "^7.3",
+    "predis/predis": "^1.1.0",
+    "symfony/phpunit-bridge": "~3.4|~4.0"
+
+  },
+  "conflict": {
+      "se7enxweb/ezpublish-kernel": "7.0 - 7.3.4 | 7.4.0 - 7.4.2"
+  },
+  "suggest": {
+      "ext-redis": "For use with RedisSessionHandler & RedisTagAwareAdapter, usage of native redis v3.1.3+ extension is recommended",
+      "ext-igbinary": "To improve serialization size and speed for cache and sessions, install igbinary extension "
+  },
+  "extra": {
+      "branch-alias": {
+          "dev-master": "1.0.x-dev"
+      }
+  },
+  "scripts": {
+    "fix-cs": "@php ./vendor/bin/php-cs-fixer fix -v --show-progress=estimating",
+    "test": "@php ./vendor/bin/phpunit"
+  }
+}

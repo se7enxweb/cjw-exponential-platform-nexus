@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @copyright Copyright (C) eZ Systems AS. All rights reserved.
+ * @license For full copyright and license information view LICENSE file distributed with this source code.
+ */
+namespace eZ\Publish\Core\MVC\Legacy\Tests\Event;
+
+use eZ\Publish\Core\MVC\Legacy\Event\PreBuildKernelWebHandlerEvent;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
+
+class PreBuildKernelWebHandlerEventTest extends TestCase
+{
+    public function testConstruct()
+    {
+        $parameterBag = new ParameterBag();
+        $request = new Request();
+        $event = new PreBuildKernelWebHandlerEvent($parameterBag, $request);
+        $this->assertSame($parameterBag, $event->getParameters());
+        $this->assertSame($request, $event->getRequest());
+    }
+}

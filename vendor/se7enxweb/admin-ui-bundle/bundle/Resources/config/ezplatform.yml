@@ -1,0 +1,23 @@
+ezpublish:
+    system:
+        ngadminui:
+            user:
+                layout: "@NetgenAdminUI/pagelayout_login.html.twig"
+                login_template: "@NetgenAdminUI/user/login.html.twig"
+            content_view:
+                full:
+                    default:
+                        controller: "ezpublish_legacy.controller:indexAction"
+                        match: ~
+            location_view:
+                full:
+                    default:
+                        controller: "ezpublish_legacy.controller:indexAction"
+                        match: ~
+
+ez_publish_legacy:
+    system:
+        ngadminui:
+            templating:
+                view_layout: "@NetgenAdminUI/pagelayout_legacy.html.twig"
+                module_layout: "@NetgenAdminUI/pagelayout_module.html.twig"

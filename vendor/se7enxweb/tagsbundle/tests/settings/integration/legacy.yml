@@ -1,0 +1,14 @@
+services:
+    eztags.field_type.eztags:
+        class: Netgen\TagsBundle\Core\FieldType\Tags\Type
+        parent: ezpublish.fieldType
+        arguments:
+            - "@eztags.api.service.tags"
+        calls:
+            - [setEditViews, [{ default: { identifier: Default } }]]
+        tags:
+            - {name: ezpublish.fieldType, alias: eztags}
+
+    eztags.field_type.eztags.nameable:
+        class: Netgen\TagsBundle\Core\FieldType\Tags\NameableField
+        public: false

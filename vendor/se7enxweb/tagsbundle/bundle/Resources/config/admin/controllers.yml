@@ -1,0 +1,62 @@
+services:
+    # Controllers
+
+    eztags.admin.controller.base:
+        class: Netgen\TagsBundle\Controller\Admin\Controller
+        parent: ezpublish.controller.base
+        public: false
+        abstract: true
+        calls:
+            - [performAccessChecks, []]
+
+    eztags.admin.controller.tag:
+        class: Netgen\TagsBundle\Controller\Admin\TagController
+        parent: eztags.admin.controller.base
+        public: true
+        arguments:
+            - "@eztags.api.service.tags"
+            - "@ezpublish.api.service.content_type"
+            - "@ezpublish.api.service.search"
+            - "@translator"
+            - "@eztags.pagerfanta.children_tags_adapter"
+
+    eztags.admin.controller.related_content:
+        class: Netgen\TagsBundle\Controller\Admin\RelatedContentController
+        parent: eztags.admin.controller.base
+        public: true
+        arguments:
+            - "@eztags.pagerfanta.related_content_adapter"
+            - "@ezpublish.api.service.content_type"
+            - "@eztags.search.related_content.sort_service"
+
+    eztags.admin.controller.synonym:
+        class: Netgen\TagsBundle\Controller\Admin\SynonymController
+        parent: eztags.admin.controller.base
+        public: true
+        arguments:
+            - "@eztags.api.service.tags"
+            - "@translator"
+
+    eztags.admin.controller.tree:
+        class: Netgen\TagsBundle\Controller\Admin\TreeController
+        parent: eztags.admin.controller.base
+        public: true
+        arguments:
+            - "@eztags.api.service.tags"
+            - "@translator"
+            - "@router"
+
+    eztags.admin.controller.field:
+        class: Netgen\TagsBundle\Controller\Admin\FieldController
+        parent: eztags.admin.controller.base
+        public: true
+        lazy: true
+        arguments:
+            - "@eztags.api.service.tags"
+        calls:
+            - [setLanguages, ["$languages$"]]
+
+    eztags.admin.controller.access:
+        class: Netgen\TagsBundle\Controller\Admin\AccessController
+        parent: ezpublish.controller.base
+        public: true

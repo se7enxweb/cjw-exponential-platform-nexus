@@ -1,0 +1,15 @@
+{% extends '@nglayouts_admin/app/block/block.html.twig' %}
+
+{% import '@NetgenLayoutsAdmin/app/parts/macros.html.twig' as macros %}
+
+{% trans_default_domain 'nglayouts_app' %}
+
+{% block content %}
+    {% set field_identifier = block.parameter('field_identifier') %}
+
+    {% if not field_identifier.empty %}
+        {{ macros.info('block.info.ezcontent_field'|trans({ '%field%': field_identifier.value }), 'icon-ez_content_field') }}
+    {% else %}
+        {{ macros.notice('block.notice.empty_ezcontent_field'|trans) }}
+    {% endif %}
+{% endblock %}

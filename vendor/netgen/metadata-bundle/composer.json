@@ -1,0 +1,32 @@
+{
+    "name": "netgen/metadata-bundle",
+    "description": "Metadata bundle for eZ Platform. Based on xrowmetadata extension for eZ Publish Legacy.",
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "https://www.netgenlabs.com"
+        },
+        {
+            "name": "xrow GmbH",
+            "homepage": "http://www.xrow.de"
+        }
+    ],
+    "require": {
+        "ezsystems/ezpublish-kernel": "^6.0 || ^7.0 || ^8.0"
+    },
+    "suggest": {
+        "netgen/xrowmetadata": "Adds the possibility to edit the field type in eZ Publish Legacy administration interface"
+    },
+    "conflict": {
+        "netgen/xrowmetadata": "<3.0"
+    },
+    "autoload": {
+        "psr-4": { "Netgen\\Bundle\\MetadataBundle\\": "bundle/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}

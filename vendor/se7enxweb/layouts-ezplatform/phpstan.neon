@@ -1,0 +1,31 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+
+parameters:
+    ignoreErrors:
+        # Symfony
+
+        -
+            message: '#Call to an undefined method Symfony\\Component\\Security\\Core\\Role\\RoleHierarchyInterface::getReachableRoles\(\).#'
+            path: lib/Security/Authorization/Voter/RepositoryAccessVoter.php
+
+        - '#Symfony\\Component\\Security\\Core\\Role\\Role#'
+
+        # Doctrine DBAL
+        - '#Cannot call method fetchAllAssociative\(\) on Doctrine\\DBAL\\ForwardCompatibility\\Result\|int#'
+        - '#expects string\|null, Doctrine\\DBAL\\Query\\Expression\\CompositeExpression given#'
+
+        # Symfony
+        - '#with generic interface Symfony\\Component\\(Form|OptionsResolver)\\\w+ but does not specify its types: (TData|TArray)#'
+        - '#extends generic class Symfony\\Component\\Form\\\w+ but does not specify its types: TData#'
+
+        # eZ Platform
+        -
+            message: '#Call to function is_string\(\) with string will always evaluate to true.#'
+            path: lib/Security/Authorization/Voter/RepositoryAccessVoter.php
+
+        - "#Casting to (int|string) something that's already (int|string).#"
+
+        - '#EzSystems\\PlatformHttpCacheBundle\\RequestAwarePurger#'

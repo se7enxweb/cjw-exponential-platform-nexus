@@ -1,0 +1,71 @@
+parameters:
+    ezpublish.fieldType.ezbinaryfile.externalStorage.class: eZ\Publish\Core\FieldType\BinaryFile\BinaryFileStorage
+    ezpublish.fieldType.ezimage.externalStorage.class: eZ\Publish\Core\FieldType\Image\ImageStorage
+    ezpublish.fieldType.ezkeyword.externalStorage.class: eZ\Publish\Core\FieldType\Keyword\KeywordStorage
+    ezpublish.fieldType.ezmedia.externalStorage.class: eZ\Publish\Core\FieldType\Media\MediaStorage
+    ezpublish.fieldType.ezurl.externalStorage.class: eZ\Publish\Core\FieldType\Url\UrlStorage
+    ezpublish.fieldType.ezgmaplocation.externalStorage.class: eZ\Publish\Core\FieldType\MapLocation\MapLocationStorage
+    ezpublish.fieldType.ezuser.externalStorage.class: eZ\Publish\Core\FieldType\User\UserStorage
+
+services:
+    ezpublish.fieldType.ezbinaryfile.externalStorage:
+        class: "%ezpublish.fieldType.ezbinaryfile.externalStorage.class%"
+        arguments:
+            - "@ezpublish.fieldType.ezbinaryfile.storage_gateway"
+            - "@ezpublish.fieldType.ezbinaryfile.io_service"
+            - "@ezpublish.fieldType.ezbinaryfile.pathGenerator"
+            - "@ezpublish.core.io.mimeTypeDetector"
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ezbinaryfile}
+
+    ezpublish.fieldType.ezimage.externalStorage:
+        class: '%ezpublish.fieldType.ezimage.externalStorage.class%'
+        arguments:
+            $gateway: '@ezpublish.fieldType.ezimage.storage_gateway'
+            $ioService: '@ezpublish.fieldType.ezimage.io_service'
+            $pathGenerator: '@ezpublish.fieldType.ezimage.pathGenerator'
+            $imageSizeMetadataHandler: '@ezpublish.fieldType.metadataHandler.imagesize'
+            $deprecationWarner: '@ezpublish.utils.deprecation_warner'
+            $aliasCleaner: '@eZ\Publish\Core\FieldType\Image\AliasCleanerInterface'
+            $filePathNormalizer: '@eZ\Publish\Core\IO\FilePathNormalizerInterface'
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ezimage}
+
+    ezpublish.fieldType.ezkeyword.externalStorage:
+        class: "%ezpublish.fieldType.ezkeyword.externalStorage.class%"
+        arguments: ["@ezpublish.fieldType.ezkeyword.storage_gateway"]
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ezkeyword}
+
+    ezpublish.fieldType.ezmedia.externalStorage:
+        class: "%ezpublish.fieldType.ezmedia.externalStorage.class%"
+        arguments:
+            - "@ezpublish.fieldType.ezmedia.storage_gateway"
+            - "@ezpublish.fieldType.ezbinaryfile.io_service"
+            - "@ezpublish.fieldType.ezbinaryfile.pathGenerator"
+            - "@ezpublish.core.io.mimeTypeDetector"
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ezmedia}
+
+    ezpublish.fieldType.ezurl.externalStorage:
+        class: "%ezpublish.fieldType.ezurl.externalStorage.class%"
+        arguments:
+            - "@ezpublish.fieldType.ezurl.storage_gateway"
+            - "@?logger"
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ezurl}
+
+    ezpublish.fieldType.ezgmaplocation.externalStorage:
+        class: "%ezpublish.fieldType.ezgmaplocation.externalStorage.class%"
+        arguments: ["@ezpublish.fieldType.externalStorageHandler.ezgmaplocation.gateway"]
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ezgmaplocation}
+
+    ezpublish.fieldType.ezuser.externalStorage:
+        class: "%ezpublish.fieldType.ezuser.externalStorage.class%"
+        arguments: ["@ezpublish.fieldType.ezuser.storage_gateway"]
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ezuser}
+
+    ezpublish.fieldType.metadataHandler.imagesize:
+        class: "%ezpublish.core.io.metadataHandler.imageSize.class%"

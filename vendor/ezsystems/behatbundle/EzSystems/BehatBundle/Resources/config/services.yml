@@ -1,0 +1,53 @@
+imports:
+    - { resource: services/fieldtype_data_providers.yaml }
+    - { resource: services/limitation_parsers.yaml }
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    EzSystems\BehatBundle\Context\Resolver\AnnotationArgumentResolver:
+        tags:
+            -  { name: context.argument_resolver }
+
+    EzSystems\BehatBundle\API\ContentData\ContentDataProvider:
+        arguments:
+        - '@ezpublish.api.service.content_type'
+        - '@ezpublish.api.service.content'
+
+    EzSystems\BehatBundle\API\ContentData\RandomDataGenerator: ~
+
+    EzSystems\BehatBundle\API\Facade\ContentFacade:
+        public: true
+
+    EzSystems\BehatBundle\API\Facade\ContentTypeFacade:
+        public: true
+        arguments:
+        - '@ezpublish.api.service.content_type'
+        - '@ezpublish.cache_pool'
+
+    EzSystems\BehatBundle\API\Facade\RoleFacade:
+        public: true
+
+    EzSystems\BehatBundle\API\Facade\UserFacade: 
+        public: true
+
+    EzSystems\BehatBundle\API\Facade\LanguageFacade:
+        public: true
+
+    EzSystems\BehatBundle\API\Facade\TrashFacade:
+        public: true
+
+    EzSystems\BehatBundle\API\Facade\SearchFacade:
+        arguments:
+            - '@eZ\Publish\API\Repository\URLAliasService'
+            - '@eZ\Publish\API\Repository\LocationService'
+            - '@ezpublish.api.service.search'
+
+    EzSystems\BehatBundle\Helper\ArgumentParser:
+        public: true
+        arguments:
+            - '@EzSystems\BehatBundle\API\Facade\RoleFacade'
+

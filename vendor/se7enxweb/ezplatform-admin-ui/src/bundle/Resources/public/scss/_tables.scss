@@ -1,0 +1,219 @@
+.ez-table {
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        background-color: $ez-ground-primary;
+        align-items: center;
+        padding: 0 calculateRem(20px);
+        min-height: calculateRem(50px);
+        border-radius: calculateRem(4px) calculateRem(4px) 0 0;
+    }
+
+    &__headline {
+        font-size: calculateRem(17px);
+        margin-bottom: 0;
+        font-weight: bold;
+        color: $ez-black;
+    }
+
+    &__header-cell {
+        .table &--has-icon {
+            padding: 0;
+        }
+
+        .table &--after-icon {
+            padding-left: 0;
+        }
+    }
+
+    &__cell {
+        &--field-definitions-head {
+            width: calc(100% / 3);
+        }
+
+        .table &--has-action-btns {
+            padding-right: calculateRem(20px);
+        }
+
+        .table &--has-text-info {
+            padding: calculateRem(16px) calculateRem(8px);
+            text-align: center;
+        }
+
+        &--has-checkbox {
+            width: 5%;
+        }
+
+        .table &--has-icon {
+            padding: 0 calculateRem(8px);
+            width: calculateRem(24px);
+            text-align: right;
+            vertical-align: middle;
+            line-height: 0;
+        }
+
+        .table &--after-icon {
+            padding-left: 0;
+        }
+
+        .table &--name {
+            max-width: calculateRem(350px);
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        &--no-content {
+            margin-bottom: calculateRem(48px);
+            padding: calculateRem(12px) calculateRem(16px);
+            background-color: $ez-white;
+            font-style: italic;
+            color: $ez-color-base-dark;
+        }
+
+        &--limitation {
+            width: 70%;
+        }
+    }
+}
+
+.ez-table-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: $ez-ground-primary;
+    align-items: center;
+    padding: 0 calculateRem(20px);
+    min-height: calculateRem(50px);
+    border-radius: calculateRem(4px) calculateRem(4px) 0 0;
+
+    &__headline {
+        font-size: calculateRem(17px);
+        margin-bottom: 0;
+        font-weight: bold;
+        color: $ez-black;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__tools {
+        white-space: nowrap;
+    }
+}
+
+.ez-table-header.ground-base {
+    background-color: $ez-color-base-pale;
+}
+
+.table {
+    margin-bottom: calculateRem(48px);
+
+    th,
+    td {
+        padding: calculateRem(11px) calculateRem(22px);
+        line-height: calculateRem(20px);
+    }
+
+    thead th {
+        font-size: calculateRem(15px);
+        vertical-align: top;
+    }
+
+    td {
+        font-size: calculateRem(14px);
+        vertical-align: middle;
+
+        .checkbox label {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.ez-dashboard {
+    .table:not(.ez-table__draft-conflict) {
+        margin-bottom: 0;
+
+        thead {
+            background-color: $ez-ground-primary;
+            color: $ez-black;
+
+            th {
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+.ez-table--no-border {
+    td {
+        border: none;
+    }
+}
+
+.ez-table-no-content {
+    margin-bottom: calculateRem(48px);
+    padding: calculateRem(12px) calculateRem(16px);
+    background-color: $ez-white;
+    font-style: italic;
+    font-size: calculateRem(14px);
+    color: $ez-color-base-dark;
+}
+
+.ez-table {
+    &--list {
+        background: none;
+        margin-bottom: calculateRem(48px);
+
+        .ez-table {
+            &__row:last-child {
+                .ez-table__cell:first-child {
+                    border-radius: 0 0 0 calculateRem(5px);
+                }
+                .ez-table__cell:last-child {
+                    border-radius: 0 0 calculateRem(5px) 0;
+                }
+            }
+
+            &__cell {
+                font-size: calculateRem(15px);
+                border: none;
+
+                &:first-child {
+                    font-weight: bold;
+                    background: $ez-ground-base-dark;
+                    width: calc(100% / 3);
+                }
+
+                &:last-child {
+                    font-weight: normal;
+                    background: $ez-white;
+                    width: (calc((100% / 3) * 2));
+                }
+
+                &--header:first-child,
+                &--header:last-child {
+                    color: $ez-color-secondary-hover;
+                    background: $ez-color-base-pale;
+                    border-radius: calculateRem(5px) calculateRem(5px) 0 0;
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+}
+
+.ez-checkbox-cell {
+    width: 5%;
+}
+
+.ez-limitation-cell {
+    width: 70%;
+}
+
+.ez-scrollable-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: calculateRem(48px);
+
+    table {
+        margin-bottom: 0;
+    }
+}

@@ -1,0 +1,12 @@
+parameters:
+    ezpublish.signalslot.signal_dispatcher.factory.class: eZ\Publish\Core\Base\Container\ApiLoader\SignalSlot\SignalDispatcherFactory
+    ezpublish.search.solr.field_mapper.indexing_depth_provider.default: 2
+
+services:
+    ezpublish.signalslot.signal_dispatcher.factory:
+        class: "%ezpublish.signalslot.signal_dispatcher.factory.class%"
+        arguments:
+            - "%ezpublish.signalslot.signal_dispatcher.class%"
+            - "solr"
+    logger:
+        class: Psr\Log\NullLogger

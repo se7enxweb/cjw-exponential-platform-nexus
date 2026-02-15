@@ -1,0 +1,169 @@
+html {
+    height: 100%;
+    width: 100%;
+    font-size: $base-font-size;
+}
+
+body {
+    height: 100%;
+}
+
+a {
+    transition: color 0.3s $ez-admin-transition;
+}
+
+button {
+    background: none;
+}
+
+img {
+    display: inline-block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
+
+.ez-scroll-disabled {
+    overflow: hidden;
+}
+
+.ez-main-row {
+    min-height: calc(100vh - 58px);
+}
+
+.ez-standalone-page {
+    .ez-main-row {
+        min-height: 100vh;
+    }
+}
+
+.ez-dashboard .ez-main-row {
+    background-color: $ez-ground-base-light;
+}
+
+.btn {
+    white-space: normal;
+    cursor: pointer;
+    transition: opacity 0.3s $ez-admin-transition, background 0.3s $ez-admin-transition;
+}
+
+.ez-field-edit {
+    margin: calculateRem(16px) 0;
+}
+
+.ezrichtext-field {
+    display: inline-block;
+    width: 100%;
+
+    .align-left {
+        float: left;
+    }
+
+    .align-center {
+        text-align: center;
+    }
+
+    .align-right {
+        float: right;
+    }
+
+    blockquote {
+        margin: calculateRem(16px) calculateRem(40px);
+    }
+}
+
+.ez-login-view {
+    .ez-main-container {
+        height: 100%;
+    }
+}
+
+.ez-checkbox-icon {
+    @include checkbox-icon();
+}
+
+.ez-visually-hidden,
+.ez-visually-hidden[readonly] {
+    height: calculateRem(1px);
+    opacity: 0;
+    position: relative;
+    z-index: 0;
+}
+
+.ez-spin {
+    animation: spin 1.75s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ez-content-preview {
+    .ez-main-container {
+        padding: 0;
+    }
+}
+
+[disabled] {
+    cursor: not-allowed;
+}
+
+select {
+    &.form-control:disabled,
+    &.form-control[disabled] {
+        opacity: 0.3;
+    }
+}
+
+.ez-info-view,
+.ez-content-view,
+.ez-content-type-view,
+.ez-content-type-group-list-view,
+.ez-language-view,
+.ez-language-list-view,
+.ez-link-manager-view,
+.ez-role-view,
+.ez-role-list-view,
+.ez-search-view,
+.ez-section-view,
+.ez-section-list-view,
+.ez-trash-list-view,
+.ez-bookmark-list-view {
+    background-color: $ez-ground-base-light;
+}
+
+.ez-sticky-container {
+    position: -webkit-sticky;
+    position: sticky;
+    top: calculateRem(16px);
+
+    .ez-icon {
+        margin-bottom: calculateRem(3px);
+    }
+}
+
+.ez-dashboard-row {
+    flex-direction: column;
+}
+
+.ez-scrollable-wrapper {
+    max-height: 60vh;
+    overflow: auto;
+}
+
+.ez-prevent-click,
+.ez-prevent-click * {
+    pointer-events: none !important;
+}
+
+.ez-is-tree-resizing {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

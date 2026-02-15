@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    colors="true"
+    forceCoversAnnotation="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutChangesToGlobalState="true"
+>
+    <testsuites>
+        <testsuite name="Netgen\Layouts\Ez">
+            <directory>tests/lib</directory>
+        </testsuite>
+        <testsuite name="Netgen\Bundle\LayoutsEzPlatformBundle">
+            <directory>tests/bundle</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <directory suffix=".php">lib</directory>
+            <directory suffix=".php">bundle</directory>
+        </include>
+        <exclude>
+            <directory>bundle/ezpublish_legacy</directory>
+            <directory>bundle/Resources</directory>
+            <file>bundle/NetgenLayoutsEzPlatformBundle.php</file>
+            <file>bundle/DependencyInjection/NetgenLayoutsEzPlatformExtension.php</file>
+        </exclude>
+    </coverage>
+</phpunit>

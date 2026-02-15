@@ -1,0 +1,11 @@
+services:
+    netgen_layouts.ezplatform.configuration.config_resolver:
+        class: Netgen\Bundle\LayoutsEzPlatformBundle\Configuration\ConfigResolverConfiguration
+        arguments:
+            - "@ezpublish.config.resolver"
+            - "@netgen_layouts.configuration.container"
+        lazy: true
+
+    netgen_layouts.configuration:
+        alias: netgen_layouts.ezplatform.configuration.config_resolver
+        public: true

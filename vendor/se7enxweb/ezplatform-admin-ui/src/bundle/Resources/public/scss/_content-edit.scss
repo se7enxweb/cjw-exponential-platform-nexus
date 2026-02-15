@@ -1,0 +1,93 @@
+.ez-content-item {
+    &__title {
+        display: flex;
+    }
+
+    &__name {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        padding-left: calculateRem(2px);
+    }
+}
+
+.ez-content-item-status {
+    font-size: calculateRem(18px);
+    color: $ez-color-base-light;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.ez-content-edit-container {
+    position: relative;
+
+    &__close {
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: calculateRem(32px);
+        color: $ez-black;
+        width: calculateRem(32px);
+        height: calculateRem(32px);
+        margin-left: calculateRem(8px);
+        padding: calculateRem(16px);
+
+        &:before,
+        &:after {
+            content: '';
+            width: calculateRem(32px);
+            height: calculateRem(2px);
+            position: absolute;
+            background-color: $ez-black;
+            top: 50%;
+            left: 0;
+        }
+
+        &:before {
+            transform: rotate(45deg);
+        }
+
+        &:after {
+            transform: rotate(-45deg);
+        }
+
+        &:hover {
+            text-decoration: none;
+            color: $ez-black;
+        }
+    }
+}
+
+.ez-content-edit {
+    .ez-field-edit {
+        margin: calculateRem(24px) 0;
+
+        &__label-wrapper {
+            .ez-field-edit {
+                &__label {
+                    margin-top: 0;
+                }
+            }
+        }
+
+        &--ezdate,
+        &--eztime,
+        &--ezdatetime {
+            .ez-field-edit__data {
+                .form-control {
+                    margin-bottom: calculateRem(-8px);
+                }
+            }
+        }
+    }
+
+    .card-body {
+        padding: 0 calculateRem(20px);
+    }
+}
+
+.ez-content-item__errors-wrapper {
+    font-style: italic;
+    color: $ez-color-warning-dark;
+    font-size: calculateRem(16px);
+}

@@ -1,0 +1,7 @@
+netgen_tags_admin_root_no_slash:
+    path: /tags/admin
+    methods: [GET]
+    defaults:
+        _controller: "FrameworkBundle:Redirect:redirect"
+        route: netgen_tags_admin_root
+        permanent: true

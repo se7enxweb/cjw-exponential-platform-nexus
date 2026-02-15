@@ -1,0 +1,22 @@
+{# content \Netgen\EzPlatformSiteApi\API\Values\Content #}
+{# location \Netgen\EzPlatformSiteApi\API\Values\Location #}
+
+{% set image_field = null %}
+
+{% for field in content.fields %}
+    {% if image_field is null and field.fieldTypeIdentifier == 'ezimage' and not field.empty %}
+        {% set image_field = field %}
+    {% endif %}
+{% endfor %}
+
+{% if image_field is not null %}
+    {{ ng_render_field(
+        image_field,
+        {
+            parameters: {
+                alias: objectParameters.size|default('original'),
+                ezlink: linkParameters|default({})
+            }
+        }
+    ) }}
+{% endif %}

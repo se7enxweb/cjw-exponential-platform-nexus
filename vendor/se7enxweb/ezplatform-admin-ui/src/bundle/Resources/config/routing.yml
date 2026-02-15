@@ -1,0 +1,830 @@
+#
+# System routes
+#
+
+_ezpublishLocation:
+    path: /content/location/{locationId}/{languageCode}/{viewType}/{layout}
+    options:
+        expose: true
+    defaults:
+        _controller: ez_content:viewLocation
+        viewType: full
+        layout: true
+        languageCode: null
+
+#
+# Dashboard
+#
+
+ezplatform.dashboard:
+    path: /dashboard
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Dashboard:dashboard'
+
+#
+# System Information
+#
+
+ezplatform.systeminfo:
+    path: /systeminfo
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:SystemInfo:info'
+
+ezplatform.systeminfo.php:
+    path: /systeminfo/phpinfo
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:SystemInfo:phpinfo'
+
+#
+# Section
+#
+
+ezplatform.section.list:
+    path: /section/list
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:list'
+
+ezplatform.section.create:
+    path: /section/create
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:create'
+
+ezplatform.section.view:
+    path: /section/view/{sectionId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:view'
+
+ezplatform.section.update:
+    path: /section/update/{sectionId}
+    defaults:
+        sectionId: null
+        _controller: 'EzPlatformAdminUiBundle:Section:update'
+
+ezplatform.section.delete:
+    path: /section/delete/{sectionId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:delete'
+
+ezplatform.section.bulk_delete:
+    path: /section/bulk-delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:bulkDelete'
+
+ezplatform.section.assign_content:
+    path: /section/assign-content/{sectionId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:assignContent'
+
+#
+# Language
+#
+
+ezplatform.language.list:
+    path: /language/list
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Language:list'
+
+ezplatform.language.view:
+    path: /language/view/{languageId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Language:view'
+
+ezplatform.language.create:
+    path: /language/create
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Language:create'
+
+ezplatform.language.edit:
+    path: /language/edit/{languageId}
+    defaults:
+        languageId: null
+        _controller: 'EzPlatformAdminUiBundle:Language:edit'
+
+ezplatform.language.delete:
+    path: /language/delete/{languageId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Language:delete'
+
+ezplatform.language.bulk_delete:
+    path: /language/bulk-delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Language:bulkDelete'
+
+#
+# Role
+#
+
+ezplatform.role.list:
+    path: /role/list
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Role:list'
+
+ezplatform.role.view:
+    path: /role/{roleId}/{policyPage}/{assignmentPage}
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Role:view'
+        policyPage: 1
+        assignmentPage: 1
+    requirements:
+        roleId: \d+
+        policyPage: \d+
+        assignmentPage: \d+
+
+ezplatform.role.create:
+    path: /role/create
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Role:create'
+
+ezplatform.role.update:
+    path: /role/{roleId}/update
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Role:update'
+    requirements:
+        roleId: \d+
+
+ezplatform.role.delete:
+    path: /role/{roleId}/delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Role:delete'
+    requirements:
+        roleId: \d+
+
+ezplatform.role.bulk_delete:
+    path: /role/bulk-delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Role:bulkDelete'
+
+#
+# Policy
+#
+
+ezplatform.policy.list:
+    path: /role/{roleId}/policy/list
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Policy:list'
+    requirements:
+        roleId: \d+
+
+ezplatform.policy.create:
+    path: /role/{roleId}/policy/create
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Policy:create'
+    requirements:
+        roleId: \d+
+
+ezplatform.policy.update:
+    path: /role/{roleId}/policy/{policyId}/update
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Policy:update'
+    requirements:
+        roleId: \d+
+        policyId: \d+
+
+ezplatform.policy.create_with_limitation:
+    path: /role/{roleId}/policy/create/{policyModule}/{policyFunction}
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Policy:createWithLimitation'
+    requirements:
+        roleId: \d+
+        policyModule: \w+
+        policyFunction: \w+
+
+ezplatform.policy.delete:
+    path: /role/{roleId}/policy/{policyId}
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Policy:delete'
+    requirements:
+        roleId: \d+
+        policyId: \d+
+
+ezplatform.policy.bulk_delete:
+    path: /role/{roleId}/policy/bulk-delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Policy:bulkDelete'
+    requirements:
+        roleId: \d+
+
+#
+# Role Assignment
+#
+
+ezplatform.role_assignment.list:
+    path: /role/{roleId}/assignment
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:RoleAssignment:list'
+
+ezplatform.role_assignment.create:
+    path: /role/{roleId}/assignment/create
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:RoleAssignment:create'
+    requirements:
+        roleId: \d+
+
+ezplatform.role_assignment.delete:
+    path: /role/{roleId}/assignment/{assignmentId}/delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:RoleAssignment:delete'
+
+ezplatform.role_assignment.bulk_delete:
+    path: /role/{roleId}/assignment/bulk-delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:RoleAssignment:bulkDelete'
+    requirements:
+        roleId: \d+
+
+#
+# Content Type Group
+#
+
+ezplatform.content_type_group.list:
+    path: /contenttypegroup/list
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentTypeGroup:list'
+
+ezplatform.content_type_group.view:
+    path: /contenttypegroup/{contentTypeGroupId}/{page}
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentTypeGroup:view'
+        page: 1
+    requirements:
+        contentTypeGroupId: \d+
+        page: \d+
+
+ezplatform.content_type_group.create:
+    path: /contenttypegroup/create
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentTypeGroup:create'
+
+ezplatform.content_type_group.update:
+    path: /contenttypegroup/{contentTypeGroupId}/update
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentTypeGroup:update'
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type_group.delete:
+    path: /contenttypegroup/{contentTypeGroupId}/delete
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentTypeGroup:delete'
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type_group.bulk_delete:
+    path: /contenttypegroup/bulk-delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentTypeGroup:bulkDelete'
+
+#
+# Trash
+#
+
+ezplatform.trash.list:
+    path: /trash/list
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Trash:list'
+
+ezplatform.trash.empty:
+    path: /trash/empty
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Trash:empty'
+
+ezplatform.trash.restore:
+    path: /trash/restore
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Trash:restore'
+
+ezplatform.trash.delete:
+    path: /trash/delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Trash:delete'
+
+#
+# Content Type
+#
+
+ezplatform.content_type.list:
+    path: /contenttypegroup/{contentTypeGroupId}/contenttype/list
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:list'
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type.add:
+    path: /contenttypegroup/{contentTypeGroupId}/contenttype/add
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:add'
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type.edit:
+    path: /contenttypegroup/{contentTypeGroupId}/contenttype/{contentTypeId}/edit
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:edit'
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type.update:
+    path: /contenttypegroup/{contentTypeGroupId}/contenttype/{contentTypeId}/update/{toLanguageCode}/{fromLanguageCode}
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:update'
+        toLanguageCode: ~
+        fromLanguageCode: ~
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type.delete:
+    path: /contenttypegroup/{contentTypeGroupId}/contenttype/{contentTypeId}
+    methods: ['DELETE']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:delete'
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type.bulk_delete:
+    path: /content_type/{contentTypeGroupId}/bulk-delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:bulkDelete'
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type.view:
+    path: /contenttypegroup/{contentTypeGroupId}/contenttype/{contentTypeId}/{languageCode}
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:view'
+        languageCode: null
+    requirements:
+        contentTypeGroupId: \d+
+
+ezplatform.content_type.add_translation:
+    path: /content-type/translation/add
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:addTranslation'
+
+ezplatform.content_type.remove_translation:
+    path: /content-type/translation/remove
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentType:removeTranslation'
+
+#
+# Location View
+#
+
+ezplatform.location.move:
+    path: /location/move
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:move'
+
+ezplatform.location.copy:
+    path: /location/copy
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:copy'
+
+ezplatform.location.trash:
+    path: /location/trash
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:trash'
+
+ezplatform.location.trash_container:
+    path: /location/trash_container
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:trashContainer'
+
+ezplatform.location.update:
+    path: /location/update
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:update'
+
+ezplatform.location.copy_subtree:
+    path: /location/copy-subtree
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:copySubtree'
+
+ezplatform.location.trash_with_asset:
+    path: /location/trash-with-asset
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location\TrashLocationWithAsset:trash'
+
+# RelationView
+
+ezplatform.relation:
+    path: /relation/{contentId}
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:relationView'
+
+# LocationView / Translation tab
+
+ezplatform.translation.add:
+    path: /translation/add
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Translation:add'
+
+ezplatform.translation.remove:
+    path: /translation/remove
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Translation:remove'
+
+ezplatform.content.update_main_translation:
+    path: /content/update-main-translation
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:updateMainTranslation'
+
+ezplatform.content.update_visibility:
+    path: /content/update-visibility
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:updateVisibility'
+
+# LocationView / Versions tab
+
+ezplatform.version.remove:
+    path: /version/remove
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Version:remove'
+
+ezplatform.version.has_no_conflict:
+    path: /version/has-no-conflict/{contentId}/{versionNo}/{languageCode}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Version\VersionConflict:versionHasNoConflict'
+        languageCode: ~
+
+ezplatform.version_draft.has_no_conflict:
+    path: /version-draft/has-no-conflict/{contentId}/{languageCode}/{locationId}
+    options:
+        expose: true
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content\VersionDraftConflict:draftHasNoConflict'
+        locationId: ~
+
+# LocationView / Locations tab
+
+ezplatform.location.add:
+    path: /location/add
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:add'
+
+ezplatform.location.remove:
+    path: /location/remove
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:remove'
+
+ezplatform.location.swap:
+    path: /location/swap
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:swap'
+
+ezplatform.location.update_visibility:
+    path: /location/update-visibility
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:updateVisibility'
+
+ezplatform.location.assign_section:
+    path: /location/assign-section
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Location:assignSection'
+
+ezplatform.content.update_main_location:
+    path: /content/update-main-location
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:updateMainLocation'
+
+#
+# Content Edit
+#
+
+ezplatform.content.edit:
+    path: /content/edit
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:edit'
+
+ezplatform.content.create:
+    path: /content/create
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:create'
+
+ezplatform.content.preview:
+    path: /content/{contentId}/preview/{versionNo}/{languageCode}/{locationId}
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:preview'
+        languageCode: ~
+        locationId: ~
+
+ezplatform.content.translate:
+    path: /content/{contentId}/translate/{toLanguageCode}/{fromLanguageCode}
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentEdit:translate'
+        fromLanguageCode: ~
+
+ibexa.content.translate_with_location:
+    path: /content/{contentId}/location/{locationId}/translate/{toLanguageCode}/{fromLanguageCode}
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzSystems\EzPlatformAdminUiBundle\Controller\ContentEditController::translateAction'
+        fromLanguageCode: ~
+
+ezplatform.content.check_edit_permission:
+    path: /content/{contentId}/check-edit-permission/{languageCode}
+    options:
+        expose: true
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Content:checkEditPermission'
+        languageCode: ~
+
+#
+# Search
+#
+
+ezplatform.search:
+    path: /search
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Search:search'
+
+#
+# Link manager
+#
+
+ezplatform.link_manager.list:
+    path: /linkmanagement
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:LinkManager:list'
+
+ezplatform.link_manager.edit:
+    path: /linkmanagement/edit/{urlId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:LinkManager:edit'
+    requirements:
+        urlId: \d+
+
+ezplatform.link_manager.view:
+    path: /linkmanagement/view/{urlId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:LinkManager:view'
+    requirements:
+        urlId: \d+
+
+#
+# User
+#
+
+ezplatform.user.delete:
+    path: /user/delete
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:User\UserDelete:userDelete'
+
+#
+# Custom URL alias
+#
+
+ezplatform.custom_url.add:
+    path: /url-alias/add
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:UrlAlias:add'
+
+ezplatform.custom_url.remove:
+    path: /url-alias/remove
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:UrlAlias:remove'
+
+#
+# Content on the Fly
+#
+
+ezplatform.content_on_the_fly.create:
+    path: /content/create/on-the-fly/{contentTypeIdentifier}/{languageCode}/{locationId}
+    methods: ['GET', 'POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentOnTheFly:createContent'
+    options:
+        expose: true
+
+ezplatform.content_on_the_fly.has_access:
+    path: /content/create/on-the-fly/{contentTypeIdentifier}/{languageCode}/{locationId}/has-access
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentOnTheFly:hasCreateAccess'
+    options:
+        expose: true
+
+#
+# Object States
+#
+
+ezplatform.object_state.groups.list:
+    path: /state/groups
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:list'
+
+ezplatform.object_state.group.add:
+    path: /state/group/create
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:add'
+
+ezplatform.object_state.group.update:
+    path: /state/group/update/{objectStateGroupId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:update'
+
+ezplatform.object_state.group.delete:
+    path: /state/group/delete/{objectStateGroupId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:delete'
+
+ezplatform.object_state.group.bulk_delete:
+    path: /state/group/bulk-delete
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:bulkDelete'
+
+ezplatform.object_state.group.view:
+    path: /state/group/{objectStateGroupId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:view'
+
+ezplatform.object_state.state.add:
+    path: /state/state/create/{objectStateGroupId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectState:add'
+
+ezplatform.object_state.state.view:
+    path: /state/state/{objectStateId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectState:view'
+
+ezplatform.object_state.state.update:
+    path: /state/state/update/{objectStateId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectState:update'
+
+ezplatform.object_state.state.delete:
+    path: /state/state/delete/{objectStateId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectState:delete'
+
+ezplatform.object_state.state.bulk_delete:
+    path: /state/state/bulk-delete/{objectStateGroupId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectState:bulkDelete'
+
+ezplatform.object_state.contentstate.update:
+    path: /state/contentstate/update/{contentInfoId}/group/{objectStateGroupId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectState:updateContentState'
+
+#
+# Universal Discovery Widget
+#
+
+ezplatform.udw.preselected_location.data:
+    path: /udw/preselected-location/data/{startingLocationId}/{locationId}/{limit}
+    options:
+        expose: true
+    defaults:
+        limit: 50
+        _controller: 'EzPlatformAdminUiBundle:UniversalDiscovery:preselectedLocationData'
+
+#
+# Bookmark manager
+#
+
+ezplatform.bookmark.list:
+    path: /bookmark/list
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Bookmark:list'
+
+ezplatform.bookmark.remove:
+    path: /bookmark/remove
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Bookmark:remove'
+
+#
+# Drafts
+#
+
+ezplatform.content_draft.list:
+    path: /contentdraft/list
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentDraft:list'
+
+ezplatform.content_draft.remove:
+    path: /contentdraft/remove
+    methods: ['POST']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ContentDraft:remove'
+
+#
+# Notifications
+#
+
+ezplatform.notifications.get:
+    path: /notifications/{offset}/{limit}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Notification:getNotifications'
+        offset: 0
+        limit: 10
+    methods: [GET]
+    requirements:
+        offset: '\d+'
+        limit: '\d+'
+
+ezplatform.notifications.render:
+    path: /notifications/render/{offset}/{limit}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Notification:renderNotifications'
+        offset: 0
+        limit: 5
+    methods: [GET]
+    requirements:
+        offset: '\d+'
+        limit: '\d+'
+
+ezplatform.notifications.render.page:
+    path: /notifications/render/page/{page}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Notification:renderNotificationsPage'
+        page: 1
+    methods: [GET]
+    requirements:
+        page: '\d+'
+
+ezplatform.notifications.count:
+    path: /notifications/count
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Notification:countNotifications'
+    methods: [GET]
+
+ezplatform.notifications.mark_as_read:
+    path: /notification/read/{notificationId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Notification:markNotificationAsRead'
+    methods: [GET]
+    requirements:
+        notificationId: '\d+'
+
+ezplatform.asset.upload_image:
+    path: /asset/image
+    options:
+        expose: true
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Asset:uploadImage'
+    methods: [POST]

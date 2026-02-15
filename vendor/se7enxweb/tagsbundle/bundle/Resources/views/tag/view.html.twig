@@ -1,0 +1,43 @@
+{% extends ezpublish.configResolver.parameter( 'pagelayout' ) %}
+
+{% set tag_keyword = netgen_tags_tag_keyword( tag ) %}
+
+{% block page_head %}
+    {% set title = tag_keyword %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <section class="content-view-full">
+        <div class="row">
+            <div class="span8">
+                <div class="attribute-header">
+                    <h1>{{ tag_keyword }}</h1>
+                </div>
+
+                {% if related_content|length > 0 %}
+                    <section class="content-view-children">
+                        {% for related_content_item in related_content %}
+                            {{ render(
+                                controller(
+                                    "ez_content:viewAction", {
+                                        "contentId": related_content_item.id,
+                                        "locationId": related_content_item.mainLocationId,
+                                        "viewType": "line",
+                                        "layout": false
+                                    }
+                                )
+                            ) }}
+                        {% endfor %}
+                    </section>
+
+                    {% if related_content.haveToPaginate() %}
+                        <div class="pagination-centered">
+                            {{ pagerfanta( related_content, 'twitter_bootstrap_translated' ) }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

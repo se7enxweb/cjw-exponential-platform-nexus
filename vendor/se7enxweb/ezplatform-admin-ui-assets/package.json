@@ -1,0 +1,48 @@
+{
+    "name": "ezplatform-admin-ui-assets",
+    "scripts": {
+        "create-folder": "rm -rf Resources; mkdir Resources; mkdir Resources/public; mkdir Resources/public/vendors",
+        "move-bootstrap": "cp -r node_modules/bootstrap Resources/public/vendors/bootstrap",
+        "move-jquery": "cp -r node_modules/jquery Resources/public/vendors/jquery",
+        "move-alloyeditor": "cp -r node_modules/alloyeditor Resources/public/vendors/alloyeditor",
+        "move-leaflet": "cp -r node_modules/leaflet Resources/public/vendors/leaflet",
+        "move-react": "cp -r node_modules/react Resources/public/vendors/react",
+        "move-react-dom": "cp -r node_modules/react-dom Resources/public/vendors/react-dom",
+        "move-taggify": "cp -r node_modules/taggify Resources/public/vendors/taggify",
+        "move-popper.js": "cp -r node_modules/popper.js Resources/public/vendors/popper.js",
+        "move-flatpickr": "cp -r node_modules/flatpickr Resources/public/vendors/flatpickr",
+        "move-create-react-class": "cp -r node_modules/create-react-class Resources/public/vendors/create-react-class",
+        "move-prop-types": "cp -r node_modules/prop-types Resources/public/vendors/prop-types",
+        "move-moment": "cp -r node_modules/moment Resources/public/vendors/moment",
+        "move-moment-timezone": "cp -r node_modules/moment-timezone Resources/public/vendors/moment-timezone",
+        "move-d3": "cp -r node_modules/d3 Resources/public/vendors/d3",
+        "move-dagre-d3": "cp -r node_modules/dagre-d3 Resources/public/vendors/dagre-d3",
+        "prepare-release": "npm run create-folder; npm run move-bootstrap; npm run move-jquery; npm run move-alloyeditor; npm run move-leaflet; npm run move-react; npm run move-react-dom; npm run move-taggify; npm run move-popper.js; npm run move-flatpickr; npm run move-create-react-class; npm run move-prop-types; npm run move-moment; npm run move-moment-timezone; npm run move-d3; npm run move-dagre-d3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ezsystems/ezplatform-admin-ui-assets.git"
+    },
+    "author": "eZ Systems",
+    "license": "GPL-2.0",
+    "bugs": {
+        "url": "https://github.com/ezsystems/ezplatform-admin-ui-assets/issues"
+    },
+    "homepage": "https://github.com/ezsystems/ezplatform-admin-ui-assets#readme",
+    "dependencies": {
+        "alloyeditor": "1.5.28",
+        "bootstrap": "4.5.3",
+        "create-react-class": "15.6.3",
+        "d3": "5.9.7",
+        "dagre-d3": "0.6.3",
+        "flatpickr": "4.6.1",
+        "jquery": "3.5.1",
+        "leaflet": "1.5.1",
+        "moment-timezone": "0.5.25",
+        "popper.js": "1.15.0",
+        "prop-types": "15.7.2",
+        "react": "16.8.6",
+        "react-dom": "16.8.6",
+        "taggify": "1.2.1"
+    }
+}

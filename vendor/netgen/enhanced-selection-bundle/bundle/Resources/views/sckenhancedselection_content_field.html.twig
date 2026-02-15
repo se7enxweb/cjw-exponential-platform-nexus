@@ -1,0 +1,28 @@
+{% block sckenhancedselection_field %}
+{% spaceless %}
+
+{% set available_options = fieldSettings.options %}
+{% set identifiers = field.value.identifiers %}
+
+{% if fieldSettings.delimiter is not empty %}
+    {% set delimiter = fieldSettings.delimiter %}
+{% else %}
+    {% set delimiter = ', ' %}
+{% endif %}
+
+{% if available_options is not empty and identifiers is not empty %}
+    {% set options = [] %}
+
+    {% for option in available_options %}
+        {% if option.identifier in identifiers %}
+            {% set options = options|merge([option.name]) %}
+        {% endif %}
+    {% endfor %}
+
+    {{ options|join(delimiter) }}
+{% elseif identifiers is not empty %}
+    {{ identifiers|join(delimiter) }}
+{% endif %}
+
+{% endspaceless %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% trans_default_domain 'content_type' %}
+
+<div class="modal fade ez-modal ez-modal--send-to-trash" id="delete-content-type-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg class="ez-icon ez-icon--medium" aria-hidden="true">
+                        <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#discard"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="ez-modal-body__main">{{ 'content_type.field_definitions.modal.message'|trans|desc('Do you want to delete selected field definitions?') }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn--no" data-dismiss="modal">{{ 'modal.cancel'|trans|desc('Cancel') }}</button>
+                {{ form_widget(form.removeFieldDefinition, { attr: { class: 'btn btn-danger font-weight-bold'}, label: 'modal.delete'|trans|desc('Delete')}) }}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+{
+    "name": "se7enxweb/ezmigrationbundle",
+    "type": "symfony-bundle",
+    "description": "7x Exponential-eZ Migration Bundle (From Kaliop)",
+    "keywords": ["migrations", "database", "ezpublish"],
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Gaetano Giunta",
+            "email": "ggiunta@kaliop.com",
+            "role": "Lead Developer"
+        },
+        {
+            "name": "Daniel Clements",
+            "email": "dclements@kaliop.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Peter Halasz",
+            "email": "peter.halasz@kaliop.co.uk",
+            "role": "Original author"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "ext-pdo": "*",
+        "se7enxweb/ezpublish-kernel": ">=5.4|>=2014.11",
+        "mtdowling/jmespath.php": "2.*",
+        "nikic/php-parser": "^2.0 || ^3.0 || ^4.0",
+        "symfony/process": "*",
+        "symfony/swiftmailer-bundle": "*",
+        "symfony/validator": "*",
+        "symfony/var-dumper": "*"
+    },
+    "require-dev": {
+        "mikey179/vfsstream": "~1.2.0",
+        "polishsymfonycommunity/symfony2-mocker-extension": "*",
+        "php-http/mock-client": "*",
+        "phpunit/phpunit": "~4.0 || ~5.0",
+        "codeclimate/php-test-reporter": "~0.4",
+        "roave/security-advisories": "dev-disablechecks as dev-master"
+    },
+    "suggest": {
+        "php-http/httplug-bundle": "Required for usage of HTTP/CALL migration steps"
+    },
+    "conflict": {
+        "se7enxweb/tagsbundle": "1.*",
+        "se7enxweb/ezpublish-kernel": "6.7.3"
+    },
+    "autoload": {
+        "psr-4": { "Kaliop\\eZMigrationBundle\\": "" }
+    },
+    "_comment::travis": "the following section is needed to insure that eZPublish 5 can be built on travis, using the custom directory structure where it is not in the root folder",
+    "extra": {
+        "ezpublish-legacy-dir": "vendor/ezsystems/ezpublish-legacy"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/gggeek/BehatBundle",
+            "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/kaliop-uk/SecurityAdvisoriesNoConflicts",
+            "no-api": true
+        }
+    ]
+}

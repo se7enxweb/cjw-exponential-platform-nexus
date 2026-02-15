@@ -1,0 +1,52 @@
+{
+    "name": "se7enxweb/ezplatform-graphql",
+    "description": "GraphQL server for the eZ Platform Open Source CMS Repository.",
+    "type": "ezplatform-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bertrand Dunogier",
+            "email": "bertrand.dunogier@ez.no"
+        }
+    ],
+    "replace": {
+        "bdunogier/ezplatform-graphql-bundle": "self.version"
+    },
+    "require": {
+        "ext-dom": "*",
+        "se7enxweb/ezpublish-kernel": "^6.0|^7.0",
+        "se7enxweb/ezplatform-admin-ui": "^1.0",
+        "overblog/graphql-bundle": "^0.11",
+        "erusev/parsedown": "^1.0"
+    },
+    "require-dev": {
+        "overblog/graphiql-bundle": "^0.1",
+        "phpspec/phpspec": "^5.1",
+        "friendsofphp/php-cs-fixer": "^2.16.0",
+        "ezsystems/ezplatform-code-style": "^0.1.0",
+        "mikey179/vfsstream": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "EzSystems\\EzPlatformGraphQL\\": "src",
+            "Ibexa\\GraphQL\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "spec\\EzSystems\\EzPlatformGraphQL\\Tools\\": "spec/Tools",
+            "spec\\EzSystems\\EzPlatformGraphQL\\": "spec/EzSystems/EzPlatformGraphQL",
+            "spec\\Ibexa\\GraphQL\\": "spec/Ibexa/GraphQL"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "scripts": {
+        "fix-cs": "php-cs-fixer fix -v --show-progress=estimating",
+        "check-cs": "@fix-cs --dry-run",
+        "test": "phpspec run --format=pretty"
+    }
+}

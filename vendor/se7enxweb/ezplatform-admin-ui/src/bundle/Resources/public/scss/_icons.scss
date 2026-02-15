@@ -1,0 +1,213 @@
+.ez-icon {
+    width: calculateRem(32px);
+    height: calculateRem(32px);
+    transition: fill 0.3s $ez-admin-transition;
+
+    &--small {
+        width: calculateRem(16px);
+        height: calculateRem(16px);
+    }
+
+    &--small-medium {
+        width: calculateRem(20px);
+        height: calculateRem(20px);
+    }
+
+    &--medium {
+        width: calculateRem(24px);
+        height: calculateRem(24px);
+    }
+
+    &--large {
+        width: calculateRem(48px);
+        height: calculateRem(48px);
+    }
+
+    &--extra-large {
+        width: calculateRem(64px);
+        height: calculateRem(64px);
+    }
+
+    &--dark {
+        fill: $ez-black;
+    }
+
+    &--light {
+        fill: $ez-white;
+    }
+
+    &--secondary {
+        fill: $ez-color-secondary;
+    }
+}
+
+.btn-icon {
+    .ez-icon {
+        width: calculateRem(24px);
+        height: calculateRem(24px);
+        fill: $ez-color-primary;
+
+        &--secondary {
+            fill: $ez-color-secondary;
+        }
+    }
+}
+
+.ez-field-edit--ezauthor {
+    .btn-icon {
+        .ez-icon {
+            fill: $ez-white;
+            width: calculateRem(16px);
+            height: calculateRem(16px);
+        }
+    }
+}
+
+.ez-main-nav {
+    .ez-icon {
+        width: calculateRem(24px);
+        height: calculateRem(24px);
+    }
+}
+
+.ez-side-menu,
+.ez-context-menu {
+    .ez-icon {
+        fill: $white;
+    }
+
+    .ez-sticky-container {
+        .ez-icon {
+            width: calculateRem(28px);
+            height: calculateRem(28px);
+            margin-bottom: calculateRem(3px);
+        }
+    }
+}
+
+.ez-table-header {
+    .ez-icon {
+        width: calculateRem(24px);
+        height: calculateRem(24px);
+        fill: $white;
+    }
+}
+
+.ez-btn--extra-actions {
+    .ez-icon {
+        pointer-events: none;
+    }
+}
+
+.ez-btn-ae {
+    &:hover {
+        .ez-icon {
+            fill: $ez-alloyeditor-color-hover;
+        }
+    }
+
+    .ez-icon {
+        width: calculateRem(24px);
+        height: calculateRem(24px);
+        fill: $ez-black;
+    }
+
+    &.ae-button-pressed {
+        .ez-icon {
+            fill: $ez-white;
+        }
+    }
+}
+
+.ez-icon--logo {
+    width: 18.5rem;
+    height: 6rem;
+    display: block;
+    margin: 0 auto;
+}
+
+.ez-field-edit--with-preview {
+    .ez-icon {
+        fill: $ez-white;
+        height: calculateRem(16px);
+        width: calculateRem(16px);
+    }
+}
+
+.ez-field-edit--ezbinaryfile {
+    &.ez-field-edit--with-preview {
+        .ez-field-edit-preview {
+            &__file-icon {
+                .ez-icon {
+                    fill: $ez-color-base-dark;
+                    height: calculateRem(32px);
+                    width: calculateRem(32px);
+                }
+            }
+        }
+    }
+}
+
+.ez-preview__action {
+    .ez-icon {
+        width: calculateRem(24px);
+        height: calculateRem(24px);
+        fill: $ez-color-base-medium;
+    }
+
+    &:hover,
+    &:focus {
+        .ez-icon {
+            fill: $ez-white;
+        }
+    }
+
+    &.ez-preview__action--selected {
+        .ez-icon {
+            fill: $ez-white;
+        }
+    }
+}
+
+.ez-field-edit--ezdate,
+.ez-field-edit--ezdatetime,
+.ez-field-edit--eztime {
+    .ez-data-source__btn--clear-input {
+        .ez-icon {
+            width: calculateRem(16px);
+            height: calculateRem(16px);
+        }
+    }
+}
+
+.ez-btn--select-subtree {
+    .ez-icon {
+        margin-right: 0.5rem;
+    }
+}
+
+.ez-alert--info {
+    .ez-icon-warning {
+        fill: $ez-secondary-ground-medium;
+    }
+}
+
+.ez-modal {
+    .modal-header {
+        .ez-icon {
+            fill: $ez-black;
+        }
+    }
+}
+
+.ez-btn--content-tree-expanded {
+    .ez-icon {
+        fill: $ez-black;
+    }
+
+    &:hover {
+        .ez-icon {
+            fill: $ez-white;
+        }
+    }
+}

@@ -1,0 +1,43 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+
+parameters:
+    dynamicConstantNames:
+        - Symfony\Component\HttpKernel\Kernel::VERSION_ID
+
+    ignoreErrors:
+        # Compatibility with older versions of Symfony
+
+        -
+            message: '#Call to an undefined method Netgen\\ContentBrowser\\Utils\\BackwardsCompatibility\\TreeBuilder::root\(\).#'
+            path: lib/Utils/BackwardsCompatibility/TreeBuilder.php
+
+        -
+            message: '/Parameter #1 \$event of method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) expects object, string given/'
+            path: bundle/EventListener/SetConfigListener.php
+
+        -
+            message: '/Parameter #2 \$eventName of method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) expects string\|null, Netgen\\ContentBrowser\\Event\\ConfigLoadEvent given/'
+            path: bundle/EventListener/SetConfigListener.php
+
+        -
+            message: '/Unable to resolve the template type TEvent/'
+            path: bundle/EventListener/SetConfigListener.php
+
+        - "#Call to an undefined method Symfony\\\\Component\\\\HttpKernel\\\\Event\\\\KernelEvent::isMasterRequest\\(\\).#"
+        - "#Call to function method_exists\\(\\) with Symfony\\\\Component\\\\HttpKernel\\\\Event\\\\ExceptionEvent and '(get|set)Exception' will always evaluate to false.#"
+        - "#Call to function method_exists\\(\\) with Symfony\\\\Component\\\\HttpKernel\\\\Event\\\\ExceptionEvent and '(get|set)Throwable' will always evaluate to true.#"
+        - "#Call to function method_exists\\(\\) with Symfony\\\\Component\\\\DependencyInjection\\\\ContainerBuilder#"
+        - "#Call to function method_exists\\(\\) with Symfony\\\\Component\\\\HttpKernel\\\\Event\\\\KernelEvent and 'isMainRequest' will always evaluate to true.#"
+
+        - "#Casting to string something that's already string.#"
+
+        # Ignore Pagerfanta integer ranges, they bring more trouble with trying to satisfy PHPStan than they're worth
+
+        - '#getNbResults\(\) should return int<0, max> but returns int.#'
+
+        # Content Browser specifics
+
+        - "#Call to function method_exists\\(\\) with Netgen\\\\ContentBrowser\\\\Backend\\\\BackendInterface and 'searchItems(Count)?' will always evaluate to true.#"

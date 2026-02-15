@@ -1,0 +1,44 @@
+{% trans_default_domain 'notifications' %}
+
+<div
+    class="modal fade ez-notifications-modal"
+    id="view-notifications"
+    tabindex="-1"
+    role="dialog">
+    <div
+        class="modal-dialog"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 
+                    class="modal-title" 
+                    data-notifications-total="">
+                    {{ 'notifications'|trans|desc('Notifications') }} 
+                </h5>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close">
+                    <svg
+                        class="ez-icon ez-icon--medium"
+                        aria-hidden="true">
+                        <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#discard"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="ez-notifications-modal__spinner">
+                    <svg class="ez-icon ez-spin">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>
+                    </svg>
+                </div>
+                <div class="ez-notifications-modal__results">
+                    {{ render(controller('EzPlatformAdminUiBundle:Notification:renderNotificationsPage', {
+                        'page': 1,
+                    })) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

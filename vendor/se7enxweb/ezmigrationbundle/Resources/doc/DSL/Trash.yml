@@ -1,0 +1,41 @@
+# Empties the trash
+-
+    type: trash
+    mode: purge
+    if: # Optional. If set, the migration step will be skipped unless the condition is matched
+        "reference:_ref_name": # name of a reference to be used for the test
+            _operator_: value # allowed operators: eq, gt, gte, lt, lte, ne, count, length, regexp, satisfies
+
+# Restores a Location that is in the trash
+-
+    type: trash
+    mode: recover
+    match:
+        xxx # See the conditions for content/update
+    references: # Optional
+         -
+            identifier: referenceId # A string used to identify the reference
+            attribute: attribute # An attribute to get the value of for the reference.
+                                 # Supports: see location/create
+    references_type: "array" # Optional. If not set, created references values will be scalars. If set, they will be arrays
+    references_allow_empty: bool # optional. Set it to allow array references to be empty without it being considered an error
+    if: # Optional. If set, the migration step will be skipped unless the condition is matched
+        "reference:_ref_name": # name of a reference to be used for the test
+            _operator_: value # allowed operators: eq, gt, gte, lt, lte, ne, count, length, regexp, satisfies
+
+# Deletes definitively a Location that is already in the trash
+-
+    type: trash
+    mode: delete
+    match:
+        xxx # See the conditions for content/update
+    references: # Optional
+         -
+            identifier: referenceId # A string used to identify the reference
+            attribute: attribute # An attribute to get the value of for the reference.
+                                 # Supports: see location/create
+    references_type: "array" # Optional. If not set, created references values will be scalars. If set, they will be arrays
+    references_allow_empty: bool # optional. Set it to allow array references to be empty without it being considered an error
+    if: # Optional. If set, the migration step will be skipped unless the condition is matched
+        "reference:_ref_name": # name of a reference to be used for the test
+            _operator_: value # allowed operators: eq, gt, gte, lt, lte, ne, count, length, regexp, satisfies

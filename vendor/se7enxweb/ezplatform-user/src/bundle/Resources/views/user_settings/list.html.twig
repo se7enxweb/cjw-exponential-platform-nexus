@@ -1,0 +1,51 @@
+{% extends viewbaseLayout is defined ? viewbaseLayout : pagelayout %}
+
+{% trans_default_domain 'user_settings' %}
+
+{%- block content -%}
+    {% for user_setting in pager %}
+        <h2>{{ user_setting.name }}</h2>
+        {% if user_setting.description is not empty %}
+            <p>{{ user_setting.description }}</p>
+        {% endif %}
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        {{ value_definitions[user_setting.identifier].getDisplayValue(user_setting.value)|raw }}
+                    </td>
+                    <td>
+                        <a title="{{ 'list.action.edit'|trans|desc('Edit') }}"
+                            href="{{ path('ezplatform.user_settings.update', { 'identifier': user_setting.identifier }) }}">
+                            {{ 'list.action.edit'|trans|desc('Edit') }}
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
+
+    {% if pager.haveToPaginate %}
+        {{ 'pagination.viewing'|trans({
+            '%viewing%': pager.currentPageResults|length,
+            '%total%': pager.nbResults}, 'pagination')|desc('Viewing <strong>%viewing%</strong> out of <strong>%total%</strong> items')|raw }}
+        {{ pagerfanta(pager, 'ez') }}
+    {% endif %}
+
+    <h2>{{ 'my_account_settings.password.title'|trans|desc('Password') }}</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    {{ 'my_account_settings.password.description'|trans|desc('Current password') }}
+                </td>
+                <td>
+                    <a title="{{ 'my_account_settings.password.action.edit'|trans|desc('Edit') }}"
+                       href="{{ path('ezplatform.user_profile.change_password') }}">
+                        {{ 'my_account_settings.password.action.edit'|trans|desc('Edit') }}
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{%- endblock content -%}

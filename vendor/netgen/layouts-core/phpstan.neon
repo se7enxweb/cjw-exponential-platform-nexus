@@ -1,0 +1,74 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+
+parameters:
+    treatPhpDocTypesAsCertain: false
+    dynamicConstantNames:
+        - Symfony\Component\HttpKernel\Kernel::VERSION_ID
+        - Twig\Environment::VERSION_ID
+
+    ignoreErrors:
+        # Doctrine DBAL
+        - '#Cannot call method fetchAllAssociative\(\) on Doctrine\\DBAL\\Result\|int#'
+        - '#expects string\|null, Doctrine\\DBAL\\Query\\Expression\\CompositeExpression given#'
+
+        # Disable errors for various "only read/written" properties
+        - '#\$\w+ is never (written|read), only (read|written).#'
+
+        # Compatibility with older versions of Symfony
+        -
+            message: '#Method Symfony\\Component\\HttpFoundation\\Request::isMethodSafe\(\) invoked with 1 parameter, 0 required.#'
+            path: bundles/LayoutsAdminBundle/Security/CsrfTokenValidator.php
+
+        -
+            message: '#Call to an undefined method Netgen\\Layouts\\Utils\\BackwardsCompatibility\\TreeBuilder::root\(\).#'
+            path: lib/Utils/BackwardsCompatibility/TreeBuilder.php
+
+        -
+            message: '#Parameter \#1 \$event of method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) expects object, string given#'
+            path: lib/Utils/BackwardsCompatibility/EventDispatcherProxy.php
+
+        -
+            message: '#Parameter \#2 \$eventName of method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) expects string\|null, object given#'
+            path: lib/Utils/BackwardsCompatibility/EventDispatcherProxy.php
+
+        -
+            message: '#Method Netgen\\Layouts\\Utils\\BackwardsCompatibility\\EventDispatcherProxy::dispatch\(\) never returns null so it can be removed from the return type.#'
+
+        -
+            message: '#Unable to resolve the template type TEvent#'
+            path: lib/Utils/BackwardsCompatibility/EventDispatcherProxy.php
+
+        -
+            message: '#Call to an undefined static method Symfony\\Component\\Intl\\Intl::getLocaleBundle\(\).#'
+            path: lib/Utils/BackwardsCompatibility/Locales.php
+
+        - '#Call to an undefined method Symfony\\Component\\HttpKernel\\Event\\KernelEvent::isMasterRequest\(\).#'
+        - '#Call to an undefined method Symfony\\Component\\HttpFoundation\\RequestStack::getMasterRequest\(\).#'
+        - '#Call to function method_exists\(\) with Symfony\\Component\\Console\\Application and ''renderThrowable''.#'
+        - '#Call to function method_exists\(\) with Symfony\\Component\\HttpFoundation\\RequestStack and ''getMainRequest'' will always evaluate to true.#'
+        - '#Call to function method_exists\(\) with Symfony\\Component\\HttpKernel\\Event\\KernelEvent and ''isMainRequest'' will always evaluate to true.#'
+        - '#Call to function method_exists\(\) with Symfony\\Component\\HttpFoundation\\Request and ''getContentTypeFormat'' will always evaluate to true.#'
+        - '#Call to function method_exists\(\) with Symfony\\Component\\DependencyInjection\\ContainerBuilder and ''registerAttributeFo…'' will always evaluate to true.#'
+        - '#Call to function method_exists\(\) with Symfony\\Component\\Console\\Application and ''renderException'' will always evaluate to false.#'
+
+        # Symfony
+
+        - '#with generic interface Symfony\\Component\\Form\\\w+ (but )?does not specify its types: TData#'
+        - '#extends generic class Symfony\\Component\\Form\\\w+ but does not specify its types: TData#'
+
+        # Netgen Layouts specifics
+
+        - '#Call to function method_exists\(\) with Netgen\\Layouts\\Layout\\Resolver\\(Condition|Target)TypeInterface and ''(export|import)'' will always evaluate to true.#'
+
+        -
+            message: '#Variable property access on object.#'
+            path: lib/Utils/Hydrator.php
+
+        -
+            message: '#Unsafe usage of new static\(\).#'
+            path: lib/Utils/HydratorTrait.php
+
+        - '#Static call to instance method stdClass::getExtendedIdentifiers#'

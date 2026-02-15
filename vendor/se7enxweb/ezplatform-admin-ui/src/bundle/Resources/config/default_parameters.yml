@@ -1,0 +1,108 @@
+parameters:
+    ezsettings.admin_group.content_edit.templates.create_draft: '@@ezdesign/content/content_edit/content_create_draft.html.twig'
+    ezsettings.admin_group.user_edit.templates.update: '@@ezdesign/content/content_edit/user_edit.html.twig'
+    ezsettings.admin_group.user_edit.templates.create: '@@ezdesign/content/content_edit/user_create.html.twig'
+
+    ezsettings.global.system_info_view:
+        pjax_tab:
+            composer:
+                template: '@@ezdesign/admin/systeminfo/composer.html.twig'
+                match:
+                    SystemInfo\Identifier: 'composer'
+            database:
+                template: '@@ezdesign/admin/systeminfo/database.html.twig'
+                match:
+                    SystemInfo\Identifier: 'database'
+            hardware:
+                template: '@@ezdesign/admin/systeminfo/hardware.html.twig'
+                match:
+                    SystemInfo\Identifier: 'hardware'
+            php:
+                template: '@@ezdesign/admin/systeminfo/php.html.twig'
+                match:
+                    SystemInfo\Identifier: 'php'
+            symfony_kernel:
+                template: '@@ezdesign/admin/systeminfo/symfony_kernel.html.twig'
+                match:
+                    SystemInfo\Identifier: 'symfony_kernel'
+            invalid:
+                template: '@@ezdesign/admin/systeminfo/invalid.html.twig'
+                match:
+                    SystemInfo\Identifier: 'invalid'
+
+    ezsettings.default.content_type.about:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#about'
+    ezsettings.default.content_type.article:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#article'
+    ezsettings.default.content_type.blog:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#blog'
+    ezsettings.default.content_type.blog_post:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#blog_post'
+    ezsettings.default.content_type.folder:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#folder'
+    ezsettings.default.content_type.form:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#form'
+    ezsettings.default.content_type.place:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#place'
+    ezsettings.default.content_type.product:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#product'
+    ezsettings.default.content_type.field:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#field'
+    ezsettings.default.content_type.user:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#user'
+    ezsettings.default.content_type.user_group:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#user_group'
+    ezsettings.default.content_type.file:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#file'
+    ezsettings.default.content_type.gallery:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#gallery'
+    ezsettings.default.content_type.image:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#image'
+    ezsettings.default.content_type.video:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#video'
+    ezsettings.default.content_type.landing_page:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#landing_page'
+    ezsettings.default.content_type.default-config:
+        thumbnail: '/bundles/ezplatformadminui/img/ez-icons.svg#file'
+
+    ezplatform.content_view.tabs.default_template: '@@ezdesign/parts/tab/default.html.twig'
+
+    ezplatform.multifile_upload.location.mappings: []
+
+    ezplatform.multifile_upload.location.default_mappings:
+        # Image
+        - mime_types:
+            - image/jpeg
+            - image/jpg
+            - image/pjpeg
+            - image/pjpg
+            - image/png
+            - image/bmp
+            - image/gif
+            - image/tiff
+            - image/x-icon
+            - image/webp
+          content_type_identifier: image
+          content_field_identifier: image
+          name_field_identifier: name
+        # File
+        - mime_types:
+            - image/svg+xml
+            - application/msword
+            - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            - application/vnd.ms-excel
+            - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+            - application/vnd.ms-powerpoint
+            - application/vnd.openxmlformats-officedocument.presentationml.presentation
+            - application/pdf
+          content_type_identifier: file
+          content_field_identifier: file
+          name_field_identifier: name
+
+    ezplatform.multifile_upload.fallback_content_type:
+        content_type_identifier: file
+        content_field_identifier: file
+        name_field_identifier: name
+
+    ez_systems.multifile_upload.max_file_size: 5242880
+

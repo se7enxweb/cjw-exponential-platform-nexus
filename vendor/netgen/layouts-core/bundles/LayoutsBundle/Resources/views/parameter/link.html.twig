@@ -1,0 +1,32 @@
+{% if not parameter.empty %}
+    {% set value = parameter.value %}
+
+    {% set link = null %}
+    {% set content = content|default('') %}
+
+    {% if value.linkType is constant('LINK_TYPE_URL', value) or value.linkType is constant('LINK_TYPE_RELATIVE_URL', value) %}
+        {% set link = value.link ~ value.linkSuffix %}
+    {% elseif value.linkType is constant('LINK_TYPE_EMAIL', value) %}
+        {% set link = 'mailto:' ~ value.link ~ value.linkSuffix %}
+    {% elseif value.linkType is constant('LINK_TYPE_PHONE', value) %}
+        {% set link = 'tel:' ~ value.link ~ value.linkSuffix %}
+    {% elseif value.linkType is constant('LINK_TYPE_INTERNAL', value) %}
+        {% set link = nglayouts_item_path(value.link, 'default') ~ value.linkSuffix %}
+    {% endif %}
+
+    {% if link is not empty %}
+        {% set attr = attr|default({}) %}
+
+        <a href="{{ link }}"
+            {% for name, value in attr %}
+                {% if name != 'target' %} {{ name }}="{{ value }}" {% endif %}
+            {% endfor %}
+
+            {% if value.newWindow %} target="_blank" rel="noopener noreferrer" {% endif %}
+        >
+            {{ content }}
+        </a>
+    {% else %}
+        {{ content }}
+    {% endif %}
+{% endif %}

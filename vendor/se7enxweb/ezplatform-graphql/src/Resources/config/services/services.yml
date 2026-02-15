@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        autoconfigure: true
+        autowire: true
+        public: false
+
+    EzSystems\EzPlatformGraphQL\Command\GeneratePlatformSchemaCommand:
+        arguments:
+            $schemaRootDir: '%ezplatform.graphql.schema.ezplatform_dir%'
+        tags:
+            -  { name: console.command }
+
+    EzSystems\EzPlatformGraphQL\GraphQL\InputMapper\SearchQueryMapper: ~
+
+    EzSystems\EzPlatformGraphQL\GraphQL\InputMapper\SearchQuerySortByMapper: ~

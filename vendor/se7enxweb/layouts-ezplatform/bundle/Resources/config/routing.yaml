@@ -1,0 +1,39 @@
+nglayouts_ezadmin_location_layouts:
+    path: /nglayouts/ezadmin/layouts/{locationId}
+    controller: netgen_layouts.ezplatform.admin.controller.location_layouts
+    methods:  [GET]
+    requirements:
+        locationId: \d+
+
+nglayouts_ezadmin_layout_wizard:
+    path: /nglayouts/ezadmin/layouts/{locationId}/wizard
+    controller: netgen_layouts.ezplatform.admin.controller.layout_wizard
+    methods:  [GET, POST]
+
+nglayouts_ezadmin_layout_wizard_callback:
+    path: /nglayouts/ezadmin/layouts/{locationId}/wizard/callback
+    controller: netgen_layouts.ezplatform.admin.controller.layout_wizard_callback
+    methods:  [GET]
+
+nglayouts_ezadmin_create_content:
+    path: /nglayouts/ezadmin/blocks/{blockId}/{locale}/create-content/{contentTypeIdentifier}/{languageCode}/{parentLocationId}
+    controller: netgen_layouts.ezplatform.admin.controller.create_content
+    methods:  [GET]
+    requirements:
+        parentLocationId: \d+
+
+nglayouts_ezadmin_connect_component_content:
+    path: /nglayouts/ezadmin/blocks/{blockId}/{locale}/connect-component-content/{contentId}
+    controller: netgen_layouts.ezplatform.admin.controller.connect_component_content
+    methods:  [POST]
+    requirements:
+        contentId: \d+
+    defaults:
+        _nglayouts_status: draft
+
+nglayouts_ezadmin_delete_rule:
+    path: /nglayouts/ezadmin/layouts/rules/{ruleId}/delete
+    controller: netgen_layouts.ezplatform.admin.controller.delete_rule
+    methods:  [DELETE]
+    defaults:
+        _nglayouts_status: published

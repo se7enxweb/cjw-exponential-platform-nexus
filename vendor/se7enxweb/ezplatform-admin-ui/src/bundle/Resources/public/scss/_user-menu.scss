@@ -1,0 +1,82 @@
+.ez-main-nav {    
+    .ez-user-menu {
+        position: relative;
+        cursor: pointer;
+        z-index: 1050;
+
+        &__name-wrapper {
+            padding: .5rem 2rem .5rem 0;
+
+            .ez-user-menu__name {
+                font-size: calculateRem(12px);
+            }
+
+            &:before,
+            &:after {
+                content: "";
+                height: 10px;
+                width: 2px;
+                position: absolute;
+                top: 50%;
+                right: 1rem;
+                background-color: $ez-black;
+            }
+
+            &:before {
+                transform: translate(3px, -50%)  rotate(-135deg);
+            }
+
+            &:after {
+                transform: translate(-3px, -50%)  rotate(135deg);
+            }
+        }
+
+        &__avatar {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+
+        &__items {
+            display: block;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: $ez-white;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,.45);
+            height: auto;
+            transform-origin: top center;
+            transition: all .2s $ez-admin-transition;
+            white-space: nowrap;
+
+            &--hidden {
+                height: 0;
+                overflow: hidden;
+            }
+        }
+
+        &__item {
+            width: 100%;
+            cursor: pointer;
+            padding: 0 1.5rem;
+
+            .nav-link {
+                color: $ez-black;
+                font-size: calculateRem(14px);
+            }
+
+            &:not(:last-child) {
+                border-bottom: 1px solid $ez-ground-base-dark;
+            }
+
+            &:hover {
+                background-color: $ez-secondary-ground-pale;
+                cursor: pointer;
+
+                .nav-link {
+                    color: $ez-black;
+                }
+            }
+        }
+    }
+}

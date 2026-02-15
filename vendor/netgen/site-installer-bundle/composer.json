@@ -1,0 +1,23 @@
+{
+    "name": "netgen/site-installer-bundle",
+    "description": "This bundle installs various Netgen Site projects",
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "https://www.netgenlabs.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "ezsystems/ezpublish-kernel": "^7.5"
+    },
+    "autoload": {
+        "psr-4": { "Netgen\\Bundle\\SiteInstallerBundle\\": "bundle/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.3.x-dev"
+        }
+    }
+}

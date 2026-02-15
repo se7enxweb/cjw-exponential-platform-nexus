@@ -1,0 +1,94 @@
+parameters:
+    netgen.ezplatform_site.use_always_available: true
+    netgen.ezplatform_site.prioritized_languages:
+        - 'eng-GB'
+    netgen.ezplatform_site.root_location_id: 2
+    netgen.ezplatform_site.fail_on_missing_fields: false
+
+services:
+    # Services tagged with 'netgen.ezplatform_site.repository' are registered to this one
+    # through a compiler pass
+    netgen.ezplatform_site.repository.aggregate:
+        class: Netgen\EzPlatformSiteApi\Core\Repository\Aggregate\Repository
+        arguments:
+            - '@netgen.ezpublish.api.repository'
+            - []
+        public: false
+
+    netgen.ezplatform_site.repository.inner:
+        class: eZ\Publish\Core\Repository\Repository
+        factory:
+            - '@ezpublish.api.repository.factory'
+            - buildRepository
+        arguments:
+            - '@ezpublish.api.persistence_handler'
+            - '@ezpublish.spi.search.legacy'
+            - '@?ezpublish.search.background_indexer'
+            - '@?ezpublish.repository.relation_processor'
+            - '@?eZ\Publish\Core\FieldType\FieldTypeRegistry'
+            - '@?eZ\Publish\Core\Repository\User\PasswordHashService'
+            - '@?eZ\Publish\Core\Repository\Strategy\ContentThumbnail\ThumbnailChainStrategy'
+        lazy: true
+        public: false
+        tags:
+            - {name: netgen.ezplatform_site.repository}
+
+    netgen.ezplatform_site.repository.filtering_search_service:
+        class: eZ\Publish\Core\Repository\SearchService
+        factory:
+            - '@netgen.ezplatform_site.repository.inner'
+            - getSearchService
+        lazy: true
+        public: false
+
+    netgen.ezplatform_site.core.settings:
+        class: Netgen\EzPlatformSiteApi\Core\Site\Settings
+        public: false
+        arguments:
+            - '%netgen.ezplatform_site.prioritized_languages%'
+            - '%netgen.ezplatform_site.use_always_available%'
+            - '%netgen.ezplatform_site.root_location_id%'
+            - '%netgen.ezplatform_site.fail_on_missing_fields%'
+
+    netgen.ezplatform_site.core.site:
+        class: Netgen\EzPlatformSiteApi\Core\Site\Site
+        public: false
+        arguments:
+            - '@netgen.ezplatform_site.core.settings'
+            - '@ezpublish.api.repository'
+            - '@netgen.ezplatform_site.repository.filtering_search_service'
+            - '@netgen.ezplatform_site.plugins.field_type.relation_resolver.registry'
+            - '@?logger'
+        lazy: true
+
+    netgen.ezplatform_site.core.filter_service:
+        class: Netgen\EzPlatformSiteApi\Core\Site\FilterService
+        public: false
+        factory:
+            - '@netgen.ezplatform_site.core.site'
+            - getFilterService
+        lazy: true
+
+    netgen.ezplatform_site.core.find_service:
+        class: Netgen\EzPlatformSiteApi\Core\Site\FindService
+        public: false
+        factory:
+            - '@netgen.ezplatform_site.core.site'
+            - getFindService
+        lazy: true
+
+    netgen.ezplatform_site.core.load_service:
+        class: Netgen\EzPlatformSiteApi\Core\Site\LoadService
+        public: false
+        factory:
+            - '@netgen.ezplatform_site.core.site'
+            - getLoadService
+        lazy: true
+
+    netgen.ezplatform_site.core.relation_service:
+        class: Netgen\EzPlatformSiteApi\Core\Site\RelationService
+        public: false
+        factory:
+            - '@netgen.ezplatform_site.core.site'
+            - getRelationService
+        lazy: true

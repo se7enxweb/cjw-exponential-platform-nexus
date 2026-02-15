@@ -1,0 +1,91 @@
+parameters:
+    ngsite.menu.use_field_identifier_in_menu_name: false
+
+services:
+    ngsite.menu.relation_list_menu_builder:
+        class: Netgen\Bundle\SiteBundle\Menu\RelationListMenuBuilder
+        public: false
+        arguments:
+            - "@ngsite.menu.factory.location"
+            - "@netgen.ezplatform_site.load_service"
+            - "@ngsite.helper.site_info_helper"
+            - "@?logger"
+        tags:
+            - { name: monolog.logger, channel: ngsite }
+
+    ngsite.menu.voter.location_path:
+        class: Netgen\Bundle\SiteBundle\Menu\Voter\LocationPathVoter
+        public: false
+        arguments:
+            - "@request_stack"
+        tags:
+            - { name: knp_menu.voter }
+
+    ngsite.menu.factory.location:
+        class: Netgen\Bundle\SiteBundle\Menu\Factory\LocationFactory
+        public: false
+        arguments:
+            - "@event_dispatcher"
+            - "@ngsite.menu.factory.location.extension.fallback"
+            - []
+
+    ngsite.menu.factory.location.extension.fallback:
+        class: Netgen\Bundle\SiteBundle\Menu\Factory\LocationFactory\FallbackExtension
+        public: false
+        arguments:
+            - "@router"
+
+    ngsite.menu.factory.location.extension.shortcut:
+        class: Netgen\Bundle\SiteBundle\Menu\Factory\LocationFactory\ShortcutExtension
+        public: false
+        arguments:
+            - "@netgen.ezplatform_site.load_service"
+            - "@router"
+            - "@request_stack"
+            - "@?logger"
+        tags:
+            - { name: ngsite.menu.factory.location.extension, priority: 0 }
+            - { name: monolog.logger, channel: ngsite }
+
+    ngsite.menu.factory.location.extension.menu_item:
+        class: Netgen\Bundle\SiteBundle\Menu\Factory\LocationFactory\MenuItemExtension
+        public: false
+        arguments:
+            - "@router"
+            - "@request_stack"
+            - "@ezpublish.config.resolver"
+            - "@ngsite.menu.factory.location.extension.children_builder"
+            - "@?logger"
+        tags:
+            - { name: ngsite.menu.factory.location.extension, priority: 0 }
+            - { name: monolog.logger, channel: ngsite }
+
+    ngsite.menu.factory.location.extension.children_builder:
+        class: Netgen\Bundle\SiteBundle\Menu\Factory\LocationFactory\ChildrenBuilder
+        public: false
+        arguments:
+            - "@netgen.ezplatform_site.load_service"
+            - "@netgen.ezplatform_site.filter_service"
+            - "@?logger"
+
+    ngsite.menu.main_menu:
+        class: Knp\Menu\MenuItem
+        public: false
+        factory: ["@ngsite.menu.relation_list_menu_builder", createRelationListMenu]
+        arguments:
+            - main_menu
+            - null
+            - '%ngsite.menu.use_field_identifier_in_menu_name%'
+        tags:
+            - { name: knp_menu.menu, alias: ngsite_main_menu }
+
+    ngsite.menu.additional_menu:
+        class: Knp\Menu\MenuItem
+        public: false
+        factory: ["@ngsite.menu.relation_list_menu_builder", createRelationListMenu]
+        arguments:
+            - additional_menu
+            - null
+            - '%ngsite.menu.use_field_identifier_in_menu_name%'
+        tags:
+            - { name: knp_menu.menu, alias: ngsite_additional_menu }

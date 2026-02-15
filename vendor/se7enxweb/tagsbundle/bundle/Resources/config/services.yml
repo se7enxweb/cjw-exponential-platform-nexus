@@ -1,0 +1,36 @@
+services:
+    eztags.controller.tag_view:
+        class: Netgen\TagsBundle\Controller\TagViewController
+        parent: ezpublish.controller.base
+        public: true
+
+    eztags.routing.tag_url_generator:
+        class: Netgen\TagsBundle\Routing\Generator\TagUrlGenerator
+        parent: ezpublish.url_generator.base
+        public: false
+        arguments:
+            - "@eztags.api.service.tags"
+            - "@router.default"
+            - "@ezpublish.config.resolver"
+
+    eztags.routing.tag_router:
+        class: Netgen\TagsBundle\Routing\TagRouter
+        public: true
+        lazy: true
+        arguments:
+            - "@eztags.api.service.tags"
+            - "@eztags.routing.tag_url_generator"
+            - "@?router.request_context"
+            - "@?logger"
+        calls:
+            - [setLanguages, [$languages$]]
+        tags:
+            - {name: router, priority: 200}
+
+    eztags.repository.related_content_facets_loader:
+        class: Netgen\TagsBundle\Core\Repository\RelatedContentFacetsLoader
+        public: true
+        arguments:
+            - "@eztags.api.service.tags.inner"
+            - "@ezpublish.api.service.search"
+

@@ -1,0 +1,38 @@
+services:
+    EzSystems\EzPlatformAdminUi\Tab\LocationView\:
+        resource: "../../../lib/Tab/LocationView/*"
+        parent: EzSystems\EzPlatformAdminUi\Tab\AbstractTab
+        public: true
+        tags:
+            - { name: ezplatform.tab, group: location-view }
+
+    EzSystems\EzPlatformAdminUi\Tab\LocationView\RolesTab:
+        autowire: true
+        arguments:
+            $userContentTypeIdentifier: '$user_content_type_identifier$'
+            $userGroupContentTypeIdentifier: '$user_group_content_type_identifier$'
+        tags:
+            - { name: ezplatform.tab, group: location-view }
+
+    EzSystems\EzPlatformAdminUi\Tab\LocationView\PoliciesTab:
+        autowire: true
+        arguments:
+            $userContentTypeIdentifier: '$user_content_type_identifier$'
+            $userGroupContentTypeIdentifier: '$user_group_content_type_identifier$'
+        tags:
+            - { name: ezplatform.tab, group: location-view }
+
+    EzSystems\EzPlatformAdminUi\Tab\LocationView\ContentTab:
+        public: true
+        autowire: true
+        arguments:
+            $siteAccessLanguages: '$languages$'
+        tags:
+            - { name: ezplatform.tab, group: location-view }
+
+    EzSystems\EzPlatformAdminUi\Tab\LocationView\UrlsTab:
+        parent: EzSystems\EzPlatformAdminUi\Tab\AbstractEventDispatchingTab
+        arguments:
+            $translationHelper: '@ezpublish.translation_helper'
+        tags:
+            - { name: ezplatform.tab, group: location-view }

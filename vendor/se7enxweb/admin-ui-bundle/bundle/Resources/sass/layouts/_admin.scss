@@ -1,0 +1,42 @@
+.layouts-sidebar {
+    margin:0 (-$gutter);
+    .sidebar-nav {
+        > ul {
+            list-style-type:none;
+            margin:0 0 1.5em;
+            padding:0;
+            > li {
+                margin:0;
+                padding:0 15px;
+                > a {
+                    display:block;
+                    font-size:1em;
+                    padding:10px 15px;
+                    text-decoration:none;
+                    color: black;
+                    font-weight: bold;
+                    &:hover {
+                        background:hsla(0, 0, 0, 0.02);
+                    }
+                }
+                &.current {
+                    > a {
+                        background:$layoutsAdminBgColor;
+                        color:blue;
+                        cursor:default;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ng-layouts-app {
+    flex: 1;
+    margin-bottom: -45px;
+    .layouts-content {
+        padding-bottom:3*$gutter;
+        background:$layoutsAdminBgColor;
+        position:static;
+    }
+}

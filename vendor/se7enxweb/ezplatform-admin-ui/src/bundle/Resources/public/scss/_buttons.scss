@@ -1,0 +1,189 @@
+@import 'extra-actions';
+
+.btn-icon {
+    padding: 0;
+}
+
+.ez-field-edit--ezauthor {
+    .btn-icon {
+        border-radius: 50%;
+        height: 2rem;
+        width: 2rem;
+    }
+}
+
+.ez-btn--login {
+    float: right;
+    border-color: $ez-white;
+    background-color: transparent;
+    margin-top: 1rem;
+
+    &:hover {
+        background-color: $ez-white;
+        border-color: $ez-color-primary;
+        color: $ez-color-primary;
+    }
+}
+
+.ez-btn--add-translation {
+    .ez-icon {
+        margin-right: 0;
+    }
+}
+
+.ez-table-header {
+    .btn {
+        line-height: 0.85;
+        padding: 0.5rem 0.55rem;
+        margin-left: 0.15rem;
+        margin-right: 0;
+
+        .ez-icon-create,
+        .ez-icon-trash {
+            margin-right: 0;
+        }
+    }
+}
+
+.ez-side-menu,
+.ez-context-menu {
+    .btn {
+        padding: calculateRem(8px) calculateRem(5px);
+        font-size: calculateRem(11px);
+        border-radius: 0;
+        line-height: 1.4;
+
+        &:hover,
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .ez-icon {
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+.btn.disabled,
+.btn[disabled] {
+    opacity: 0.3;
+}
+
+.ez-btn--select-subtree {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    .ez-icon {
+        margin-right: calculateRem(8px);
+    }
+}
+
+.ez-modal {
+    .modal-footer {
+        .btn {
+            margin: 0 0.625rem;
+        }
+    }
+}
+
+.ez-modal--send-to-trash {
+    .modal-header {
+        .close {
+            position: absolute;
+            right: 1rem;
+        }
+    }
+
+    .modal-footer {
+        .btn {
+            line-height: 1.25;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background-color: $ez-color-base-medium;
+            border-color: $ez-color-base-medium;
+
+            &:hover {
+                background-color: $ez-color-base-medium-hover;
+                border-color: $ez-color-base-medium-hover;
+            }
+        }
+
+        .btn-danger {
+            margin-right: 0;
+        }
+    }
+}
+
+.ez-modal--trash-with-asset {
+    .modal-footer {
+        .btn-secondary {
+            background-color: $ez-color-base-medium;
+            border-color: $ez-color-base-medium;
+
+            &:hover {
+                background-color: $ez-color-base-medium-hover;
+                border-color: $ez-color-base-medium-hover;
+            }
+        }
+    }
+}
+
+.ez-content-view,
+.ez-trash-list-view {
+    .ez-modal--send-to-trash {
+        .modal-footer {
+            .form-check-inline {
+                margin-right: 0;
+
+                .btn-danger {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}
+
+.ez-btn--content-edit {
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.ez-btn--cotf-create {
+    display: flex;
+}
+
+.ez-search-view {
+    .input-group-btn {
+        display: flex;
+
+        .ez-btn--search,
+        .ez-btn--filter {
+            display: flex;
+            align-items: center;
+
+            .ez-icon {
+                margin-right: calculateRem(4px);
+            }
+        }
+
+        .ez-btn--search {
+            border-radius: 0 calculateRem(4px) calculateRem(4px) 0;
+        }
+    }
+}
+
+.ez-btn--content-tree-expanded {
+    background: $ez-white;
+    border-color: $ez-white;
+    color: $ez-black;
+}
+
+.ez-btn--wide,
+.ez-btn.ez-btn--wide {
+    padding: calculateRem(8px) calculateRem(48px);
+}

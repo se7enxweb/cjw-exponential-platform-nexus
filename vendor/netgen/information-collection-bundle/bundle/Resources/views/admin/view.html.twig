@@ -1,0 +1,61 @@
+{# collection \Netgen\Bundle\InformationCollectionBundle\API\Value\ValueObject\Collection #}
+
+{% trans_default_domain 'netgen_information_collection_admin' %}
+
+{% extends netgen_information_collection_admin.pageLayoutTemplate %}
+
+{% block content %}
+
+    <a class="ng-ui-btn" href="{{ app.request.headers.get('referer') }}">
+        <i class="md-icon">chevron_left</i> {{ 'netgen_information_collection_admin_back'|trans }}
+    </a>
+
+    {% include "@NetgenInformationCollection/admin/flash_messages.html.twig" %}
+
+    <h1>{{ 'netgen_information_collection_admin_view_title'|trans({'%collection_id%': collection.entity.id, '%content_name%': ez_content_name(collection.content)}) }}</h1>
+    {% set collection_user = 'netgen_information_collection_admin_collection_unknown_user'|trans %}
+    {% if collection.user is not empty %}
+        {% set collection_user = ez_content_name(collection.user.content) %}
+    {% endif %}
+    <h6>{{ 'netgen_information_collection_admin_view_subtitle'|trans({'%date%': collection.entity.modified|date("Y.m.d H:i"), '%user_name%': collection_user }) }}</h6>
+
+    <form method="post" action="{{ path('netgen_information_collection.route.admin.handle_collection') }}">
+
+        <div class="ng-ui-btn-group mb-3">
+            <a class="ng-ui-btn" href="{{ path("netgen_information_collection.route.admin.edit", {"collectionId": collection.entity.id}) }}">
+                {{ 'netgen_information_collection_admin_collection_edit'|trans }}
+            </a>
+
+            <button type="submit" name="DeleteFieldAction" class="ng-ui-btn" data-enabler="Item">{{ 'netgen_information_collection_admin_view_delete_field'|trans }}</button>
+            <button type="submit" name="AnonymizeFieldAction" class="ng-ui-btn" data-enabler="Item">{{ 'netgen_information_collection_admin_view_anonymize_field'|trans }}</button>
+
+            <button type="submit" name="DeleteCollectionAction" class="ng-ui-btn">{{ 'netgen_information_collection_admin_view_delete'|trans }}</button>
+            <button type="submit" name="AnonymizeCollectionAction" class="ng-ui-btn">{{ 'netgen_information_collection_admin_view_anonymize'|trans }}</button>
+        </div>
+
+        <input type="hidden" value="{{ collection.entity.id }}" name="CollectionId">
+        <input type="hidden" value="{{ collection.content.id }}" name="ContentId">
+
+        {% for attribute in collection.attributes %}
+            <div class="list-object list-object-divider">
+                <div class="ng-ui-input">
+                    <input id="{{ attribute.field.id }}" name="FieldId[]" value="{{ attribute.field.id }}" title="Select collections for removal." type="checkbox" data-enable="Item">
+                    <label for="{{ attribute.field.id }}">
+                        <span class="attribute-name">
+                            {{ ez_field_name(content, attribute.field.identifier) }}:
+                        </span>
+                        <span class="attribute-value">
+                            {% if attribute.field.fieldTypeIdentifier == 'enhancedezbinaryfile' %}
+                                <a href="{{ path('netgen_enhancedezbinaryfile.route.download_binary_file', { 'infocollectionAttributeId': attribute.entity.id }) }}">{{ 'netgen_information_collection_admin_view_download'|trans }}: {{ attribute.field.identifier }}</a>
+                            {% else %}
+                                {{ attribute.entity.value }}
+                            {% endif %}
+                        </span>
+                    </label>
+                </div>
+            </div>
+        {% endfor %}
+
+    </form>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+imports:
+    - { resource: services/components/content/edit.yml }
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    EzSystems\EzPlatformAdminUi\Component\Registry:
+        public: false
+
+    EzSystems\EzPlatformAdminUi\Component\TwigComponent:
+        abstract: true
+        lazy: true
+        arguments:
+            $parameters: []
+
+    EzSystems\EzPlatformAdminUi\Component\ScriptComponent:
+        abstract: true
+        lazy: true
+
+    EzSystems\EzPlatformAdminUi\Component\LinkComponent:
+        abstract: true
+        lazy: true
+
+    EzSystems\EzPlatformAdminUiBundle\Templating\Twig\ComponentExtension:
+        tags:
+            - { name: twig.extension }
+
+    EzSystems\EzPlatformAdminUi\Component\Renderer\DefaultRenderer:
+        public: false
+
+    EzSystems\EzPlatformAdminUi\Component\Renderer\RendererInterface: '@EzSystems\EzPlatformAdminUi\Component\Renderer\DefaultRenderer'

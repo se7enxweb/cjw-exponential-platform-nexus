@@ -1,0 +1,46 @@
+{
+    "name": "se7enxweb/legacy-bridge",
+    "description": "eZ Platform bridge to eZ Publish Legacy",
+    "license": "GPL-2.0",
+    "type": "ezplatform-bundle",
+    "authors": [
+        {
+            "name": "eZ Systems",
+            "email": "dev-team@ez.no"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "se7enxweb/ezpublish-legacy-installer": "^2.0.4",
+        "se7enxweb/exponential": "^6.0.10",
+        "se7enxweb/ezpublish-kernel": "^7.5.24",
+        "se7enxweb/ezplatform-xmltext-fieldtype": "^1.8",
+        "se7enxweb/sensio-distribution-bundle": "^5.0.24",
+        "se7enxweb/twig": "^1.35 || ^2.5"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16.2",
+        "ezsystems/ezplatform-code-style": "^0.1",
+        "se7enxweb/ezplatform-http-cache": "~0.9",
+        "matthiasnoback/symfony-dependency-injection-test": "^2.3",
+        "phpunit/phpunit": "^11.5.25",
+        "mikey179/vfsstream": "~1.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "eZ\\Bundle\\EzPublishLegacyBundle\\": "bundle/",
+            "eZ\\Publish\\Core\\MVC\\Legacy\\": "mvc"
+        }
+    },
+    "scripts": {
+        "fix-cs": "php-cs-fixer fix -v --show-progress=estimating",
+        "test": "vendor/bin/phpunit"
+    },
+    "extra": {
+        "ezpublish-legacy-dir": "ezpublish_legacy",
+        "branch-alias": {
+            "dev-master": "2.1.x-dev"
+        }
+    }
+}

@@ -1,0 +1,25 @@
+parameters:
+    ezpublish.fieldType.ezxmltext.class: eZ\Publish\Core\FieldType\XmlText\Type
+    ezpublish.fieldType.ezxmltext.formMapper.class: eZ\Publish\Core\FieldType\XmlText\FormMapper
+    ezpublish.fieldType.ezxmltext.formType.class: eZ\Publish\Core\FieldType\XmlText\FormType
+
+services:
+    ezpublish.fieldType.ezxmltext:
+        class: "%ezpublish.fieldType.ezxmltext.class%"
+        parent: ezpublish.fieldType
+        arguments:
+            - '@?ezpublish.fieldType.ezxmltext.validator.internal_link'
+        tags:
+            - {name: ezpublish.fieldType, alias: ezxmltext}
+
+    ezpublish.fieldType.ezxmltext.formMapper:
+        class: "%ezpublish.fieldType.ezxmltext.formMapper.class%"
+        tags:
+            - { name: ez.fieldFormMapper.value, fieldType: ezxmltext }
+
+    ezpublish.fieldType.ezxmltext.formType:
+        class: "%ezpublish.fieldType.ezxmltext.formType.class%"
+        arguments:
+            - "@ezpublish.api.service.field_type"
+        tags:
+            - { name: form.type }

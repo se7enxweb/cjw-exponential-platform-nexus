@@ -1,0 +1,96 @@
+services:
+    netgen_layouts.event_listener.exception_conversion:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\ExceptionConversionListener
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.exception_serializer:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\ExceptionSerializerListener
+        arguments:
+            - "@serializer"
+            - "@?logger"
+        tags:
+            - { name: kernel.event_subscriber }
+            - { name: monolog.logger, channel: nglayouts }
+
+    netgen_layouts.event_listener.serializer:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\SerializerListener
+        arguments:
+            - "@serializer"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.request_body_listener:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\RequestBodyListener
+        arguments:
+            - "@serializer"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.set_is_api_request:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\SetIsApiRequestListener
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.api_csrf_validation_listener:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\ApiCsrfValidationListener
+        arguments:
+            - "@netgen_layouts.security.csrf_validator"
+            - "%netgen_layouts.app.csrf_token_id%"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.layout_view.rule_count:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\LayoutView\RuleCountListener
+        arguments:
+            - "@netgen_layouts.api.service.layout_resolver"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.layout_view.cache_enabled:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\LayoutView\CacheEnabledListener
+        arguments:
+            - "@netgen_layouts.http_cache.client"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.layout_view.related_layouts_count:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\LayoutView\RelatedLayoutsCountListener
+        arguments:
+            - "@netgen_layouts.api.service.layout"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.rule_view.rule_count:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\RuleView\RuleCountListener
+        arguments:
+            - "@netgen_layouts.api.service.layout_resolver"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.admin_authentication_exception:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\AdminAuthenticationExceptionListener
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.set_is_admin_request:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\SetIsAdminRequestListener
+        arguments:
+            - "@event_dispatcher"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.set_admin_pagelayout:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\SetAdminPageLayoutListener
+        arguments:
+            - "@netgen_layouts.templating.admin_global_variable"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    netgen_layouts.event_listener.admin_csrf_validation:
+        class: Netgen\Bundle\LayoutsAdminBundle\EventListener\AdminCsrfValidationListener
+        arguments:
+            - "@netgen_layouts.security.csrf_validator"
+            - "%netgen_layouts.admin.csrf_token_id%"
+        tags:
+            - { name: kernel.event_subscriber }

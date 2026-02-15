@@ -1,0 +1,25 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    EzSystems\EzPlatformAdminUi\RepositoryForms\Form\Processor\:
+        resource: "../../../lib/RepositoryForms/Form/Processor/*"
+        public: true
+        tags:
+            - { name: kernel.event_subscriber }
+
+    EzSystems\EzPlatformAdminUi\RepositoryForms\Form\Processor\ContentEditNotificationFormProcessor:
+        public: true
+        arguments:
+            $siteAccessGroups: '%ezpublish.siteaccess.groups%'
+
+    EzSystems\EzPlatformAdminUi\RepositoryForms\Form\Processor\Content\UrlRedirectProcessor:
+        public: true
+        decorates: EzSystems\RepositoryForms\Form\Processor\SystemUrlRedirectProcessor
+        arguments:
+            $siteaccessGroups: '%ezpublish.siteaccess.groups%'
+            $systemUrlRedirectProcessor: '@EzSystems\EzPlatformAdminUi\RepositoryForms\Form\Processor\Content\UrlRedirectProcessor.inner'

@@ -1,0 +1,73 @@
+{# This template serves to recursively go through all entries in the key => value array that is given to it and creates a list from that. #}
+{% for key, value in parameters %}
+
+    {# If there is no more associative key, the value of the path is reached, so treat that differently. #}
+    {% if is_numeric(key) or key is same as("parameter_value") %}
+
+        {# Is the value in itself an array? Then go through that one by one as well. #}
+        {% if value is iterable %}
+            {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
+        {# Or is it just one single value? #}
+        {% else %}
+            <div class="param_list_values dont_display" value="{{ value | boolean }}">- {{ value | boolean }}</div>
+        {% endif %}
+
+    {# If the value can still be iterated upon, but the key has not reached a plain number yet, continue with the procedure #}
+    {% elseif value is iterable %}
+        {% set inline_value = "false" %}
+
+        <div class="param_list_items dont_display">
+            <div class="param_list_keys" key="{{ key |trim }}">
+                <span class="param_item_toggle">
+                    <svg class="ez-icon ez-icon--small">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>
+                    </svg>
+                </span>
+                <span>{{ key |trim }}:</span>
+                {% if value|keys|length == 1 %}
+                    {% set arrayKeys = value|keys %}
+
+                    {% for arrayKey in arrayKeys %}
+                        {% if not value[arrayKey] is iterable %}
+                            <span class="param_list_values inline_value" value="{{ value[arrayKey]|boolean }}">{{ value[arrayKey]|boolean }}</span>
+                            {% set inline_value = "true" %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <button class="parameter_buttons open_subtree" title="open subtree">
+                    <svg class="ez-icon ez-icon--small">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                    </svg>
+                </button>
+
+                {% if "parameter_value" in value|keys %}
+                    <button class="parameter_buttons copy_param_name" title="copy key">
+                        <svg class="ez-icon ez-icon--small">
+                            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy"></use>
+                        </svg>
+                    </button>
+                    <button class="parameter_buttons favour_parameter" title="mark as favourite">
+                        <svg class="ez-icon ez-icon--small">
+                            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#bookmark"></use>
+                        </svg>
+                    </button>
+                    <button class="parameter_buttons location_info" title="get locations">i</button>
+                {% endif %}
+            </div>
+            {% if inline_value is same as("false") %}
+                {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
+            {% endif %}
+        </div>
+
+
+    {# As a catch-all, if the rest doesn't match but there is still content (hits mostly after the template is already traversing the parameter value) #}
+    {% else %}
+        <div class="param_list_items dont_display">
+            <div class="param_list_keys" key="{{ key |trim }}">
+                <span>{{ key |trim }}:</span>
+                <span class="param_list_values inline_value" value="{{ value|boolean }}">{{ value|boolean }}</span>
+            </div>
+        </div>
+    {% endif %}
+
+{% endfor %}

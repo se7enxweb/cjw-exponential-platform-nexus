@@ -1,0 +1,183 @@
+{% extends 'bootstrap_4_layout.html.twig' %}
+
+{% block form_label -%}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ez-label')|trim}) -%}
+    {{ parent() }}
+{%- endblock form_label %}
+
+{% block ezsystems_ezplatform_type_udw_widget %}
+    {{ form_widget(form.location) }}
+    {{ form_widget(form.select_content) }}
+{% endblock ezsystems_ezplatform_type_udw_widget %}
+
+{% block _content_create_content_type_widget -%}
+    {%- if expanded -%}
+        {{- block('content_type_choice_widget_expanded') -}}
+    {%- else -%}
+        {{- block('choice_widget_collapsed') -}}
+    {%- endif -%}
+{%- endblock %}
+
+{%- block content_type_choice_widget_expanded -%}
+    <div>
+        {%- set options = choices -%}
+        {{- block('content_type_choice_widget_options') -}}
+    </div>
+{%- endblock -%}
+
+{%- block content_type_choice_widget_options -%}
+    {%- for group_label, choice in options -%}
+        {%- if choice is iterable -%}
+            <div class="ez-instant-filter__group">
+                <div class="ez-instant-filter__group-name">{{ choice_translation_domain is same as(false) ? group_label : group_label|trans({}, choice_translation_domain) }}</div>
+                {%- set options = choice -%}
+                {{- block('content_type_choice_widget_options') -}}
+            </div>
+        {%- else -%}
+            <div class="ez-instant-filter__group-item">
+                {{ form_widget(form[choice.value]) }}
+                <svg class="ez-icon ez-icon--small">
+                    <use xlink:href="{{ ez_content_type_icon(choice.value) }}"></use>
+                </svg>
+            </div>
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock -%}
+
+{%- block _search_content_types_widget -%}
+    <div class="ez-content-type-selector">
+    {%- set options = choices -%}
+    {%- for group_label, choice in options -%}
+        <div class="ez-content-type-selector__group {% if not loop.first %}ez-content-type-selector__group--collapsed{% endif %}">
+            <span class="ez-content-type-selector__group-title">
+                {{ choice_translation_domain is same as(false) ? group_label : group_label|trans({}, choice_translation_domain) }}
+            </span>
+            <ul class="ez-content-type-selector__list">
+            {%- set options = choice -%}
+            {{- block('search_type_choice_widget_options') -}}
+            </ul>
+        </div>
+    {%- endfor -%}
+    </div>
+{%- endblock -%}
+
+{%- block search_type_choice_widget_options -%}
+    {%- for group_label, choice in options -%}
+        <li class="ez-content-type-selector__item">
+            {{ form_widget(form[choice.value], {'attr': {'data-name': choice.label}, 'label_attr': {'class': 'checkbox-inline'}}) }}
+        </li>
+    {%- endfor -%}
+{%- endblock -%}
+
+{%- block trash_item_checkbox_widget -%}
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{%- endblock -%}
+
+{%- block _trash_item_restore_restore_widget -%}
+    {%- set type = type|default('submit') -%}
+    {%- if label is not same as(false) and label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <button type="{{ type }}" {{ block('button_attributes') }} title="{{'trash.button.restore'|trans({},'trash')|desc('Restore') }}">
+        <svg class="ez-icon">
+            <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#restore"></use>
+        </svg>
+        {{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}
+    </button>
+{%- endblock -%}
+
+{%- block _trash_item_restore_location_select_content_widget -%}
+    {%- set type = type|default('submit') -%}
+    {%- if label is not same as(false) and label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <button type="{{ type }}" {{ block('button_attributes') }} title="{{'trash.button.restore_new_location'|trans({},'trash')|desc("Restore under new parent location") }}">
+        <svg class="ez-icon">
+            <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#restore-parent"></use>
+        </svg>
+        {{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}
+    </button>
+{%- endblock -%}
+
+{%- block number_widget -%}
+    {%- set type = type|default('number') -%}
+    {{ block('form_widget_simple') }}
+{%- endblock number_widget -%}
+
+{%- block table_header_tool_btn -%}
+    {%- set type = type|default('submit') -%}
+    {%- if label is not same as(false) and label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <button type="{{ type }}" {{ block('button_attributes') }} title="{{ title|default('') }}">
+        <svg class="ez-icon">
+            <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#{{ icon|default('') }}"></use>
+        </svg>
+    </button>
+{%- endblock table_header_tool_btn -%}
+
+{%- block _bookmark_remove_remove_widget -%}
+    {%- set title = 'bookmark.button.remove'|trans({},'bookmark')|desc('Remove') -%}
+    {%- set icon = 'trash' -%}
+    {{ block('table_header_tool_btn') }}
+{%- endblock -%}
+
+{%- block _content_remove_remove_widget -%}
+    {%- set title = 'drafts.list.action.remove'|trans({},'drafts')|desc('Remove') -%}
+    {%- set icon = 'trash' -%}
+    {{ block('table_header_tool_btn') }}
+{%- endblock -%}
+
+{%- block date_time_picker_widget -%}
+    <div class="ez-picker">
+        <input type="text" class="ez-picker__input form-control" readonly="readonly">
+        <button type="button" class="ez-picker__btn--clear-input">
+            <svg class="ez-icon ez-icon--medium">
+                <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#circle-close"></use>
+            </svg>
+        </button>
+        {% set attr = attr|merge({ 'hidden': true, 'class': 'ez-picker__form-input' }) %}
+        {{ block('form_widget') }}
+    </div>
+{%- endblock -%}
+
+{%- block richtext_widget -%}
+    {% set attr = attr|merge({ 'hidden': true }) %}
+
+    <div class="ez-data-source">
+        <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+        <div class="hidden" data-udw-config-name="richtext_embed" data-udw-config="{{ ez_udw_config('richtext_embed', udw_context) }}"></div>
+        <div class="hidden" data-udw-config-name="richtext_embed_image" data-udw-config="{{ ez_udw_config('richtext_embed_image', udw_context) }}"></div>
+        <div class="ez-data-source__richtext" id="{{ form.vars.id }}__editable"></div>
+        <div class="ez-richtext-tools">
+            <ul class="ez-elements-path"></ul>
+            {% if ez_user_settings['character_counter'] == 'enabled' %}
+                <div class="ez-character-counter">
+                    <span class="ez-character-counter__word-count">0</span> {{ 'character_counter.words'|trans|desc('words') }}
+                    <span class="ez-character-counter__character-count">0</span> {{ 'character_counter.characters'|trans|desc('characters') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{%- endblock -%}

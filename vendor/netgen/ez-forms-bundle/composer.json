@@ -1,0 +1,49 @@
+{
+    "name": "netgen/ez-forms-bundle",
+    "description": "Integration of Symfony's Form component with eZ Platform Public API",
+    "type": "ezplatform-bundle",
+    "license": "GPL-2.0-only",
+    "keywords": [
+        "ezpublish",
+        "ezplatform",
+        "forms",
+        "netgen",
+        "ezforms",
+        "ez-forms-bundle"
+    ],
+    "homepage": "https://github.com/netgen/NetgenEzFormsBundle",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "http://www.netgenlabs.com"
+        }
+    ],
+    "require": {
+        "symfony/symfony": "^2.8|^3.2",
+        "ezsystems/ezpublish-kernel": "*"
+    },
+    "require-dev": {
+        "ezsystems/ezpublish-kernel": "^6.9",
+        "phpunit/phpunit": "<6.0",
+        "matthiasnoback/symfony-dependency-injection-test": "~1.0",
+        "matthiasnoback/symfony-config-test": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netgen\\Bundle\\EzFormsBundle\\": "bundle"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netgen\\Bundle\\EzFormsBundle\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/phpunit --colors=always"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev"
+        }
+    }
+}

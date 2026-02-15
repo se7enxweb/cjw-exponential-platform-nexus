@@ -1,0 +1,48 @@
+{
+    "name": "netgen/ezplatform-search-extra",
+    "description": "Netgen's extra bits for eZ Platform search",
+    "type": "ezplatform-bundle",
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "Petar Španja",
+            "email": "petar@spanja.info"
+        }
+    ],
+    "require": {
+        "ezsystems/ezpublish-kernel": "^7.5.8||^8.0",
+        "ext-json": "*",
+        "ext-dom": "*"
+    },
+    "require-dev": {
+        "netgen/ezplatform-site-api": "^3.7",
+        "ezsystems/ezplatform-solr-search-engine": "^2.0",
+        "ezsystems/ezplatform-xmltext-fieldtype": "^1.7",
+        "phpunit/phpunit": "^5.7||^6.0||^7.0",
+        "matthiasnoback/symfony-dependency-injection-test": "~1.0||~3.0"
+    },
+    "suggest": {
+        "netgen/ezplatform-site-api": "Boost your site-building productivity with eZ Platform",
+        "ezsystems/ezplatform-solr-search-engine": "Supports advanced capabilities with eZ Platform search API, ^2.0 is required"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netgen\\EzPlatformSearchExtra\\": "lib",
+            "Netgen\\Bundle\\EzPlatformSearchExtraBundle\\": "bundle"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netgen\\EzPlatformSearchExtra\\Tests\\": "tests/lib",
+            "Netgen\\EzPlatformSearchExtraBundle\\Tests\\": "tests/bundle"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-1.14": "1.15-dev"
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/phpunit --colors=always"
+    }
+}

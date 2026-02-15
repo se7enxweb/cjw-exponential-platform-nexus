@@ -1,0 +1,65 @@
+{
+    "name": "se7enxweb/tagsbundle",
+    "description": "Netgen Tags Bundle is an eZ Platform bundle for taxonomy management and easier classification of content, providing more functionality for tagging content than ezkeyword field type included in eZ Publish kernel.",
+    "license": "GPL-2.0-or-later",
+    "type": "ezplatform-bundle",
+    "keywords": [
+        "ezplatform",
+        "ezpublish",
+        "netgen",
+        "taxonomy",
+        "tagsbundle",
+        "tags"
+    ],
+    "homepage": "https://github.com/netgen/TagsBundle",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "https://www.netgenlabs.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2 || ^7.3 || ^8.0 || ^8.3 || ^8.4 || ^8.5",
+        "se7enxweb/ezpublish-kernel": "^7.5.33",
+        "se7enxweb/repository-forms": "^2.5.16",
+        "se7enxweb/ezplatform-solr-search-engine": "^1.6",
+        "se7enxweb/ez-core-extra-bundle": "dev-master",
+        "twig/twig": "^2.16.1"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^4.3",
+        "phpunit/phpunit": "^8.2"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "@php vendor/bin/phpunit --colors=always",
+        "test-integration": "@php vendor/bin/phpunit -c phpunit-integration-legacy.xml --colors=always"
+    },
+    "suggest": {
+        "ezsystems/eztags-ls": "For editing eZ Tags content object and content class attributes in eZ Publish Legacy"
+    },
+    "conflict": {
+        "ezsystems/platform-ui-bundle": "<1.13",
+        "ezsystems/eztags-ls": "<2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netgen\\TagsBundle\\": "bundle/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netgen\\TagsBundle\\Tests\\": "tests/",
+            "EzSystems\\EzPlatformSolrSearchEngine\\Tests\\": "vendor/ezsystems/ezplatform-solr-search-engine/tests/lib"
+        },
+        "files": [
+            "vendor/symfony/var-dumper/Resources/functions/dump.php"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.0.x-dev"
+        }
+    }
+}

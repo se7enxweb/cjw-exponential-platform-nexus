@@ -1,0 +1,10 @@
+{
+    "name": "netgen-tags",
+    "homepage": "https://www.netgenlabs.com",
+    "authors": [
+        "Netgen <info@netgen.hr>"
+    ],
+    "dependencies": {
+        "jquery": "^3.0"
+    }
+}

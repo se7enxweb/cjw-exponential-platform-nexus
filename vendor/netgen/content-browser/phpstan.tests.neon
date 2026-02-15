@@ -1,0 +1,26 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    excludePaths:
+        - tests/application/public/bundles/
+        - tests/application/src/Kernel.php
+        - tests/application/src/LegacyKernel.php
+
+    dynamicConstantNames:
+        - Symfony\Component\HttpKernel\Kernel::VERSION_ID
+
+    ignoreErrors:
+        # Compatibility with Symfony 3.4
+
+        - '#Method .+::createRequestEvent\(\) should return .+\\RequestEvent but returns .+\\GetResponseEvent.#'
+        - '#Method .+::createExceptionEvent\(\) should return .+\\ExceptionEvent but returns .+\\GetResponseForExceptionEvent.#'
+
+        # Disable errors for various tests that verify arrays not having certain elements
+        - '#Call to static method PHPUnit\\Framework\\Assert::assertArrayHasKey\(\)#'
+
+        - '#JsonApiTestCase::\$client is not the same as PHPDoc type#'

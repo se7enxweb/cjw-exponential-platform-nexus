@@ -1,0 +1,107 @@
+services:
+    netgen.search.legacy.query.common.criterion_visitor.object_state_identifier:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\ObjectStateIdentifier
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+            - '@ezpublish.spi.persistence.object_state_handler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.criterion_visitor.section_identifier:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\SectionIdentifier
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+            - '@ezpublish.spi.persistence.section_handler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.content.criterion_visitor.location_query:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Content\CriterionHandler\LocationQuery
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+            - '@ezpublish.search.legacy.gateway.criteria_converter.location'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+
+    netgen.search.legacy.query.common.criterion_visitor.has_user:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\HasUser
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.criterion_visitor.user_email:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\UserEmail
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.criterion_visitor.user_enabled:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\UserEnabled
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.criterion_visitor.user_id:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\UserId
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.criterion_visitor.user_login:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\UserLogin
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+            - '@ezpublish.api.storage_engine.transformation_processor'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.criterion_visitor.content_id:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\ContentId
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.criterion_handler.content_name:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\CriterionHandler\ContentName
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+            - '@ezpublish.spi.persistence.language_handler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.content.criterion_visitor.location_id:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Content\CriterionHandler\LocationId
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+
+    netgen.search.legacy.query.location.criterion_visitor.location_id:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Location\CriterionHandler\LocationId
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    netgen.search.legacy.query.common.sort_clause_handler.content_name:
+        class: Netgen\EzPlatformSearchExtra\Core\Search\Legacy\Query\Common\SortClauseHandler\ContentName
+        arguments:
+            - '@ezpublish.api.storage_engine.legacy.dbhandler'
+            - '@ezpublish.spi.persistence.language_handler'
+        tags:
+            - {name: ezpublish.search.legacy.gateway.sort_clause_handler.content}
+            - {name: ezpublish.search.legacy.gateway.sort_clause_handler.location}

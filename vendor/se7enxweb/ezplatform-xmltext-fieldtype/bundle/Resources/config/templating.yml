@@ -1,0 +1,9 @@
+parameters:
+    ezpublish.twig.extension.xml_text.class: EzSystems\EzPlatformXmlTextFieldTypeBundle\Templating\Twig\Extension\XmlTextExtension
+
+services:
+    ezpublish.twig.extension.xml_text:
+        class: "%ezpublish.twig.extension.xml_text.class%"
+        arguments: ["@ezpublish.fieldType.ezxmltext.converter.html5"]
+        tags:
+            - { name: twig.extension }

@@ -1,0 +1,130 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - 'master'
+      - '[0-9].[0-9]+'
+  pull_request: ~
+
+env:
+  COMPOSER_ROOT_VERSION: dev-master
+
+jobs:
+  tests:
+    name: ${{ matrix.php }} / ${{ matrix.symfony }} / ${{ matrix.script }} / ${{ matrix.db }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.4']
+        symfony: ['~5.4.0', '~6.4.0']
+        script: ['test', 'test-api']
+        db: ['sqlite']
+        deps: ['normal']
+        include:
+          - php: '7.4'
+            symfony: '~3.4.0'
+            script: 'test'
+            db: 'sqlite'
+          - php: '7.4'
+            symfony: '~3.4.0'
+            script: 'test-api-legacy'
+            db: 'sqlite'
+
+          - php: '7.4'
+            symfony: '~5.4.0'
+            script: 'test'
+            db: 'mysql'
+          - php: '7.4'
+            symfony: '~5.4.0'
+            script: 'test-api'
+            db: 'mysql'
+
+          - php: '8.4'
+            symfony: '~6.4.0'
+            script: 'test'
+            db: 'postgres'
+          - php: '8.4'
+            symfony: '~6.4.0'
+            script: 'test-api'
+            db: 'postgres'
+
+          - php: '7.4'
+            symfony: '~3.4.0'
+            script: 'test'
+            db: 'sqlite'
+            deps: 'low'
+          - php: '7.4'
+            symfony: '~3.4.0'
+            script: 'test-api-legacy'
+            db: 'sqlite'
+            deps: 'low'
+        exclude:
+          - php: '8.4'
+            symfony: '~3.4.0'
+          - php: '7.4'
+            symfony: '~6.4.0'
+
+    services:
+      mysql:
+        image: 'mysql:latest'
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: testdb
+        ports:
+          - '3306:3306'
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+          --tmpfs /var/lib/mysql
+
+      postgres:
+        image: 'postgres:latest'
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        ports:
+          - '5432:5432'
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - run: composer --version
+      - run: composer validate --strict
+
+      - run: echo "DATABASE=mysql://root@127.0.0.1/testdb" >> $GITHUB_ENV
+        if: ${{ matrix.db == 'mysql' }}
+
+      - run: echo "DATABASE=pgsql://postgres:postgres@127.0.0.1/testdb" >> $GITHUB_ENV
+        if: ${{ matrix.db == 'postgres' }}
+
+      # Install Flex as a global dependency to enable usage of extra.symfony.require
+      # while keeping Flex recipes from applying
+      - run: composer global config --no-plugins allow-plugins.symfony/flex true
+      - run: composer global require --no-scripts symfony/flex
+
+      - run: composer config extra.symfony.require ${{ matrix.symfony }}
+
+      # Adds a dependency required for Symfony 3.4 script due to incompatibility
+      # of symfony/proxy-manager-bridge and laminas/laminas-code
+      - run: composer require --dev --no-update laminas/laminas-zendframework-bridge
+        if: ${{ matrix.symfony == '~3.4.0' }}
+
+      -
+        run: composer update --prefer-dist
+        if: ${{ matrix.deps != 'low' }}
+
+      -
+        run: composer update --prefer-dist --prefer-lowest --prefer-stable
+        if: ${{ matrix.deps == 'low' }}
+
+      - run: composer ${{ matrix.script }}

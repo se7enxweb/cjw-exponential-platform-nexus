@@ -1,0 +1,92 @@
+item_types:
+    ezlocation:
+        name: item_types.ezlocation
+        preview:
+            template: '%netgen_content_browser.ezplatform.item_template%'
+        columns:
+            name:
+                name: columns.name
+                value_provider: name
+            location_id:
+                name: columns.ezplatform.location_id
+                value_provider: ezplatform\location_id
+            content_id:
+                name: columns.ezplatform.content_id
+                value_provider: ezplatform\content_id
+            thumbnail:
+                name: columns.ezplatform.thumbnail
+                template: '%netgen_content_browser.ezplatform.thumbnail_template%'
+            type:
+                name: columns.ezplatform.type
+                value_provider: ezplatform\content_type
+            visible:
+                name: columns.ezplatform.visible
+                value_provider: ezplatform\visible
+            owner:
+                name: columns.ezplatform.owner
+                value_provider: ezplatform\owner
+            modified:
+                name: columns.ezplatform.modified
+                value_provider: ezplatform\modified
+            published:
+                name: columns.ezplatform.published
+                value_provider: ezplatform\published
+            priority:
+                name: columns.ezplatform.priority
+                value_provider: ezplatform\priority
+            section:
+                name: columns.ezplatform.section
+                value_provider: ezplatform\section
+            object_state:
+                name: columns.ezplatform.object_state
+                value_provider: ezplatform\object_state
+        default_columns:
+            - name
+            - type
+            - visible
+
+    ezcontent:
+        name: item_types.ezcontent
+        preview:
+            template: '%netgen_content_browser.ezplatform.item_template%'
+        columns:
+            name:
+                name: columns.name
+                value_provider: name
+            location_id:
+                name: columns.ezplatform.location_id
+                value_provider: ezplatform\location_id
+            content_id:
+                name: columns.ezplatform.content_id
+                value_provider: ezplatform\content_id
+            thumbnail:
+                name: columns.ezplatform.thumbnail
+                template: '%netgen_content_browser.ezplatform.thumbnail_template%'
+            type:
+                name: columns.ezplatform.type
+                value_provider: ezplatform\content_type
+            visible:
+                name: columns.ezplatform.visible
+                value_provider: ezplatform\visible
+            owner:
+                name: columns.ezplatform.owner
+                value_provider: ezplatform\owner
+            modified:
+                name: columns.ezplatform.modified
+                value_provider: ezplatform\modified
+            published:
+                name: columns.ezplatform.published
+                value_provider: ezplatform\published
+            priority:
+                name: columns.ezplatform.priority
+                value_provider: ezplatform\priority
+            section:
+                name: columns.ezplatform.section
+                value_provider: ezplatform\section
+            object_state:
+                name: columns.ezplatform.object_state
+                value_provider: ezplatform\object_state
+        default_columns:
+            - name
+            - type
+            - visible

@@ -1,0 +1,5 @@
+services:
+    netgen_layouts.standard.utils.markdown:
+        class: Netgen\Layouts\Standard\Utils\Markdown
+        arguments:
+            - "@netgen_layouts.utils.html_purifier"

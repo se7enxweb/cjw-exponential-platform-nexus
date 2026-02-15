@@ -1,0 +1,23 @@
+services:
+    netgen.enhanced_selection.templating.twig.extension:
+        class: Netgen\Bundle\EnhancedSelectionBundle\Templating\Twig\NetgenEnhancedSelectionExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    netgen.enhanced_selection.templating.twig.runtime:
+        class: Netgen\Bundle\EnhancedSelectionBundle\Templating\Twig\NetgenEnhancedSelectionRuntime
+        # public: false
+        arguments:
+            - "@ezpublish.api.service.content_type"
+            - "@ezpublish.translation_helper"
+        tags:
+            - { name: twig.runtime }
+
+    # Runtime loader for Symfony 2.8
+
+    netgen.enhanced_selection.templating.twig.runtime.loader:
+        class: Netgen\Bundle\EnhancedSelectionBundle\Templating\Twig\NetgenEnhancedSelectionRuntimeLoader
+        public: false
+        arguments:
+            - "@netgen.enhanced_selection.templating.twig.runtime"

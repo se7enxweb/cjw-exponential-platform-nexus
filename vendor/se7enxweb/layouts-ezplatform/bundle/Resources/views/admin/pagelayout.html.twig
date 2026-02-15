@@ -1,0 +1,25 @@
+{% set content = block('content') %}
+{% set title = block('title') %}
+
+{#
+    We embed the main layout.html.twig instead of extending it
+    to be able to inject additional markup before and after its
+    content block.
+#}
+
+{# "@EzPlatformAdminUi/layout.html.twig" template is deprecated, it comes from eZ Platform 2.5 #}
+{% embed ['@EzPlatformAdminUi/layout.html.twig', '@ezdesign/ui/layout.html.twig'] %}
+    {% trans_default_domain 'nglayouts_admin' %}
+
+    {% block title %}{{ title|raw }}{% endblock %}
+
+    {% block content %}
+        <div class="ng-layouts-app row">
+            <div class="layouts-content">
+
+            {{ content|raw }}
+
+            </div>
+        </div>
+    {% endblock %}
+{% endembed %}

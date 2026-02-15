@@ -1,0 +1,18 @@
+{% trans_default_domain "ezrepoforms_content_type" %}
+
+{% block ezplatform_fieldtype_sckenhancedselection_option_widget %}
+    <td>
+        {{- form_errors(form.name) -}}
+        {{- form_widget(form.name) -}}
+    </td>
+
+    <td>
+        {{- form_errors(form.identifier) -}}
+        {{- form_widget(form.identifier) -}}
+    </td>
+
+    <td>
+        {{- form_errors(form.priority) -}}
+        {{- form_widget(form.priority) -}}
+    </td>
+{% endblock %}

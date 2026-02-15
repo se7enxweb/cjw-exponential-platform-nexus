@@ -1,0 +1,9 @@
+{
+    "name": "Netgen Admin UI",
+    "homepage": "https://netgen.io",
+    "dependencies": {
+        "bootstrap-sass": "~3.3.5",
+        "components-font-awesome": "~4.4.0",
+        "ace-builds": "~1.2.0"
+    }
+}

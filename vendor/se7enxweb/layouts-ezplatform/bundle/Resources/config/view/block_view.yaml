@@ -1,0 +1,21 @@
+view:
+    block_view:
+        default:
+            ezcontent_field:
+                template: "@nglayouts/block/ezcontent_field.html.twig"
+                match:
+                    block\definition: ezcontent_field
+                    block\view_type: ezcontent_field
+            ezcomponent:
+                template: "@nglayouts/block/ezcomponent.html.twig"
+                match:
+                    block\definition\prefix: ezcomponent
+        app:
+            ezcontent_field:
+                template: "@nglayouts_admin/app/block/ezcontent_field.html.twig"
+                match:
+                    block\definition: ezcontent_field
+            ezcomponent:
+                template: "@nglayouts_admin/app/block/ezcomponent.html.twig"
+                match:
+                    block\definition\prefix: ezcomponent

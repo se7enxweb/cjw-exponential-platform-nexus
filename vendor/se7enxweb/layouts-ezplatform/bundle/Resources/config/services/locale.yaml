@@ -1,0 +1,10 @@
+services:
+    netgen_layouts.locale.provider:
+        alias: netgen_layouts.ezplatform.locale.provider
+
+    netgen_layouts.ezplatform.locale.provider:
+        class: Netgen\Layouts\Ez\Locale\LocaleProvider
+        arguments:
+            - "@ezpublish.api.service.language"
+            - "@ezpublish.locale.converter"
+            - "@ezpublish.config.resolver"

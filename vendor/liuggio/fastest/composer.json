@@ -1,0 +1,43 @@
+{
+    "name": "liuggio/fastest",
+    "description": "Simple parallel testing execution... with some goodies for functional tests.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "liuggio",
+            "email": "liuggio@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.3 || ^8.0",
+        "symfony/console": "^3.4|^4.4|^5.0",
+        "symfony/stopwatch": "^3.4|^4.4|^5.0",
+        "symfony/process": "^3.4|^4.4|^5.0",
+        "doctrine/collections": "^1.2"
+    },
+    "require-dev": {
+        "behat/behat": "^3.6",
+        "phpstan/phpstan": "^0.12.78",
+        "phpstan/phpstan-phpunit": "^0.12.17"
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.8-dev"
+        }
+    },
+    "suggest": {
+        "behat/behat": "Install it if you want to run tests with the provided Behat extension"
+    },
+    "bin": [
+        "fastest"
+    ],
+    "autoload": {
+        "psr-4": {"Liuggio\\Fastest\\": ["src", "adapters"]}
+    },
+    "autoload-dev": {
+        "psr-4": { "Liuggio\\Fastest\\": "tests" }
+    }
+}

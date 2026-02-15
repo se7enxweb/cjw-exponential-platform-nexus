@@ -1,0 +1,87 @@
+# eZ Platform GraphQL Bundle
+
+This Symfony bundle adds a GraphQL server to eZ Platform, the Open Source CMS.
+
+## The schema: `/graphql`
+`https://<host>/graphql`
+
+It first and foremost exposes the domain modelled using the repository,
+based on  content types groups, content types and fields definitions. Use it to implement
+apps or sites dedicated to a given repository structure.
+
+Example: an eZ Platform site.
+
+**Warning: this feature requires specific setup steps. See the [Domain Schema documentation](doc/domain_schema.md).**
+
+In addition to the schema based on the content model, the repository's Public API is also available under `_repository`.
+It exposes content, location, field, url alias...
+It is recommended for admin like applications, not limited to a particular repository.
+
+Example: an eZ Platform Admin UI extension.
+
+[Repository schema documentation](doc/repository_schema.md)
+
+## Installation
+
+Install the package and its dependencies using composer:
+
+```
+composer require ezsystems/ezplatform-graphql
+```
+
+Add the bundles to `app/AppKernel.php` (*pay attention to the order*, it is important):
+
+```php
+$bundles = array(
+    // ...
+    new EzSystems\EzPlatformGraphQL\EzSystemsEzPlatformGraphQLBundle(),
+    new Overblog\GraphQLBundle\OverblogGraphQLBundle(),
+    new AppBundle\AppBundle(),
+);
+```
+
+Add the GraphQL routing configuration to `app/config/routing.yml`:
+
+```yaml
+overblog_graphql:
+    resource: "@OverblogGraphQLBundle/Resources/config/routing/graphql.yml"
+
+overblog_graphql_endpoint:
+    path: /graphql
+    defaults:
+        _controller: Overblog\GraphQLBundle\Controller\GraphController::endpointAction
+        _format: "json"
+```
+
+### Generate your schema
+Run the command that generates the GraphQL schema:
+```
+php bin/console ezplatform:graphql:generate-schema
+php bin/console cache:clear
+```
+
+It will generate a lot of yaml files in `app/config/graphql/ezplatform`, based on your content types.
+
+### GraphiQL
+The graphical graphQL client, GraphiQL, must be installed separately if you want to use it.
+As a developer, you probably want to.
+
+```
+composer require --dev overblog/graphiql-bundle
+```
+
+Add `OverblogGraphiQLBundle` to the `dev` bundles:
+
+```php
+case 'dev':
+    // ...
+    $bundles[] = new Overblog\GraphiQLBundle\OverblogGraphiQLBundle();
+```
+
+Add the GraphiQL route to `app/config/routing_dev.yml`:
+```yaml
+overblog_graphql_graphiql:
+    resource: "@OverblogGraphiQLBundle/Resources/config/routing.xml"
+```
+
+Open `http://<yourhost>/graphiql`.

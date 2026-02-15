@@ -1,0 +1,31 @@
+{
+    "name": "netgen/content-type-list-bundle",
+    "description": "Netgen Content Type List bundle for eZ Publish and eZ Platform",
+    "type": "ezplatform-bundle",
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "http://www.netgenlabs.com"
+        }
+    ],
+    "require": {
+        "ezsystems/ezpublish-kernel": "^6.0 || ^7.0 || ^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "suggest": {
+        "netgen/ngclasslist": "To edit this field type in legacy administration interface"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netgen\\Bundle\\ContentTypeListBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.3.x-dev"
+        }
+    }
+}

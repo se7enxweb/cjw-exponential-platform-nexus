@@ -1,0 +1,37 @@
+services:
+    ezpublish.fieldType.ngremotemedia:
+        class: Netgen\Bundle\RemoteMediaBundle\Core\FieldType\RemoteMedia\Type
+        parent: ezpublish.fieldType
+        tags:
+            - {name: ezpublish.fieldType, alias: ngremotemedia}
+
+    ezpublish.fieldType.ngremotemedia.converter:
+        class: Netgen\Bundle\RemoteMediaBundle\Core\Persistence\Legacy\Content\FieldValue\Converter\RemoteMediaConverter
+        tags:
+            - {name: ezpublish.storageEngine.legacy.converter, alias: ngremotemedia}
+
+    ezpublish.fieldType.ngremotemedia.externalStorage:
+        class: Netgen\Bundle\RemoteMediaBundle\Core\FieldType\RemoteMedia\RemoteMediaStorage
+        arguments:
+            - "@ezpublish.api.service.content"
+            - "@netgen_remote_media.provider"
+            - "@ezpublish.api.service.field_type"
+        calls:
+            - [setDeleteUnused, ["%netgen_remote_media.remove_unused_resources%"]]
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: ngremotemedia}
+
+    ezpublish.fieldType.ngremotemedia.storage_gateway:
+        class: Netgen\Bundle\RemoteMediaBundle\Core\FieldType\RemoteMedia\RemoteMediaStorage\Gateway\LegacyStorage
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler.gateway, alias: ngremotemedia, identifier: LegacyStorage}
+
+    netgen_remote_media.templating.converter.ngremotemedia:
+        class: Netgen\Bundle\RemoteMediaBundle\Templating\Converter\RemoteMediaValueConverter
+        tags:
+            - {name: ezpublish_legacy.templating.converter, for: Netgen\Bundle\RemoteMediaBundle\Core\FieldType\RemoteMedia\Value}
+
+    ezpublish.fieldType.indexable.netgen_remote_media:
+        class: Netgen\Bundle\RemoteMediaBundle\Core\FieldType\RemoteMedia\SearchField
+        tags:
+            - {name: ezpublish.fieldType.indexable, alias: ngremotemedia}

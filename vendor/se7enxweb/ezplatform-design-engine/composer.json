@@ -1,0 +1,52 @@
+{
+    "name": "se7enxweb/ezplatform-design-engine",
+    "description": "Design fallback mechanism for eZ Platform",
+    "license": "MIT",
+    "type": "ezplatform-bundle",
+    "authors": [
+        {
+            "name": "Jerome Vieilledent",
+            "email": "jerome@vieilledent.fr"
+        },
+        {
+            "name": "eZ Systems dev team",
+            "email": "dev-team@ez.no"
+        }
+    ],
+    "require": {
+        "se7enxweb/ezpublish-kernel": "^6.0.0|^7.0",
+        "se7enxweb/twig": "^1.27|^2.0",
+        "se7enxweb/symfony": "^2.8.25|^3.1.6|^3.2.12|^3.3.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7|^6.0",
+        "ezsystems/ezplatform-code-style": "^1.0",
+        "friendsofphp/php-cs-fixer": "^2.16.0",
+        "mikey179/vfsstream": "^1.6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "EzSystems\\EzPlatformDesignEngine\\": "lib",
+            "EzSystems\\EzPlatformDesignEngineBundle\\": "bundle"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EzSystems\\EzPlatformDesignEngine\\Tests\\": "tests/lib",
+            "EzSystems\\EzPlatformDesignEngineBundle\\Tests\\": "tests/bundle"
+        }
+    },
+    "scripts": {
+        "fix-cs": "php-cs-fixer fix -v --show-progress=dots",
+        "check-cs": "@fix-cs --dry-run",
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    },
+    "conflict": {
+        "lolautruche/ez-core-extra-bundle": "<2.0"
+    }
+}

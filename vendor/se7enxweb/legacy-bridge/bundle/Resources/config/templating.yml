@@ -1,0 +1,81 @@
+parameters:
+    ezpublish_legacy.twig.extension.template.js: '@@EzPublishLegacy/ez_legacy_render_js.html.twig'
+    ezpublish_legacy.twig.extension.template.css: '@@EzPublishLegacy/ez_legacy_render_css.html.twig'
+
+    # eZ Template as a real template engine
+
+services:
+    ezpublish_legacy.twig.extension:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\Twig\Extension\LegacyExtension
+        public: false
+        tags:
+            - {name: twig.extension}
+
+    ezpublish_legacy.twig.runtime:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\Twig\Extension\LegacyRuntime
+        public: false
+        arguments:
+            - "@twig"
+            - "@ezpublish_legacy.templating.legacy_helper"
+            - "%ezpublish_legacy.twig.extension.template.js%"
+            - "%ezpublish_legacy.twig.extension.template.css%"
+        tags:
+            - {name: twig.runtime}
+
+    ezpublish_legacy.templating.generic_converter:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\Converter\GenericConverter
+        public: false
+
+    ezpublish_legacy.templating.delegating_converter:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\Converter\DelegatingConverter
+        public: false
+        arguments: ["@ezpublish_legacy.templating.generic_converter"]
+
+    ezpublish_legacy.templating.object_converter:
+        alias: ezpublish_legacy.templating.delegating_converter
+        public: false
+
+    ezpublish_legacy.templating.api_content_converter:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\Converter\ApiContentConverter
+        public: false
+        arguments: ["@ezpublish_legacy.kernel"]
+        tags:
+            - {name: ezpublish_legacy.templating.converter, for: eZ\Publish\Core\Repository\Values\Content\Content}
+            - {name: ezpublish_legacy.templating.converter, for: eZ\Publish\Core\Repository\Values\Content\Location}
+            - {name: ezpublish_legacy.templating.converter, for: eZ\Publish\Core\Repository\Values\Content\VersionInfo}
+
+    ezpublish_legacy.templating.pageparts_converter:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\Converter\PagePartsConverter
+        public: false
+        tags:
+            - {name: ezpublish_legacy.templating.converter, for: eZ\Publish\Core\FieldType\Page\Parts\Block}
+            - {name: ezpublish_legacy.templating.converter, for: eZ\Publish\Core\FieldType\Page\Parts\Zone}
+
+    ezpublish_legacy.templating.legacy_helper:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\LegacyHelper
+        public: false
+        arguments: ["@ezpublish_legacy.kernel"]
+
+    ezpublish.templating.global_helper.legacy:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\GlobalHelper
+        parent: ezpublish.templating.global_helper.core
+        public: false
+        calls:
+            - [setLegacyHelper, ["@ezpublish_legacy.templating.legacy_helper"]]
+
+    # Overriding core helper
+    ezpublish.templating.global_helper:
+        alias: ezpublish.templating.global_helper.legacy
+        # Needs to be public to use the service as a Twig global variable
+        public: true
+
+    templating.engine.eztpl:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\LegacyEngine
+        public: false
+        arguments: ["@ezpublish_legacy.kernel", "@ezpublish_legacy.templating.object_converter"]
+
+    twig.loader.string:
+        class: eZ\Publish\Core\MVC\Legacy\Templating\Twig\LoaderString
+        public: false
+        tags:
+            - {name: twig.loader}

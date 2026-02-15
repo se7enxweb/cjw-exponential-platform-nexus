@@ -1,0 +1,30 @@
+services:
+    netgen_layouts.ezplatform.templating.pagelayout_resolver:
+        class: Netgen\Bundle\LayoutsEzPlatformBundle\Templating\PageLayoutResolver
+        arguments:
+            - "@netgen_layouts.templating.pagelayout_resolver.default"
+            - "@ezpublish.config.resolver"
+            - "@request_stack"
+            - "%ezpublish.content_view.viewbase_layout%"
+
+    netgen_layouts.templating.pagelayout_resolver:
+        alias: netgen_layouts.ezplatform.templating.pagelayout_resolver
+
+    netgen_layouts.ezplatform.templating.twig.extension.ez_platform:
+        class: Netgen\Bundle\LayoutsEzPlatformBundle\Templating\Twig\Extension\EzPlatformExtension
+        tags:
+            - { name: twig.extension }
+
+    netgen_layouts.ezplatform.templating.twig.extension.ez_platform_bc:
+        class: Netgen\Bundle\LayoutsEzPlatformBundle\Templating\Twig\Extension\EzPlatformBCExtension
+        arguments:
+            - "@ezpublish.twig.extension.content"
+        tags:
+            - { name: twig.extension }
+
+    netgen_layouts.ezplatform.templating.twig.runtime.ez_platform:
+        class: Netgen\Bundle\LayoutsEzPlatformBundle\Templating\Twig\Runtime\EzPlatformRuntime
+        arguments:
+            - "@ezpublish.api.repository"
+        tags:
+            - { name: twig.runtime }

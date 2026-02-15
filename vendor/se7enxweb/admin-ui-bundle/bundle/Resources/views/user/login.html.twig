@@ -1,0 +1,80 @@
+{% extends layout %}
+
+{% block content %}
+    {% block login_content %}
+        {% if error %}
+            <div class="alert alert-warning" role="alert">
+                <h2><span class="time">[{{ 'now'|date( 'd.m.Y H:i' ) }}]</span> {{ error.message|trans }}</h2>
+
+                <ul>
+                    <li>{{ 'netgen_admin_ui.login.message.username_password'|trans }}</li>
+                    <li>{{ 'netgen_admin_ui.login.message.letter_case'|trans }}</li>
+                    <li>{{ 'netgen_admin_ui.login.message.contact_admin'|trans }}</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="login-container">
+            <header class="login-header">
+                <a href="#" class="logo logo-type-{{ netgen_admin_ui.logoType }}" title="{{ 'netgen_admin_ui.title'|trans }}"></a>
+            </header>
+
+            <form name="loginform" method="post" action="{{ path( 'login_check' ) }}">
+                {% block login_fields %}
+                    <div class="input-item">
+                        <span class="icon icon-user"></span>
+                        <input type="text" class="form-control" autofocus="autofocus" size="10" name="_username" id="logintext" placeholder="{{ 'netgen_admin_ui.login.username'|trans }}" tabindex="1" title="{{ 'netgen_admin_ui.login.username.title'|trans }}">
+                    </div>
+                    <div class="input-item">
+                        <span class="icon icon-lock"></span>
+                        <input type="password" class="form-control" size="10" name="_password" id="passwordtext" placeholder="{{ 'netgen_admin_ui.login.password'|trans }}" tabindex="2" title="{{ 'netgen_admin_ui.login.password.title'|trans }}">
+                    </div>
+
+                    {# CSRF token removed: prevents session initialization on login GET requests:
+                       <input type="hidden" name="_csrf_token" value="{{ csrf_token( "authenticate" ) }}" />
+		            #}
+
+                    {# Return-to-page: Determine where to redirect after successful login
+                       Priority:
+                       1. return_to_path from listener (when form rendered inline at protected page)
+                       2. Referer header (when navigating from protected page to /login)
+                       3. Request URI fallback (form accessed directly)
+                    #}
+                    {% set return_to_uri = null %}
+                    
+                    {# Check if listener passed return_to_path #}
+                    {% if return_to_path is defined and return_to_path %}
+                        {% set return_to_uri = return_to_path %}
+                    {% else %}
+                        {# Fall back to Referer header (browser sends this when user navigates to /login from protected page) #}
+                        {% set referer = app.request.headers.get('referer') %}
+                        {% if referer %}
+                            {# Parse referer URL by splitting on "/" - e.g., https://domain.com/path/to/page becomes ['https:', '', 'domain.com', 'path', 'to', 'page'] #}
+                            {% set parsed = referer | split('/') %}
+                            {% if parsed | length >= 4 %}
+                                {# Reconstruct path from parts (skip scheme://domain) #}
+                                {% set path_parts = [] %}
+                                {% for i in 3..parsed | length - 1 %}
+                                    {% set path_parts = path_parts | merge([parsed[i]]) %}
+                                {% endfor %}
+                                {% set extracted = '/' ~ (path_parts | join('/')) %}
+                                
+                                {# Only use if it's not /login itself (avoid circular redirect) #}
+                                {% if extracted != '/' and extracted != '/login' and extracted != '/login/' %}
+                                    {% set return_to_uri = extracted %}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                    
+                    {# Render hidden field if valid return_to_uri found #}
+                    {% if return_to_uri %}
+                        <input type="hidden" name="return_to" value="{{ return_to_uri | escape('html_attr') }}" />
+                    {% endif %}
+
+                    <button class="btn btn-primary" type="submit" id="loginbutton" name="LoginButton" tabindex="3" title="{{ 'netgen_admin_ui.login.submit.title'|trans }}">{{ 'netgen_admin_ui.login.submit'|trans }}</button>
+                {% endblock %}
+            </form>
+        </div>
+    {% endblock %}
+{% endblock %}

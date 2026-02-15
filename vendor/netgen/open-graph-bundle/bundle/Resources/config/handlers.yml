@@ -1,0 +1,67 @@
+services:
+    netgen_open_graph.handler.abstract:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\Handler
+        public: false
+
+    netgen_open_graph.handler.field_type.abstract:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\FieldType\Handler
+        public: false
+        parent: netgen_open_graph.handler.abstract
+        arguments:
+            - "@ezpublish.field_helper"
+            - "@ezpublish.translation_helper"
+
+    netgen_open_graph.handler.literal.text:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\Literal\Text
+        public: false
+        parent: netgen_open_graph.handler.abstract
+        lazy: true
+        tags:
+            - { name: netgen_open_graph.meta_tag_handler, alias: literal/text }
+
+    netgen_open_graph.handler.literal.url:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\Literal\Url
+        public: false
+        parent: netgen_open_graph.handler.abstract
+        lazy: true
+        arguments:
+            - "@request_stack"
+        tags:
+            - { name: netgen_open_graph.meta_tag_handler, alias: literal/url }
+
+    netgen_open_graph.handler.field_type.text_line:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\FieldType\TextLine
+        public: false
+        parent: netgen_open_graph.handler.field_type.abstract
+        lazy: true
+        tags:
+            - { name: netgen_open_graph.meta_tag_handler, alias: field_type/ezstring }
+
+    netgen_open_graph.handler.field_type.text_block:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\FieldType\TextBlock
+        public: false
+        parent: netgen_open_graph.handler.field_type.abstract
+        lazy: true
+        tags:
+            - { name: netgen_open_graph.meta_tag_handler, alias: field_type/eztext }
+
+    netgen_open_graph.handler.field_type.xml_text:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\FieldType\XmlText
+        public: false
+        parent: netgen_open_graph.handler.field_type.abstract
+        lazy: true
+        tags:
+            - { name: netgen_open_graph.meta_tag_handler, alias: field_type/ezxmltext }
+            - { name: netgen_open_graph.meta_tag_handler, alias: field_type/ezrichtext }
+
+    netgen_open_graph.handler.field_type.image:
+        class: Netgen\Bundle\OpenGraphBundle\Handler\FieldType\Image
+        public: false
+        parent: netgen_open_graph.handler.field_type.abstract
+        lazy: true
+        arguments:
+            - "@ezpublish.fieldType.ezimage.variation_service"
+            - "@request_stack"
+            - "@?logger"
+        tags:
+            - { name: netgen_open_graph.meta_tag_handler, alias: field_type/ezimage }

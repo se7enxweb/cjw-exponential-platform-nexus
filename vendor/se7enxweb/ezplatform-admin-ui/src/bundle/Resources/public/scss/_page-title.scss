@@ -1,0 +1,36 @@
+.ez-page-title {
+    padding-bottom: calculateRem(16px);
+    display: grid;
+    grid-template-columns: calc(100% - #{calculateRem(50px)}) calculateRem(50px);
+    grid-column-gap: calculateRem(10px);
+    grid-template-rows: auto;
+    grid-template-areas:
+        "content-item bookmark"
+        "content-type-name .";
+
+    &__content-item {
+        width: 100%;
+        margin-bottom: 0;
+        grid-area: content-item;
+        justify-self: start;
+        display: flex;
+    }
+
+    &__content-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: calc(100% - #{calculateRem(36px)});
+        padding-left: calculateRem(8px);
+    }
+
+    &__content-type-name {
+        padding-left: calculateRem(44px);
+        font-size: calculateRem(18px);
+        font-weight: 400;
+        color: $ez-color-base-light;
+        grid-area: content-type-name;
+        justify-self: start;
+        align-self: start;
+    }
+}

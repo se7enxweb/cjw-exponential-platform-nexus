@@ -1,0 +1,7 @@
+services:
+    EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Type:
+        parent: ezpublish.fieldType
+        arguments:
+            - '@EzSystems\EzPlatformRichText\eZ\RichText\InputHandler'
+        tags:
+            - {name: ezpublish.fieldType, alias: ezrichtext}

@@ -1,0 +1,47 @@
+.compare_display {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    height: auto;
+}
+
+.compare_display > * {
+    width: 49%;
+}
+
+.first_list {
+    /*position: absolute;*/
+    left: 0;
+    margin-left: 10px;
+}
+
+.second_list {
+    /*position: absolute;*/
+    right: 0;
+    margin-left: 10px;
+}
+
+.addition {
+    /*background-color: #ffe1bc;*/
+    background-color: #d0f5bc;
+}
+
+.difference {
+    background-color: #e3f6f6;
+    /*color: white;*/
+}
+
+.cjw_site_access_selectors {
+    margin-top: 25px;
+    margin-left: 10px;
+    margin-right:  10px;
+}
+
+.cjw_table_head_without_searchbar {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.param_list {
+    overflow-x: scroll;
+}

@@ -1,0 +1,8 @@
+services:
+    netgen_site_legacy.templating.converter.user:
+        class: Netgen\Bundle\SiteLegacyBundle\Templating\Converter\UserConverter
+        public: false
+        arguments:
+            - "@ezpublish_legacy.kernel"
+        tags:
+            - { name: ezpublish_legacy.templating.converter, for: eZ\Publish\Core\Repository\Values\User\User }

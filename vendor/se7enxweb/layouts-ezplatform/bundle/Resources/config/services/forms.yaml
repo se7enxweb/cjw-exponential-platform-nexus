@@ -1,0 +1,40 @@
+services:
+    netgen_layouts.ezplatform.form.content_type:
+        class: Netgen\Layouts\Ez\Form\ContentTypeType
+        arguments:
+            - "@ezpublish.api.service.content_type"
+        tags:
+            - { name: form.type }
+
+    netgen_layouts.ezplatform.form.section:
+        class: Netgen\Layouts\Ez\Form\SectionType
+        arguments:
+            - "@ezpublish.api.service.section"
+        tags:
+            - { name: form.type }
+
+    netgen_layouts.ezplatform.form.object_state:
+        class: Netgen\Layouts\Ez\Form\ObjectStateType
+        arguments:
+            - "@ezpublish.api.service.object_state"
+        tags:
+            - { name: form.type }
+
+    netgen_layouts.ezplatform.form.extension.block_prefix:
+        class: Netgen\Layouts\Ez\Form\Extension\BlockPrefixExtension
+        tags:
+            - { name: form.type_extension, extended_type: Netgen\ContentBrowser\Form\Type\ContentBrowserType }
+
+    netgen_layouts.ezplatform.form.extension.component_content:
+        class: Netgen\Layouts\Ez\Form\Extension\ComponentContentExtension
+        tags:
+            - { name: form.type_extension, extended_type: Netgen\ContentBrowser\Form\Type\ContentBrowserType }
+
+    netgen_layouts.ezplatform.form.admin.layout_wizard:
+        class: Netgen\Bundle\LayoutsEzPlatformBundle\Form\Admin\Type\LayoutWizardType
+        arguments:
+            - "@netgen_layouts.api.service.layout"
+            - "@netgen_layouts.layout.registry.layout_type"
+            - "%netgen_layouts.ezplatform.is_enterprise%"
+        tags:
+            - { name: form.type }

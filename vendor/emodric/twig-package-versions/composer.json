@@ -1,0 +1,35 @@
+{
+    "name": "emodric/twig-package-versions",
+    "description": "Twig functions that return a package version by using jean85/pretty-package-versions library",
+    "keywords": ["templating", "twig", "package", "version", "symfony"],
+    "license": "MIT",
+    "homepage": "http://github.com/emodric/twig-package-versions",
+    "authors": [
+        {
+            "name": "Edi Modrić",
+            "email": "edi.modric@gmail.com",
+            "homepage": "https://www.github.com/emodric"
+        }
+    ],
+    "require": {
+        "twig/twig": "^2.14 || ^3.2",
+        "jean85/pretty-package-versions": "^1.6 || ^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "test": "@php vendor/bin/phpunit --colors=always"
+    },
+    "autoload": {
+        "psr-4": { "EdiModric\\Twig\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "EdiModric\\Twig\\Tests\\": "tests/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+services:
+    eztags.api.service.tags:
+        alias: eztags.signalslot.service.tags
+        public: true
+
+    eztags.signalslot.service.tags:
+        class: Netgen\TagsBundle\Core\SignalSlot\TagsService
+        public: false
+        lazy: true
+        arguments:
+            - "@eztags.api.service.tags.inner"
+            - "@ezpublish.signalslot.signal_dispatcher"
+
+    eztags.api.service.tags.inner:
+        class: Netgen\TagsBundle\Core\Repository\TagsService
+        public: false
+        arguments:
+            - "@ezpublish.siteaccessaware.repository"
+            - "@eztags.api.persistence_handler.tags"
+            - "@ezpublish.spi.persistence.cache.contentLanguageHandler"
+
+    # Kept for BC with Tags Bundle 2.x
+
+    ezpublish.api.service.tags:
+        alias: eztags.api.service.tags
+        public: true

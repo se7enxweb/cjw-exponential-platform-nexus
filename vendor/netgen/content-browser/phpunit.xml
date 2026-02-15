@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    colors="true"
+    forceCoversAnnotation="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutChangesToGlobalState="true"
+>
+    <php>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Netgen\ContentBrowser">
+            <directory>tests/lib</directory>
+        </testsuite>
+        <testsuite name="Netgen\Bundle\ContentBrowserBundle">
+            <directory>tests/bundle</directory>
+            <exclude>tests/bundle/Controller</exclude>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <directory suffix=".php">lib</directory>
+            <directory suffix=".php">bundle</directory>
+        </include>
+        <exclude>
+            <directory>bundle/Controller</directory>
+            <directory>bundle/Resources</directory>
+            <file>bundle/NetgenContentBrowserBundle.php</file>
+            <file>bundle/DependencyInjection/NetgenContentBrowserExtension.php</file>
+        </exclude>
+    </coverage>
+</phpunit>

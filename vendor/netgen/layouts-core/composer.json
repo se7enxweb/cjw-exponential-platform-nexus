@@ -1,0 +1,146 @@
+{
+    "name": "netgen/layouts-core",
+    "description": "Netgen Layouts enables you to build and manage complex web pages in a simpler way and with less coding. This is the core of Netgen Layouts, its heart and soul.",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "https://netgen.io"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.1",
+        "ext-intl": "*",
+        "ext-mbstring": "*",
+        "netgen/layouts-ui": "~1.4.0",
+        "netgen/content-browser": "^1.4",
+        "symfony/asset": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/config": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/console": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/dependency-injection": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/deprecation-contracts": "^2.5 || ^3.2",
+        "symfony/doctrine-bridge": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/event-dispatcher": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/expression-language": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/form": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/framework-bundle": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/http-client": "^5.4 || ^6.4",
+        "symfony/http-foundation": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/http-kernel": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/intl": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/monolog-bundle": "^3.6",
+        "symfony/options-resolver": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/polyfill-php80": "^1.27",
+        "symfony/property-access": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/routing": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/security-core": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/security-csrf": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/security-bundle": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/serializer": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/string": "^5.4 || ^6.4",
+        "symfony/translation": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/twig-bridge": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/twig-bundle": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/validator": "^3.4.47 || ^5.4 || ^6.4",
+        "symfony/yaml": "^3.4.47 || ^5.4 || ^6.4",
+        "twig/twig": "^2.15 || ^3.9",
+        "sensio/framework-extra-bundle": "^5.4 || ^6.2",
+        "doctrine/dbal": "^2.13 || ^3.5",
+        "doctrine/doctrine-bundle": "^1.12 || ^2.7",
+        "doctrine/doctrine-migrations-bundle": "^2.2 || ^3.2",
+        "doctrine/collections": "^1.8 || ^2.1",
+        "ramsey/uuid": "^3.9 || ^4.2",
+        "egulias/email-validator": "^2.1.25 || ^3.2",
+        "ezyang/htmlpurifier": "^4.16",
+        "xemlock/htmlpurifier-html5": ">=0.1.11, <1.0",
+        "knplabs/knp-menu-bundle": "^2.3 || ^3.2",
+        "swaggest/json-schema": "^0.12.41",
+        "friendsofsymfony/http-cache-bundle": "^1.3.16 || ^2.11",
+        "pagerfanta/pagerfanta": "^2.7 || ^3.6",
+        "jean85/pretty-package-versions": "^1.6 || ^2.0",
+        "emodric/twig-package-versions": "^1.1",
+        "nikolaposa/version": "^4.1"
+    },
+    "require-dev": {
+        "netgen/layouts-coding-standard": "^2.0",
+        "netgen/layouts-standard": "~1.4.0",
+        "phpunit/phpunit": "^8.5 || ^9.6 || ^10.1",
+        "symfony/phpunit-bridge": "^6.4",
+        "symfony/runtime": "^5.4 || ^6.4",
+        "symfony/var-dumper": "^3.4.47 || ^5.4 || ^6.4",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "coduo/php-matcher": "^3.2 || ^6.0",
+        "sebastian/diff": "^3.0 || ^4.0 || ^5.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^4.2 || ^5.0",
+        "matthiasnoback/symfony-config-test": "^4.2 || ^5.0",
+        "lchrusciel/api-test-case": "^4.1 || ^5.2",
+        "webmozart/assert": "^1.11",
+        "behat/behat": "^3.7",
+        "behat/mink": "^1.9",
+        "behat/mink-selenium2-driver": "^1.6",
+        "friends-of-behat/mink-extension": "^2.5",
+        "friends-of-behat/mink-browserkit-driver": "^1.3",
+        "friends-of-behat/symfony-extension": "^2.1@beta",
+        "friends-of-behat/variadic-extension": "^1.3",
+        "friends-of-behat/suite-settings-extension": "^1.0",
+        "friends-of-behat/page-object-extension": "^0.3"
+    },
+    "conflict": {
+        "ocramius/proxy-manager": "<2.1",
+        "symfony/proxy-manager-bridge": "<3.4.47",
+        "composer/package-versions-deprecated": "<1.11.99"
+    },
+    "config": {
+        "process-timeout": 3600,
+        "allow-plugins": {
+            "symfony/runtime": true,
+            "*": false
+        }
+    },
+    "scripts": {
+        "pre-command-run": "@putenv SYMFONY_DEPRECATIONS_HELPER=max[self]=0&quiet[]=indirect&quiet[]=other",
+        "test": "@php vendor/bin/phpunit --colors=always",
+        "test-api": "@php vendor/bin/phpunit -c phpunit-api.xml --colors=always",
+        "test-api-legacy": "@php vendor/bin/phpunit -c phpunit-api-legacy.xml --colors=always",
+        "coverage": "@php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit --coverage-html=coverage --colors=always",
+        "coverage-api": "@php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit -c phpunit-api.xml --coverage-html=coverage_api --colors=always",
+        "coverage-clover": "@php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always",
+        "coverage-clover-api": "@php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit -c phpunit-api.xml --coverage-clover=coverage_api.xml --colors=always",
+        "behat": "@php vendor/bin/behat --config tests/behat/behat.yaml --colors --strict --no-interaction -vvv -f progress",
+        "behat-headless": "@php vendor/bin/behat --config tests/behat/behat.yaml --colors --strict --no-interaction -vvv -f progress -p headless",
+        "phpstan": "@php vendor/bin/phpstan analyse -c phpstan.neon --level=8 --ansi lib bundles migrations",
+        "phpstan-tests": "@php vendor/bin/phpstan analyse -c phpstan.tests.neon --level=8 --ansi tests"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netgen\\Layouts\\": "lib/",
+
+            "Netgen\\Layouts\\Migrations\\": "migrations/",
+
+            "Netgen\\Bundle\\LayoutsBundle\\": "bundles/LayoutsBundle/",
+            "Netgen\\Bundle\\LayoutsAdminBundle\\": "bundles/LayoutsAdminBundle/",
+            "Netgen\\Bundle\\LayoutsDebugBundle\\": "bundles/LayoutsDebugBundle/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netgen\\Layouts\\Tests\\": "tests/lib/",
+            "Netgen\\Layouts\\Behat\\": "tests/behat/",
+            "Netgen\\Layouts\\Tests\\App\\": "tests/application/src/",
+            "Netgen\\Bundle\\LayoutsBundle\\Tests\\": "tests/bundles/LayoutsBundle/",
+            "Netgen\\Bundle\\LayoutsAdminBundle\\Tests\\": "tests/bundles/LayoutsAdminBundle/",
+            "Netgen\\ContentBrowser\\Tests\\": "vendor/netgen/content-browser/tests/lib/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.4.x-dev"
+        }
+    }
+}

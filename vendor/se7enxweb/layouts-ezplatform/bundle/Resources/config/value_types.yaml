@@ -1,0 +1,6 @@
+value_types:
+    ezlocation:
+        name: 'eZ location'
+    ezcontent:
+        enabled: false
+        name: 'eZ content'

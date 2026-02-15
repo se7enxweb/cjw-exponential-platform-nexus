@@ -1,0 +1,62 @@
+.nav-tabs {
+    border-bottom: 2px solid $ez-ground-base-dark;
+    background-color: $ez-ground-base-dark;
+
+    .nav-item {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        color: $ez-color-base-medium;
+
+        &:hover {
+            background-color: $ez-color-base-pale;
+            border-color: $ez-color-base-pale;
+        }
+
+        &.active {
+            background-color: $ez-ground-base-light;
+            border-color: $ez-ground-base-light;
+            color: $ez-black;
+        }
+    }
+}
+
+.ez-dashboard {
+    .nav-tabs {
+        border-bottom: 2px solid $ez-ground-primary-inverted;
+        background-color: $white;
+        margin-bottom: 1rem;
+
+        .nav-link {
+            &.active {
+                background-color: $ez-ground-primary-inverted;
+                border-color: $ez-ground-primary-inverted;
+                color: $white;
+            }
+        }
+    }
+}
+
+.ez-content-view {
+    .nav-tabs {
+        border-bottom: 2px solid $ez-ground-base-dark;
+
+        &.ez-tabs {
+            .nav-item {
+                margin-bottom: -2px;
+            }
+        }
+    }
+}
+
+.nav-tabs-systeminfo,
+.ez-nav-tabs--content-type {
+    border-bottom: none;
+}
+
+.ez-nav-tabs {
+    &--role {
+        border-bottom: none;
+    }
+}

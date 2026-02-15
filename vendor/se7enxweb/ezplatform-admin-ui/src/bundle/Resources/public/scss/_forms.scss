@@ -1,0 +1,111 @@
+form:not(.form-inline) {
+    .ez-field-edit__label {
+        font-weight: 700;
+        font-size: 14px;
+        color: $ez-color-base-dark;
+        margin-bottom: 0;
+        margin-top: 20px;
+
+        &:after {
+            content: ': ';
+        }
+
+        &:not(.ez-data-source__label) {
+            @include label-required();
+        }
+    }
+
+    .col-form-legend {
+        font-weight: 700;
+        font-size: 14px;
+        color: $ez-color-base-dark;
+        margin-bottom: 0;
+        margin-top: 20px;
+
+        @include label-required();
+    }
+
+    .form-control {
+        background-color: $ez-white;
+    }
+
+    .form-control[readonly] {
+        background-color: $ez-white;
+    }
+
+    .form-control:focus {
+        border-color: $ez-color-secondary;
+    }
+}
+
+.ez-form-inline {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+
+    &--align-left {
+        justify-content: flex-start;
+    }
+
+    .col-form-label,
+    .form-control,
+    .ez-field-edit__label {
+        margin-right: 0.5rem;
+    }
+}
+
+.ez-table--no-border {
+    .ez-form-inline {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+    }
+}
+
+.ez-field {
+    .ez-field__label {
+        @include label-required();
+    }
+
+    &.is-invalid {
+        .ez-field__label-wrapper,
+        .ez-field__label {
+            color: $ez-color-danger;
+        }
+
+        .ez-field__data {
+            position: relative;
+
+            &:before {
+                content: '!';
+                position: absolute;
+                top: 0;
+                left: -20px;
+                width: 20px;
+
+                background: red;
+                color: white;
+                text-align: center;
+                font-size: 1.5rem;
+                border-top-left-radius: 5px;
+                border-bottom-left-radius: 5px;
+            }
+        }
+    }
+
+    &__error {
+        display: inline-block;
+        margin-left: 8px;
+        color: $ez-color-danger;
+    }
+}
+
+.ez-trash-with-asset-checkbox-list {
+    .form-check-input {
+        position: absolute;
+    }
+}
+
+.ez-content-create[readonly] {
+    pointer-events: none;
+}

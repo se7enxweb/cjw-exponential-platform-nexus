@@ -1,0 +1,56 @@
+netgen_information_collection.route.admin.overview:
+    path: /netgen/informationcollection/overview
+    defaults: { _controller: netgen_information_collection.controller.admin:overviewAction }
+    methods: [GET]
+
+netgen_information_collection.route.admin.collection_list:
+    path: /netgen/informationcollection/collection-list/{contentId}
+    defaults: { _controller: netgen_information_collection.controller.admin:collectionListAction }
+    methods: [GET]
+
+netgen_information_collection.route.admin.collection_list_search:
+    path: /netgen/informationcollection/collection-list-search/{contentId}
+    defaults: { _controller: netgen_information_collection.controller.admin:searchAction }
+    methods: [GET]
+
+netgen_information_collection.route.admin.view:
+    path: /netgen/informationcollection/view/{contentId}/{collectionId}
+    defaults: { _controller: netgen_information_collection.controller.admin:viewAction }
+    methods: [GET]
+
+netgen_information_collection.route.admin.edit:
+    path: /netgen/informationcollection/edit/{collectionId}
+    defaults: { _controller: netgen_information_collection.controller.admin:editAction }
+    methods: [GET, POST]
+
+netgen_information_collection.route.admin.handle_contents:
+    path: /netgen/informationcollection/handle/contents
+    defaults: { _controller: netgen_information_collection.controller.admin:handleContentsAction }
+    methods: [POST]
+
+netgen_information_collection.route.admin.handle_collection_list:
+    path: /netgen/informationcollection/handle/collection-list
+    defaults: { _controller: netgen_information_collection.controller.admin:handleCollectionListAction }
+    methods: [POST]
+
+netgen_information_collection.route.admin.handle_collection:
+    path: /netgen/informationcollection/handle/collection
+    defaults: { _controller: netgen_information_collection.controller.admin:handleCollectionAction }
+    methods: [POST]
+
+netgen_information_collection.route.admin.tree_get_children:
+    path: /netgen/informationcollection/tree/{contentId}/{isRoot}
+    defaults:
+        _controller: netgen_information_collection.controller.tree:getChildrenAction
+        _method: GET
+        isRoot: false
+
+netgen_information_collection.route.admin.export:
+    path: /netgen/informationcollection/export/menu/{contentId}
+    defaults: { _controller: netgen_information_collection.controller.export:exportAction }
+    methods: [GET, POST]
+
+netgen_information_collection.route.admin.export_all:
+    path: /netgen/informationcollection/export-csv/{contentId}/{exportIdentifier}
+    defaults: { _controller: netgen_information_collection.controller.export:exportAllAction }
+    methods: [GET, POST]

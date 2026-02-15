@@ -1,0 +1,11 @@
+{% extends noLayout is defined and noLayout == true ? viewbaseLayout : pagelayout %}
+
+{% block content %}
+    <section class="ez-content-edit">
+        {{ form_start(form) }}
+        {% for child in form.fieldsData %}
+            {{- form_widget(child) -}}
+        {% endfor %}
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

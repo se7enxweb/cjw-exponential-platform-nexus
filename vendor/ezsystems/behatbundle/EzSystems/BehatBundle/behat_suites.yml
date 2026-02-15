@@ -1,0 +1,80 @@
+behat:
+    suites:
+        examples:
+            paths:
+                - vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/examples/user.feature
+                - vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/examples/content.feature
+                - vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/examples/configuration.feature
+            contexts:
+                - EzSystems\BehatBundle\Context\Api\TestContext
+                - EzSystems\BehatBundle\Context\Object\UserContext
+                - EzSystems\BehatBundle\Context\Object\RoleContext
+                - EzSystems\BehatBundle\Context\Object\ContentType
+                - EzSystems\BehatBundle\Context\Object\ContentContext
+                - EzSystems\BehatBundle\Context\Object\ContentTypeContext
+                - EzSystems\BehatBundle\Context\Object\LanguageContext
+                - EzSystems\BehatBundle\Context\Object\ObjectStateContext
+                - EzSystems\BehatBundle\Context\ConfigurationContext
+
+setup:
+    suites:
+        volume_testing:
+            paths:
+                - vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/setup/volume/
+            contexts:
+                - EzSystems\BehatBundle\Context\Api\TestContext
+                - EzSystems\BehatBundle\Context\Object\UserContext
+                - EzSystems\BehatBundle\Context\Object\RoleContext
+                - EzSystems\BehatBundle\Context\Object\ContentType
+                - EzSystems\BehatBundle\Context\Object\ContentContext
+                - EzSystems\BehatBundle\Context\Object\ContentTypeContext
+                - EzSystems\BehatBundle\Context\Object\LanguageContext
+        richtext_configuration:
+            paths:
+                - vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/richtextConfiguration/custom_tags.feature
+                - vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/richtextConfiguration/custom_styles.feature
+            contexts:
+                - EzSystems\BehatBundle\Context\ConfigurationContext
+                - EzSystems\BehatBundle\Context\FileContext
+        personas:
+            paths:
+                - '%paths.base%/vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/personas'
+            contexts:
+                - EzSystems\BehatBundle\Context\Api\TestContext
+                - EzSystems\BehatBundle\Context\Object\UserContext
+                - EzSystems\BehatBundle\Context\Object\RoleContext
+                - EzSystems\BehatBundle\Context\Object\ContentContext
+                - EzSystems\BehatBundle\Context\Object\ContentTypeContext
+        URIElement:
+            paths:
+                - '%paths.base%/vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/setup/siteaccessMatcher/URIElement.feature'
+            contexts:
+                - EzSystems\BehatBundle\Context\Api\TestContext
+                - EzSystems\BehatBundle\Context\Object\LanguageContext
+                - EzSystems\BehatBundle\Context\ConfigurationContext
+        MapHost:
+            paths:
+                - '%paths.base%/vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/setup/siteaccessMatcher/MapHost.feature'
+            contexts:
+                - EzSystems\BehatBundle\Context\Api\TestContext
+                - EzSystems\BehatBundle\Context\Object\LanguageContext
+                - EzSystems\BehatBundle\Context\ConfigurationContext
+        MapURI:
+            paths:
+                - '%paths.base%/vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/setup/siteaccessMatcher/MapURI.feature'
+            contexts:
+                - EzSystems\BehatBundle\Context\Api\TestContext
+                - EzSystems\BehatBundle\Context\Object\LanguageContext
+                - EzSystems\BehatBundle\Context\ConfigurationContext
+        CompoundMapURIMapHost:
+            paths:
+                - '%paths.base%/vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/setup/siteaccessMatcher/CompoundMapURIMapHost.feature'
+            contexts:
+                - EzSystems\BehatBundle\Context\Api\TestContext
+                - EzSystems\BehatBundle\Context\Object\LanguageContext
+                - EzSystems\BehatBundle\Context\ConfigurationContext
+        multirepository:
+            paths:
+                - '%paths.base%/vendor/ezsystems/behatbundle/EzSystems/BehatBundle/features/setup/multirepository'
+            contexts:
+                - EzSystems\BehatBundle\Context\ConfigurationContext

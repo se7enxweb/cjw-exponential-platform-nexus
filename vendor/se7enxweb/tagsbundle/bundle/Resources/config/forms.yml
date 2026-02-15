@@ -1,0 +1,28 @@
+services:
+    eztags.forms.tree:
+        class: Netgen\TagsBundle\Form\Type\TagTreeType
+        # public: false
+        arguments:
+            - "@eztags.api.service.tags"
+        tags:
+            - { name: form.type }
+
+    eztags.forms.translation_list:
+        class: Netgen\TagsBundle\Form\Type\TranslationListType
+        # public: false
+        arguments:
+            - "@ezpublish.api.service.language"
+        calls:
+            - [setLanguages, [$languages$]]
+        tags:
+            - { name: form.type }
+
+    eztags.forms.content_type_filter:
+        class: Netgen\TagsBundle\Form\Type\RelatedContentFilterType
+        # public: false
+        arguments:
+            - "@eztags.repository.related_content_facets_loader"
+            - "@ezpublish.api.service.content_type"
+            - "@eztags.search.related_content.sort_service"
+        tags:
+            - { name: form.type }

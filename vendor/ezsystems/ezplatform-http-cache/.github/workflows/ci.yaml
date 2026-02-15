@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - '[0-9]+.[0-9]+'
+  pull_request: ~
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: "ubuntu-20.04"
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - '7.1'
+          - '7.2'
+          - '7.3'
+          - '7.4'
+        composer_options: [ "" ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          extensions: pdo_sqlite, gd
+          tools: cs2pr
+
+      - uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "highest"
+          composer-options: "${{ matrix.composer_options }}"
+
+      - name: Setup problem matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Run code style check
+        run: composer run-script check-cs -- --format=checkstyle | cs2pr
+
+      - name: Run test suite
+        run: composer run-script --timeout=600 test
+
+  functional: 
+    name: REST tests
+    runs-on: "ubuntu-20.04"
+    timeout-minutes: 10
+    env:
+      COMPOSE_FILE: "doc/docker/base-dev.yml:doc/docker/selenium.yml"
+      SYMFONY_ENV: "behat"
+      PHP_IMAGE: "ezsystems/php:7.2-v1"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.1
+          coverage: none
+          extensions: pdo_sqlite, gd
+          tools: cs2pr
+
+      - name: Setup the project
+        run: ./tests/.travis/prepare_for_functional_tests.sh
+
+      - name: Run setup Command
+        run: | 
+          cd "$HOME/build/ezplatform"
+          docker-compose --env-file=.env exec -T --user www-data app sh -c "bin/console ez:behat:create-language 'pol-PL' 'Polish (polski)'"
+
+      - name: Run tests
+        run: |
+          cd "$HOME/build/ezplatform"
+          docker-compose --env-file=.env exec -T --user www-data app sh -c "bin/phpunit -v vendor/ezsystems/ezpublish-kernel/eZ/Bundle/EzPublishRestBundle/Tests/Functional"

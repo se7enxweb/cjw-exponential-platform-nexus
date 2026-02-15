@@ -1,0 +1,22 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    EzSystems\EzPlatformAdminUiBundle\Templating\Twig\UniversalDiscoveryExtension:
+        tags:
+            - { name: twig.extension }
+
+    EzSystems\EzPlatformAdminUi\UniversalDiscovery\Event\Subscriber\:
+        resource: "../../../lib/UniversalDiscovery/Event/Subscriber/*"
+        public: true
+        tags: ['kernel.event_subscriber']
+
+    EzSystems\EzPlatformAdminUi\UniversalDiscovery\ConfigResolver: ~
+
+    EzSystems\EzPlatformAdminUi\UniversalDiscovery\Event\Subscriber\UserSelectionAllowedContentTypes:
+        arguments:
+            $userContentTypeIdentifier: '$user_content_type_identifier$'
+        tags:
+            - { name: kernel.event_subscriber }

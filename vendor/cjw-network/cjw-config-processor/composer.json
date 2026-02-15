@@ -1,0 +1,42 @@
+{
+  "name": "cjw-network/cjw-config-processor",
+  "type": "ezplatform-bundle",
+  "description": "Inspired by the old eZPublish Ini viewer: Parses the configuration of your Symfony server / eZ - / Ibexa platform and allows visual access to the configuration in a human readable way for a better development experience.",
+  "keywords": [
+    "ezplatform",
+    "cjw-network",
+    "cjw-config-processor",
+    "siteaccess",
+    "config-parser",
+    "yaml-parser",
+    "ini viewer",
+    "ini settings",
+    "settings"
+  ],
+  "license": "GPL-2.0-only",
+  "homepage": "https://github.com/cjw-network/CjwConfigProcessorBundle",
+  "authors": [
+    {
+      "name": "CJW-Network",
+      "homepage": "https://www.cjw-network.com/"
+    },
+    {
+      "name": "Frederic Bauer"
+    }
+  ],
+  "require": {
+    "php": "^7.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": false,
+  "autoload": {
+    "psr-4": {
+      "CJW\\CJWConfigProcessor\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.x-dev"
+    }
+  }
+}

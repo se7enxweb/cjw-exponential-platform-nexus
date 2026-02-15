@@ -1,0 +1,8 @@
+<div class="ez-table-header {{ ground|default('') }}">
+    <div class="ez-table-header__headline" title="{{ headerText }}">{{ headerText }}</div>
+    {% if tools is defined %}
+        <div class="ez-table-header__tools">
+            {{ tools|raw }}
+        </div>
+    {% endif %}
+</div>

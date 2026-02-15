@@ -1,0 +1,30 @@
+services:
+    netgen_layouts.remote_media.browser.backend.remote_media:
+        class: Netgen\Layouts\RemoteMedia\ContentBrowser\Backend\RemoteMediaBackend
+        arguments:
+            - "@netgen_remote_media.provider.cloudinary"
+            - "@netgen_remote_media.next_cursor_resolver"
+            - "@translator"
+            - "@netgen_content_browser.config.remote_media"
+        tags:
+            - { name: netgen_content_browser.backend, item_type: remote_media }
+
+    netgen_layouts.remote_media.browser.column_value_provider.remote_media.tags:
+        class: Netgen\Layouts\RemoteMedia\ContentBrowser\Item\ColumnProvider\RemoteMedia\Tags
+        tags:
+            - { name: netgen_content_browser.column_value_provider, identifier: remote_media\tags }
+
+    netgen_layouts.remote_media.browser.column_value_provider.remote_media.resolution:
+        class: Netgen\Layouts\RemoteMedia\ContentBrowser\Item\ColumnProvider\RemoteMedia\Resolution
+        tags:
+            - { name: netgen_content_browser.column_value_provider, identifier: remote_media\resolution }
+
+    netgen_layouts.remote_media.browser.column_value_provider.remote_media.type:
+        class: Netgen\Layouts\RemoteMedia\ContentBrowser\Item\ColumnProvider\RemoteMedia\Type
+        tags:
+            - { name: netgen_content_browser.column_value_provider, identifier: remote_media\type }
+
+    netgen_layouts.remote_media.browser.column_value_provider.remote_media.size:
+        class: Netgen\Layouts\RemoteMedia\ContentBrowser\Item\ColumnProvider\RemoteMedia\Size
+        tags:
+            - { name: netgen_content_browser.column_value_provider, identifier: remote_media\size }

@@ -1,0 +1,53 @@
+{
+    "name": "se7enxweb/layouts-remote-media",
+    "description": "Netgen Layouts & Remote Media integration",
+    "license": "GPL-2.0-or-later",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Netgen",
+            "homepage": "https://netgen.io"
+        }
+    ],
+    "require": {
+        "se7enxweb/layouts-ezplatform": "^1.2",
+        "netgen/remote-media-bundle": "^2.0@alpha"
+    },
+    "require-dev": {
+        "netgen/layouts-coding-standard": "^1.0 || ^2.0",
+        "phpunit/phpunit": "^9.5",
+        "symfony/phpunit-bridge": "^5.2",
+        "symfony/var-dumper": "^3.4",
+        "phpstan/phpstan": "^1.1",
+        "phpstan/phpstan-strict-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "vimeo/psalm": "^4.7"
+    },
+    "scripts": {
+        "test": "@php vendor/bin/phpunit --colors=always",
+        "coverage": "@php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit --coverage-html=coverage --colors=always",
+        "phpstan": "@php vendor/bin/phpstan analyse -c phpstan.neon --level=8 --ansi lib bundle",
+        "phpstan-tests": "@php vendor/bin/phpstan analyse -c phpstan.tests.neon --level=8 --ansi tests",
+        "psalm": "@php vendor/bin/psalm -c psalm.xml --show-info=false"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netgen\\Layouts\\RemoteMedia\\": "lib/",
+            "Netgen\\Bundle\\LayoutsRemoteMediaBundle\\": "bundle/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netgen\\Layouts\\RemoteMedia\\Tests\\": "tests/lib/",
+            "Netgen\\Bundle\\LayoutsRemoteMediaBundle\\Tests\\": "tests/bundle/",
+            "Netgen\\Layouts\\Tests\\": "vendor/netgen/layouts-core/tests/lib/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        }
+    }
+}

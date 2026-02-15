@@ -1,0 +1,52 @@
+{
+    "name": "se7enxweb/ezplatform-admin-ui",
+    "license": "GPL-2.0-only",
+    "type": "project",
+    "description": "eZ Platform Admin v2",
+    "autoload": {
+        "psr-4": {
+          "EzSystems\\EzPlatformAdminUiBundle\\": "src/bundle/",
+          "EzSystems\\EzPlatformAdminUi\\": "src/lib/",
+          "Ibexa\\AdminUi\\": "src/lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": { "EzSystems\\EzPlatformAdminUi\\Tests\\": "src/lib/Tests" }
+    },
+    "require": {
+        "php": "^7.1 || ^8.1 || ^8.2",
+        "ext-json": "*",
+        "se7enxweb/symfony": "^3.4",
+        "jms/translation-bundle": "^1.6.0",
+        "se7enxweb/ezpublish-kernel": "^7.5.6@dev",
+        "se7enxweb/repository-forms": "^2.5@dev",
+        "se7enxweb/ezplatform-admin-ui-modules": "^1.5@dev",
+        "se7enxweb/ez-support-tools": "^1.0",
+        "se7enxweb/ezplatform-design-engine": "^2.0@dev",
+        "se7enxweb/ezplatform-user": "^1.0@dev",
+        "se7enxweb/ezplatform-richtext": "^1.1.5@dev",
+        "white-october/pagerfanta-bundle": "^1.1",
+        "knplabs/knp-menu-bundle": "^3.2.0",
+        "mck89/peast": "^1.8",
+        "willdurand/js-translation-bundle": "^2.6.6"
+    },
+    "require-dev": {
+        "behat/behat": "^3.5.0",
+        "friendsofphp/php-cs-fixer": "^2.16.0",
+        "phpunit/phpunit": "^7.5",
+        "matthiasnoback/symfony-dependency-injection-test": "^3.1",
+        "ezsystems/ezplatform-code-style": "^0.1.0"
+    },
+    "scripts": {
+        "fix-cs": "php-cs-fixer fix -v --show-progress=estimating",
+        "check-cs": "php-cs-fixer fix -v --diff --dry-run --show-progress=estimating",
+        "test": "phpunit -c phpunit.xml"
+    },
+    "extra": {
+        "_ezplatform_branch_for_behat_tests": "2.5",
+        "branch-alias": {
+            "dev-tmp_ci_branch": "1.5.x-dev",
+            "dev-master": "1.5.x-dev"
+        }
+    }
+}

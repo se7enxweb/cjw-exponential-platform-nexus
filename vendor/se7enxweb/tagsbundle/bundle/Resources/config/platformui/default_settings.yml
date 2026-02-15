@@ -1,0 +1,2 @@
+parameters:
+    eztags.platformui.admin.pagelayout: '@@NetgenTags/platformui/pagelayout.html.twig'

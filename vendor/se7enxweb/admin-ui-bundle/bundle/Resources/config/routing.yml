@@ -1,0 +1,67 @@
+ngadmin_layouts_location_layouts:
+    path: /ngadmin/layouts/{locationId}
+    defaults:
+        _controller: "netgen_admin_ui.controller.layouts:showLocationLayouts"
+    methods:  [GET]
+
+ngadmin_layouts_layout_wizard:
+    path: /ngadmin/layouts/{locationId}/wizard
+    controller: netgen_admin_ui.controller.layout_wizard
+    methods:  [GET, POST]
+    
+ngadmin_layouts_layout_wizard_callback:
+    path: /ngadmin/layouts/{locationId}/wizard/callback
+    controller: netgen_admin_ui.controller.layout_wizard_callback
+    methods:  [GET]
+
+ngadmin_layouts_rules_delete_rule:
+    path: /ngadmin/layouts/rules/{ruleId}/delete
+    controller: netgen_admin_ui.controller.delete_rule
+    methods:  [DELETE]
+    defaults:
+        _nglayouts_status: published
+
+_ezpublishPreviewContentDefaultSa:
+    path: /content/versionview/{contentId}/{versionNo}/{language}
+    defaults:
+        _controller: "ezpublish_legacy.controller:indexAction"
+    methods:  [GET]
+
+_ezpublishSearchRoute:
+    path: /content/search
+    defaults:
+        _controller: "ezpublish_legacy.controller:indexAction"
+
+# Overrides for eZ Platform Admin UI routes conflicting with eZ Publish Legacy
+# https://github.com/ezsystems/ezplatform-admin-ui/pull/287
+
+ezplatform.section.list:
+    path: /sections/list
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:list'
+
+ezplatform.section.view:
+    path: /sections/view/{sectionId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Section:view'
+
+ezplatform.role.list:
+    path: /roles/list
+    methods: ['GET']
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:Role:list'
+
+ezplatform.object_state.groups.list:
+    path: /state/groups/list
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:list'
+
+ezplatform.object_state.group.view:
+    path: /state/groups/{objectStateGroupId}
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:view'
+
+ezplatform.object_state.group.add:
+    path: /state/groups/create
+    defaults:
+        _controller: 'EzPlatformAdminUiBundle:ObjectStateGroup:add'

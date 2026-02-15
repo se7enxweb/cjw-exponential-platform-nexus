@@ -1,0 +1,45 @@
+.ez-notifications-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    line-height: 2.25;
+    z-index: 50000;
+
+    .alert {
+        padding: 0.125rem 5.5rem;
+        margin-bottom: 0;
+        border-radius: 0;
+        transition: opacity 0.3s $ez-admin-transition;
+        padding-right: 10rem;
+
+        .close {
+            opacity: 1;
+            padding-top: 0.25rem;
+            margin-right: 5.5rem;
+            cursor: pointer;
+        }
+
+        &-success {
+            background-color: $ez-color-positive;
+            border-color: $ez-color-positive;
+            color: $ez-white;
+        }
+
+        &-warning {
+            background-color: $ez-color-warning;
+            border-color: $ez-color-warning;
+            color: $ez-black;
+        }
+
+        &-danger {
+            background-color: $ez-color-danger;
+            border-color: $ez-color-danger;
+            color: $ez-white;
+        }
+    }
+
+    a.ez-notification-btn {
+        cursor: pointer;
+        color: $ez-color-hyperlink;
+    }
+}
