@@ -180,7 +180,7 @@
             "@php -d memory_limit=2000M bin/console bazinga:js-translation:dump web/assets --merge-domains",
             "yarn install",
             "EzSystems\\EzPlatformEncoreBundle\\Composer\\ScriptHandler::compileAssets",
-            "@@php -d memory_limit=2000M bin/security-checker security:check"
+            "@php -d memory_limit=2000M bin/security-checker security:check"
         ],
         "post-install-cmd": [
             "@symfony-scripts"
