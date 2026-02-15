@@ -21,6 +21,8 @@ Encore
   .setPublicPath(`/assets/app/${siteConfig.buildLocation}`)
   // will create web/assets/app/build/app.js and web/assets/app/build/app.css
   .addEntry('app', `./${siteConfig.resourcesLocation}/es6/app.js`)
+  // PhotoSwipe initialization script (must load before app.js)
+  .addEntry('photoswipe-init', `./${siteConfig.resourcesLocation}/es6/photoswipe-init.js`)
 
   // allow sass/scss files to be processed
   // Use nested style for dev (readable for debugging), compressed for production
@@ -29,6 +31,7 @@ Encore
       options.sassOptions = { // eslint-disable-line no-param-reassign
         loadPaths: [path.resolve(__dirname, 'node_modules')],
         outputStyle: Encore.isProduction() ? 'compressed' : 'expanded',
+        includePaths: [path.resolve(__dirname, 'node_modules')],
       };
   })
 
