@@ -40,7 +40,7 @@ ezpublish:
             # so removing eng-GB from this list may lead to errors or content not being shown, unless you change
             # all eng-GB data to other locales first.
             # For admin this needs to contain all languages you want to translate content to on the given repository.
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             content_tree_module:
                 contextual_tree_root_location_ids:
                     - 2 # Home (Content structure)
@@ -52,12 +52,12 @@ ezpublish:
                 media: /1/43/
 
         site:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             default_page: "/content/view/full/2"
             index_page: "/content/view/full/2"
 
         platformsite:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             design: standard
             content_tree_module:
                 contextual_tree_root_location_ids:
@@ -75,7 +75,7 @@ ezpublish:
                         match: ~
 
         alt:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             design: custom1
             content_tree_module:
                 contextual_tree_root_location_ids:
@@ -93,7 +93,7 @@ ezpublish:
                         match: ~
 
         nga:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             design: ngadminui
             content_tree_module:
                 contextual_tree_root_location_ids:
@@ -106,18 +106,18 @@ ezpublish:
                 media: /1/43/
 
         edit:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             design: admin
 
         editor:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             design: admin
 
         legacy_admin:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
 
         admin:
-            languages: [eng-GB]
+            languages: [eng-GB, ger-DE]
             design: admin
 
 # eZ Publish legacy bridge configuration

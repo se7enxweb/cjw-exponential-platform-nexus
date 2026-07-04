@@ -34,6 +34,7 @@ Locale=eng-GB
 ContentObjectLocale=eng-GB
 ShowUntranslatedObjects=enabled
 SiteLanguageList[]
+SiteLanguageList[]=eng-GB
 SiteLanguageList[]=ger-DE
 TextTranslation=enabled
 

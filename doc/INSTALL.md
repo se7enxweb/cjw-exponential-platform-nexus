@@ -105,25 +105,29 @@ git clone git@github.com:se7enxweb/exponential-platform-nexus.git;
 
 ## Install default installation demo site database
 
-Import the default installation structure and content from sql files located in:
-
-Simple database dump of everything needed to be installed from: 
-
-```shell
-src/AppBundle/Resources/database/sql/starter_project_database_sql_dump.sql
-```
-
-Simple database dump of just the structure schema needed to be installed from: 
+Run the built-in console installer. It imports the schema and content from the
+[`se7enxweb/cjw-exponential-media-site-data`](https://github.com/se7enxweb/cjw-exponential-media-site-data)
+package (installed automatically by Composer in the previous step).
 
 ```shell
-src/AppBundle/Resources/database/sql/schema/schema.sql
+php bin/console ezplatform:install cjw-exponential-media
 ```
 
-Simple database dump of just the expected structure's content (starter default installation as required by the configuration of the software) needed to be installed from:
+This installs the full JAC Example project with content, content classes, sections,
+languages (ger-DE + eng-GB), and all required configuration.
 
-```shell
-src/AppBundle/Resources/database/sql/data/content.sql
-```
+**Default Admin Credentials:**
+- Username: `admin`
+- Password: `publish`
+
+**⚠️ IMPORTANT:** Change the admin password immediately after installation!
+
+#### Available installer types
+
+| Type | Description |
+|------|-------------|
+| `cjw-exponential-media` | **Default.** Full JAC Example site with demo content |
+| `exponential-oss` | Minimal clean schema only, no content |
 
 ** Later step comming up, Composr! Install Exponential Platform Nexus required PHP libraries like Zeta Components and Exponential Platform bundles and bundle extensions as specified in this project's composer.json. **
 
@@ -185,13 +189,13 @@ cd exponential-platform-nexus; composer install --keep-vcs --ignore-platform-req
 
 *Note*: For the short term future the composer argument '--ignore-platform-reqs' is required to install the software via composer package dependencies successfully. This limitation will soon be removed in the future as we continue to update requirements within the composer package definition files for each package repostiory (tedious detail oriented work which is currently on going).
 
-### (Option) Run Exponential Platform Nexus Console Installation of Default Database Content Packages
+### (Option) Run via composer script
 
 ```shell
-php bin/console ezplatform:install netgen-media;
+composer run ezplatform-install
 ```
 
-Note if you use the provided starter demo database sql files you do not need to run the above command.
+This is equivalent to running `php bin/console ezplatform:install cjw-exponential-media` directly.
 
 ## Assign Database User, Password and Database Name information in app/config/parameters.yml
 
@@ -293,25 +297,29 @@ Note: For the short term future the composer argument '--ignore-platform-reqs' i
 
 ## Install default installation demo site database
 
-Import the default installation structure and content from sql files located in:
-
-Simple database dump of everything needed to be installed from: 
-
-```shell
-src/AppBundle/Resources/database/sql/starter_project_database_sql_dump.sql
-```
-
-Simple database dump of just the structure schema needed to be installed from: 
+Run the built-in console installer. It imports the schema and content from the
+[`se7enxweb/cjw-exponential-media-site-data`](https://github.com/se7enxweb/cjw-exponential-media-site-data)
+package (installed automatically by Composer in the previous step).
 
 ```shell
-src/AppBundle/Resources/database/sql/schema/schema.sql
+php bin/console ezplatform:install cjw-exponential-media
 ```
 
-Simple database dump of just the expected structure's content (starter default installation as required by the configuration of the software) needed to be installed from:
+This installs the full JAC Example project with content, content classes, sections,
+languages (ger-DE + eng-GB), and all required configuration.
 
-```shell
-src/AppBundle/Resources/database/sql/data/content.sql
-```
+**Default Admin Credentials:**
+- Username: `admin`
+- Password: `publish`
+
+**⚠️ IMPORTANT:** Change the admin password immediately after installation!
+
+#### Available installer types
+
+| Type | Description |
+|------|-------------|
+| `cjw-exponential-media` | **Default.** Full JAC Example site with demo content |
+| `exponential-oss` | Minimal clean schema only, no content |
 
 ** Later step comming up, Composr! Install Exponential Platform Nexus required PHP libraries like Zeta Components and Exponential Platform bundles and bundle extensions as specified in this project's composer.json. **
 
@@ -373,13 +381,13 @@ cd exponential-platform-nexus; composer install --keep-vcs --ignore-platform-req
 
 *Note*: For the short term future the composer argument '--ignore-platform-reqs' is required to install the software via composer package dependencies successfully. This limitation will soon be removed in the future as we continue to update requirements within the composer package definition files for each package repostiory (tedious detail oriented work which is currently on going).
 
-### (Option) Run Exponential Platform Nexus Console Installation of Default Database Content Packages
+### (Option) Run via composer script
 
 ```shell
-php bin/console ezplatform:install netgen-media;
+composer run ezplatform-install
 ```
 
-Note if you use the provided starter demo database sql files you do not need to run the above command.
+This is equivalent to running `php bin/console ezplatform:install cjw-exponential-media` directly.
 
 ## Assign Database User, Password and Database Name information in app/config/parameters.yml
 

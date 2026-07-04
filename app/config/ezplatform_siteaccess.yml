@@ -22,6 +22,7 @@ ezpublish:
             Map\URI:
                 en : en
                 de : de
+                ngadminui : ngadminui
                 legacy_admin: legacy_admin
             # 7x + Cjw Documentation: This definition is vital to uncached hosts feature of AppCache (in Nexus).
             # The mappping of hostnames to siteaccesses is used by AppCache to determine whether a request should be cached or remain private
