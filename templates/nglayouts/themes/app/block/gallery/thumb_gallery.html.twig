@@ -5,7 +5,7 @@
 {% block content %}
     {% if collections.default is defined and collections.default is not empty %}
         <div class="thumb-swiper">
-            <div class="gallery-top swiper"
+            <div class="gallery-top swiper swiper-container"
                 data-effect="{{ block.parameter('transition').value }}"
                 data-length="{{ collections.default|length }}"
                 {% if block.parameter('infinite_loop').value %}data-loop="true"{% endif %}
@@ -33,7 +33,7 @@
                 {% endif %}
             </div>
 
-            <div class="swiper gallery-thumbs">
+            <div class="swiper swiper-container gallery-thumbs">
                 <div class="swiper-wrapper">
                     {% for result in collections.default %}
                         <div class="swiper-slide">
