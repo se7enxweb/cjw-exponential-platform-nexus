@@ -5,6 +5,21 @@
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader;
 
+// The SQLite database file (database_path) is passed to Doctrine as the connection's "path" for every
+// driver (config.yml), and Doctrine's doctrine:database:create, which ezplatform:install runs first,
+// takes "path" before "dbname". Keep it for pdo_sqlite only, so MySQL/MariaDB and PostgreSQL create
+// and use the database named in database_name. DATABASE_PATH overrides the SQLite file.
+if ($value = getenv('DATABASE_PATH')) {
+    $container->setParameter('database_path', $value);
+}
+$databaseDriver = getenv('DATABASE_DRIVER');
+if ($databaseDriver === false && $container->hasParameter('env(DATABASE_DRIVER)')) {
+    $databaseDriver = $container->getParameter('env(DATABASE_DRIVER)');
+}
+if ($databaseDriver !== 'pdo_sqlite') {
+    $container->setParameter('database_path', null);
+}
+
 if ($dfsNfsPath = getenv('DFS_NFS_PATH')) {
     $container->setParameter('dfs_nfs_path', $dfsNfsPath);
 
