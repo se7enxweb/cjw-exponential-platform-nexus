@@ -21,4 +21,5 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
         tags:
+            - { name: ezplatform.installer, type: cjw-exponential-media }
             - { name: ezplatform.installer, type: exponential-cjw }

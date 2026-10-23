@@ -9,32 +9,33 @@ use EzSystems\DoctrineSchema\API\Builder\SchemaBuilder;
 use EzSystems\PlatformInstallerBundle\Installer\CoreInstaller;
 
 /**
- * Provides the `exponential-cjw` install type.
- *
- * Extends the standard CoreInstaller with CJW-specific extras:
+ * Installs the JAC Example demo site: the `cjw-exponential-media` install type (the one the
+ * install guide documents) and its older name `exponential-cjw`.
  *
  *  importSchema():
- *    On pdo_sqlite: creates ALL tables (eZ Platform + cjwnl_*) from
+ *    SQLite: creates all tables (Platform, legacy kernel, cjwnl_*) from
  *       src/AppBundle/Resources/database/sql/sqlite/schema.sql
- *       (auto-generated from schema/schema.sql by mysql_to_sqlite_cjw.py).
- *    This preserves composite primary keys (e.g. id+version on
- *    ezcontentobject_attribute) matching MySQL structure, allowing all
- *    content versions to be imported without UNIQUE constraint violations.
- *    On MySQL/MariaDB: falls back to the standard SchemaBuilder DDL.
+ *       (converted from the MySQL dump by mysql_to_sqlite_cjw.py). It keeps the composite
+ *       primary keys (e.g. id+version on ezcontentobject_attribute) of the MySQL structure,
+ *       so every content version imports without UNIQUE constraint violations.
+ *    MySQL/MariaDB: runs the schema dump of the demo site, schema/schema.sql of the
+ *       se7enxweb/cjw-exponential-media-site-data package (the same file is kept in
+ *       src/AppBundle/Resources/database/sql/schema/schema.sql).
+ *    Other databases: the platform's SchemaBuilder DDL.
  *
  *  importData():
- *    On pdo_sqlite: seeds all tables from
- *       src/AppBundle/Resources/database/sql/sqlite/data.sql
- *       (auto-generated from data/content.sql by mysql_to_sqlite_cjw.py).
- *    On MySQL/MariaDB: falls back to the standard CoreInstaller cleandata.sql.
- *
- * SQL files are located relative to %kernel.project_dir%:
- *   src/AppBundle/Resources/database/sql/sqlite/schema.sql
- *   src/AppBundle/Resources/database/sql/sqlite/data.sql
+ *    SQLite: src/AppBundle/Resources/database/sql/sqlite/data.sql.
+ *    MySQL/MariaDB: the content dump, cjw-exponential-media/data.sql of the data package
+ *       (src/AppBundle/Resources/database/sql/data/content.sql in the project).
+ *    Other databases: the platform's clean data (no demo content).
  */
 class ExponentialCjwInstaller extends CoreInstaller
 {
-    private const CJW_SQL_DIR = '/src/AppBundle/Resources/database/sql/sqlite/';
+    private const SQLITE_DIR = '/src/AppBundle/Resources/database/sql/sqlite/';
+
+    private const DATA_PACKAGE_DIR = '/vendor/se7enxweb/cjw-exponential-media-site-data/';
+
+    private const PROJECT_SQL_DIR = '/src/AppBundle/Resources/database/sql/';
 
     /** @var string */
     private $projectDir;
@@ -45,64 +46,62 @@ class ExponentialCjwInstaller extends CoreInstaller
         $this->projectDir = $projectDir;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * On SQLite: creates ALL tables from sqlite/schema.sql (converted from MySQL),
-     * preserving composite PKs so that all content versions import without conflicts.
-     * On MySQL/MariaDB: delegates to the standard SchemaBuilder DDL.
-     */
     public function importSchema(): void
     {
-        $platform = $this->db->getDatabasePlatform()->getName();
+        switch ($this->getPlatformName()) {
+            case 'sqlite':
+                $schemaFile = $this->getSqlFile([self::SQLITE_DIR . 'schema.sql']);
+                $this->output->writeln(
+                    '<info>Creating all tables (eZ Platform + CJW) from <comment>' . $schemaFile . '</comment></info>'
+                );
+                $this->runQueriesFromFile($schemaFile);
+                break;
 
-        if ($platform === 'sqlite') {
-            $schemaFile = $this->getCjwSqliteFile('schema.sql');
-            $this->output->writeln(
-                '<info>Creating all tables (eZ Platform + CJW) from <comment>' . $schemaFile . '</comment></info>'
-            );
-            $this->runQueriesFromFile($schemaFile);
-        } else {
-            // MySQL / MariaDB: use the standard SchemaBuilder DDL
-            parent::importSchema();
+            case 'mysql':
+                $this->runQueriesFromFile($this->getSqlFile([
+                    self::DATA_PACKAGE_DIR . 'schema/schema.sql',
+                    self::PROJECT_SQL_DIR . 'schema/schema.sql',
+                ]));
+                break;
+
+            default:
+                parent::importSchema();
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * On SQLite: loads CJW/Nexus demo content from sqlite/data.sql.
-     * On MySQL/MariaDB: falls back to the standard cleandata.sql.
-     */
     public function importData(): void
     {
-        $platform = $this->db->getDatabasePlatform()->getName();
+        switch ($this->getPlatformName()) {
+            case 'sqlite':
+                $this->runQueriesFromFile($this->getSqlFile([self::SQLITE_DIR . 'data.sql']));
+                break;
 
-        if ($platform === 'sqlite') {
-            $dataFile = $this->getCjwSqliteFile('data.sql');
-            $this->runQueriesFromFile($dataFile);
-        } else {
-            // MySQL / MariaDB: use the standard eZ Platform clean data
-            parent::importData();
+            case 'mysql':
+                $this->runQueriesFromFile($this->getSqlFile([
+                    self::DATA_PACKAGE_DIR . 'cjw-exponential-media/data.sql',
+                    self::PROJECT_SQL_DIR . 'data/content.sql',
+                ]));
+                break;
+
+            default:
+                $this->output->writeln(
+                    '<comment>The JAC Example demo content is provided for MySQL/MariaDB and SQLite only; installing the clean data.</comment>'
+                );
+                parent::importData();
         }
     }
 
     /**
-     * Override the parent splitter to additionally convert MySQL-style escape
-     * sequences (\\n, \\r) to real characters AFTER splitting on statement
-     * boundaries.
-     *
-     * The conversion must happen post-split: the data.sql dump stores literal
-     * two-character sequences "\n" / "\r" inside single-quoted SQL strings.
-     * If we converted them before splitting, real newlines would appear inside
-     * INSERT statements, potentially triggering the parent's `;$` end-of-line
-     * splitter on any semicolons that happen to be followed by the new newline.
-     * Post-split conversion is safe because each INSERT is already a complete,
-     * fully-isolated statement.
+     * Splits on statement ends like the parent. On SQLite the two-character sequences "\n"
+     * and "\r" of the converted MySQL dump are turned into real characters after splitting,
+     * so XML values (e.g. ezimage data_text) are stored as valid XML; each INSERT is already a
+     * complete statement then. MySQL/MariaDB read those escapes themselves, so their dumps run
+     * unchanged.
      */
     protected function runQueriesFromFile($file)
     {
         $queries = array_filter(preg_split('(;\s*$)m', file_get_contents($file)));
+        $convertEscapes = $this->getPlatformName() === 'sqlite';
 
         if (!$this->output->isQuiet()) {
             $this->output->writeln(
@@ -116,32 +115,44 @@ class ExponentialCjwInstaller extends CoreInstaller
         }
 
         foreach ($queries as $query) {
-            // Convert MySQL dump escape sequences to real characters so that
-            // XML values (e.g. ezimage data_text) are stored as valid XML.
-            $query = str_replace(['\\n', '\\r'], ["\n", "\r"], $query);
+            if (trim($query) === '') {
+                continue;
+            }
+            if ($convertEscapes) {
+                $query = str_replace(['\\n', '\\r'], ["\n", "\r"], $query);
+            }
             $this->db->exec($query);
         }
     }
 
-    /**
-     * Return the absolute path to a file inside the sqlite/ SQL directory.
-     *
-     * @throws \RuntimeException if the file is not readable
-     */
-    private function getCjwSqliteFile(string $filename): string
+    private function getPlatformName(): string
     {
-        $path = $this->projectDir . self::CJW_SQL_DIR . $filename;
+        return $this->db->getDatabasePlatform()->getName();
+    }
 
-        if (!is_readable($path)) {
-            throw new \RuntimeException(
-                sprintf(
-                    'CJW SQLite file not found or not readable: %s' . PHP_EOL .
-                    'Run mysql_to_sqlite_cjw.py to generate it.',
-                    $path
-                )
-            );
+    /**
+     * Returns the first readable file of the given paths (relative to the project directory).
+     *
+     * @param string[] $candidates
+     *
+     * @throws \RuntimeException if none is readable
+     */
+    private function getSqlFile(array $candidates): string
+    {
+        foreach ($candidates as $candidate) {
+            $path = $this->projectDir . $candidate;
+            if (is_readable($path)) {
+                return realpath($path);
+            }
         }
 
-        return realpath($path);
+        throw new \RuntimeException(
+            sprintf(
+                'None of the installer SQL files is readable: %s',
+                implode(', ', array_map(function (string $candidate): string {
+                    return $this->projectDir . $candidate;
+                }, $candidates))
+            )
+        );
     }
 }
