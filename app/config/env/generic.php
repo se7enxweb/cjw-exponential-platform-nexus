@@ -12,12 +12,13 @@ use Symfony\Component\DependencyInjection\Loader;
 if ($value = getenv('DATABASE_PATH')) {
     $container->setParameter('database_path', $value);
 }
-$databaseDriver = getenv('DATABASE_DRIVER');
-if ($databaseDriver === false && $container->hasParameter('env(DATABASE_DRIVER)')) {
-    $databaseDriver = $container->getParameter('env(DATABASE_DRIVER)');
-}
-if ($databaseDriver !== 'pdo_sqlite') {
-    $container->setParameter('database_path', null);
+// At compile time the parameter holds an env placeholder; resolve it to the DATABASE_DRIVER
+// environment variable, else the env(DATABASE_DRIVER) default of parameters.yml.
+if (getenv('DATABASE_DRIVER') !== false || $container->hasParameter('env(DATABASE_DRIVER)')) {
+    $databaseDriver = $container->resolveEnvPlaceholders('%env(DATABASE_DRIVER)%', true);
+    if ($databaseDriver !== 'pdo_sqlite') {
+        $container->setParameter('database_path', null);
+    }
 }
 
 if ($dfsNfsPath = getenv('DFS_NFS_PATH')) {
