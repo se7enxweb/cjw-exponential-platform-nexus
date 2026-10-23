@@ -5,6 +5,13 @@
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader;
 
+// The Doctrine ORM caches use APCu (doctrine_orm_cache_type in default_parameters.yml). APCu is
+// recommended but optional: without the extension Doctrine's ApcuCache calls apcu_fetch() and
+// every console command and page stops, so fall back to the in-request array cache.
+if (!extension_loaded('apcu')) {
+    $container->setParameter('doctrine_orm_cache_type', 'array');
+}
+
 // The SQLite database file (database_path) is passed to Doctrine as the connection's "path" for every
 // driver (config.yml), and Doctrine's doctrine:database:create, which ezplatform:install runs first,
 // takes "path" before "dbname". Keep it for pdo_sqlite only, so MySQL/MariaDB and PostgreSQL create

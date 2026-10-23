@@ -23,6 +23,10 @@ parameters:
     # Defaults to var/data_{env}.db (e.g. var/data_prod.db). Override with DATABASE_PATH env var.
     database_path: '%kernel.project_dir%/var/data_%kernel.environment%.db'
 
+    # Cache driver of the Doctrine ORM metadata, query and result caches (config.yml). APCu by
+    # default; app/config/env/generic.php uses "array" when the APCu extension is not loaded.
+    doctrine_orm_cache_type: apcu
+
     # Setting for mail system, used by SwiftMailer
     mailer_host: '%env(MAILER_HOST)%'
     mailer_port: '%env(MAILER_PORT)%'
