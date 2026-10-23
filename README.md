@@ -62,7 +62,7 @@ access to the Internet.
 
 ## What version of PHP is required
 
-Exponential Platform Nexus supports PHP 8.3 -> 8.5 please use the latest version of PHP available on your OS.
+CJW Exponential Platform Nexus 1.0 installs on PHP 8.0 to 8.5; please use the latest version of PHP available on your OS (8.5 recommended). See [doc/INSTALL.md](doc/INSTALL.md) for the Composer switch the install needs and which Exponential legacy kernel each PHP version gets.
 
 # Main Exponential Platform Nexus features
 

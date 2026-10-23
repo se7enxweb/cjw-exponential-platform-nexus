@@ -1,16 +1,19 @@
-# Exponential Platform Nexus 1.0.0.x INSTALL Instructions
+# CJW Exponential Platform Nexus 1.0.0.x INSTALL Instructions
 
 ## Requirements
 
-### Apache version:
+### Web server:
 
-   The latest version of the 1.3 branch.
-   or
-   Apache 2.x run in "prefork" mode.
+   Apache 2.4 (see doc/apache2), nginx (see doc/nginx) or, for development and
+   testing, PHP's built-in web server (see "Serve the site" below).
 
 ### PHP version:
 
-   The latest version of the 8.5 branch is strongly recommended.
+   PHP 8.0 or later. The latest version of the 8.5 branch is recommended.
+
+   Composer installs the Exponential legacy kernel that fits the PHP version: on PHP 8.1
+   and later the latest release (6.0.14), on PHP 8.0 the 6.0.x line (6.0.15), which is the
+   kernel line that runs on PHP 8.0.
 
    Note that you will have to increase the default "memory_limit" setting
    which is located in the "php.ini" configuration file to 464 MB or larger. (Don't
@@ -22,15 +25,18 @@
 
 ### Composer version:
 
-   The latest version of the 2.x branch is recommended.
+   Composer 2.2 or later (the latest 2.x is recommended).
+
+### Node.js and Yarn:
+
+   composer install builds the site's assets and the Platform admin's assets with
+   Webpack Encore, so Node.js 20 and Yarn 1.22 must be on the PATH (see "Install Node.js
+   and Yarn" below).
 
 ### Database server:
 
-   MySQL 4.1 or later (UTF-8 is required)
-   or
-   PostgreSQL 8.x
-   or
-   Oracle 11g
+   MySQL 5.7 / MariaDB 10.3 or later (utf8mb4), or SQLite 3 (pdo_sqlite).
+   The JAC Example demo content is installed on MySQL/MariaDB and on SQLite.
 
 ### PHP Extension(s):
 - ctype
@@ -46,7 +52,7 @@
 - openssl
 - pcre
 - pdo
-- pdo_mysql
+- pdo_mysql (MySQL/MariaDB) or pdo_sqlite (SQLite)
 - phar
 - session
 - simplexml
@@ -54,6 +60,7 @@
 - xml
 - xmlreader
 - xmlwriter
+- xsl
 - zlib
 
 Strongly recommended (but not strictly required). You can run without some of these, but you really shouldn’t in production:
@@ -85,36 +92,99 @@ Search (Legacy Bridge / advanced indexing)
 (These are commonly required by legacy-related tools and indexing processes.)
 
 
-# GitHub Installation Guide (Create project for contribution)
+# Installation
 
-## Create Database
+CJW Exponential Platform Nexus is installed from its Git repository. It is not published on
+Packagist: `composer create-project se7enxweb/exponential-platform-nexus` installs a different
+product (Exponential Platform Nexus).
 
-### MySQL database
+The repository includes a `vendor/` directory, but `composer install` is still required: it
+brings `vendor/` up to date, installs the Exponential legacy kernel into `ezpublish_legacy/`
+(which is not part of the repository), links the legacy extensions and bundle assets, and
+builds the site and Platform admin assets.
 
-Use the following MySQL DDL to create a database which will be used for your project:
-
-```mysql
-CREATE DATABASE <db_name> CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_general_ci;
-```
-
-## Clone the Git repository
-
-```shell 
-git clone git@github.com:se7enxweb/exponential-platform-nexus.git;
-```
-
-## Install default installation demo site database
-
-Run the built-in console installer. It imports the schema and content from the
-[`se7enxweb/cjw-exponential-media-site-data`](https://github.com/se7enxweb/cjw-exponential-media-site-data)
-package (installed automatically by Composer in the previous step).
+## 1. Install Node.js and Yarn
 
 ```shell
-php bin/console ezplatform:install cjw-exponential-media
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install 20
+node -v   # v20.x
+npm install --global yarn
+yarn -v   # 1.22.x
 ```
 
-This installs the full JAC Example project with content, content classes, sections,
-languages (ger-DE + eng-GB), and all required configuration.
+## 2. Clone the Git repository
+
+```shell
+git clone https://github.com/se7enxweb/cjw-exponential-platform-nexus.git
+cd cjw-exponential-platform-nexus
+```
+
+## 3. Install the Composer packages
+
+```shell
+composer install --ignore-platform-req=php+
+```
+
+Several packages of this Symfony 3.4 / Platform 2.5 stack still declare an upper PHP bound
+(for example `^5.6 || ^7.0`). `--ignore-platform-req=php+` ignores only those upper bounds: a
+PHP version below a package's minimum is still refused and the PHP extension checks still
+run. To set it once for the shell instead: `export COMPOSER_IGNORE_PLATFORM_REQ=php+`.
+
+When Composer asks for the parameters of `app/config/parameters.yml`, the defaults can be
+accepted; the database is configured in the next step. The install ends with `yarn install`,
+the Encore build of the site assets and `yarn ezplatform` (the Platform admin assets).
+
+## 4. Configure the database
+
+Edit `app/config/parameters.yml`:
+
+- MySQL/MariaDB: create the database first,
+
+  ```mysql
+  CREATE DATABASE <db_name> CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
+  ```
+
+  then set `env(DATABASE_DRIVER): pdo_mysql`, `env(DATABASE_HOST)`, `env(DATABASE_NAME)`,
+  `env(DATABASE_USER)`, `env(DATABASE_PASSWORD)` and `env(DATABASE_VERSION)` (for example
+  `mariadb-10.5.29` or `5.7`).
+- SQLite: set `env(DATABASE_DRIVER): pdo_sqlite`. The database file is
+  `var/data_<environment>.db` (`var/data_prod.db` for the site served by `web/app.php`); the
+  `DATABASE_PATH` environment variable chooses another file.
+
+Set `env(SYMFONY_SECRET)` to a long random value (for example the output of
+`openssl rand -hex 32`) and rotate it regularly.
+
+Then clear the cache, because `composer install` compiled the container with the defaults of
+`parameters.yml.dist`:
+
+```shell
+export SYMFONY_ENV=prod
+php bin/console cache:clear
+```
+
+`SYMFONY_ENV` selects the environment of `bin/console` (default `dev`). `web/app.php` runs
+`prod`; with SQLite each environment has its own database file, so install and serve with
+the same environment.
+
+## 5. Install the demo site database
+
+```shell
+php -d memory_limit=2000M bin/console ezplatform:install cjw-exponential-media
+```
+
+This installs the JAC Example site with its content, content classes, sections, languages
+(ger-DE and eng-GB) and Netgen Layouts, from the
+[`se7enxweb/cjw-exponential-media-site-data`](https://github.com/se7enxweb/cjw-exponential-media-site-data)
+package on MySQL/MariaDB and from `src/AppBundle/Resources/database/sql/sqlite/` on SQLite.
+`composer run ezplatform-install` runs the same command.
+
+| Type | Description |
+|------|-------------|
+| `cjw-exponential-media` | **Default.** JAC Example site with demo content (MySQL/MariaDB, SQLite) |
+| `exponential-cjw` | Older name of `cjw-exponential-media` |
+| `exponential-oss` | Minimal clean schema only, no content |
 
 **Default Admin Credentials:**
 - Username: `admin`
@@ -122,144 +192,66 @@ languages (ger-DE + eng-GB), and all required configuration.
 
 **⚠️ IMPORTANT:** Change the admin password immediately after installation!
 
-#### Available installer types
+## 6. Link the project's legacy extension and storage
 
-| Type | Description |
-|------|-------------|
-| `cjw-exponential-media` | **Default.** Full JAC Example site with demo content |
-| `exponential-oss` | Minimal clean schema only, no content |
-
-** Later step comming up, Composr! Install Exponential Platform Nexus required PHP libraries like Zeta Components and Exponential Platform bundles and bundle extensions as specified in this project's composer.json. **
-
-## Install Node
-
-### Download Node.js
-
-* https://nodejs.org/en/download
-
-## Install Node.js
-
-### Download and install nvm:
-
-```shell 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-```
-
-### in lieu of restarting the shell
+`composer install` has already linked the legacy extensions of the bundles (`ngadminui`,
+`nglayouts`, `ngsite`, `ezrichtext`) and `web/bundles/app`. Two links remain:
 
 ```shell
-\. "$HOME/.nvm/nvm.sh"
+# The "app" legacy extension of the project (settings and design of the admin siteaccesses).
+ln -s ../../src/AppBundle/ezpublish_legacy/extension/app ezpublish_legacy/extension/app
+
+# The storage of the demo content (images and files), kept outside ezpublish_legacy/ because
+# composer update replaces that directory.
+[ -d ezpublish_legacy/var/site/storage ] && mv ezpublish_legacy/var/site/storage ezpublish_legacy/var/site/storage-empty
+ln -s ../../../src/AppBundle/ezpublish_legacy/var/site/storage ezpublish_legacy/var/site/storage
+
+php bin/console ezpublish:legacy:script bin/php/ezpgenerateautoloads.php
 ```
 
-### Download and install Node.js:
+## 7. Clear the caches
 
 ```shell
-nvm install 20
+php bin/console cache:clear
+php bin/console ezpublish:legacy:script bin/php/ezcache.php --clear-all
 ```
 
-### Verify the Node.js version:
+## 8. Permissions
+
+Replace user and group as needed:
 
 ```shell
-node -v # Should print "v20.20.0".
+chown -R www-data:www-data .
 ```
 
-### Verify npm version:
+## 9. Serve the site
 
-```shell 
-npm -v # Should print "10.8.2".
-```
+- Apache: see `doc/apache2` (document root `web/`, `DirectoryIndex app.php`).
+- nginx: see `doc/nginx` (document root `web/`).
+- PHP's built-in web server, for development and testing:
 
-## Install Yarn
+  ```shell
+  php -d memory_limit=512M -S 127.0.0.1:8000 -t web
+  ```
 
-### Download Yarn
+  `web/index.php` runs the application the same way `web/app.php` does.
 
-* https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable
+With one host name, the siteaccesses are reached by the first part of the path:
 
-### Install Yarn
-
-```shell
-npm install --global yarn
-```
-
-## Install the required composer packages and start the installation process
-
-```shell
-cd exponential-platform-nexus; composer install --keep-vcs --ignore-platform-reqs;
-```
-
-*Note*: For the short term future the composer argument '--ignore-platform-reqs' is required to install the software via composer package dependencies successfully. This limitation will soon be removed in the future as we continue to update requirements within the composer package definition files for each package repostiory (tedious detail oriented work which is currently on going).
-
-### (Option) Run via composer script
-
-```shell
-composer run ezplatform-install
-```
-
-This is equivalent to running `php bin/console ezplatform:install cjw-exponential-media` directly.
-
-## Assign Database User, Password and Database Name information in app/config/parameters.yml
-
-## Manual Symlink Installation for default legacy storage images is required. 
-
-This is required to store the storage directory outside of the ezpublish_legacy directory which is *erased* upon composer update (when new releases are installed via update of package se7enxweb/exponential). This is a known issue due to the behavior and nature of composer usage.
-
-To see the images provided in the starter design and avoid a potential site bug of missing images perform the following commands:
-
-### Install `app` ezpublish_legacy extension (Required by 7x admin-ui-bundle/ngadminui).
-
-```shell
-cd ezpublish_legacy/extension/;
-ln -s ../../../src/AppBundle/ezpublish_legacy/extension/app .;
-cd ../../../;
-```
-
-### Install `ngadminui` ezpublish_legacy extension (Required by 7x admin-ui-bundle/ngadminui).
-
-```shell
-cd ezpublish_legacy/extension/;
-ln -s ../../../vendor/se7enxweb/admin-ui-bundle/bundle/ezpublish_legacy/ngadminui .;
-cd ../../../;
-```
-
-### Install `app storage dir symlink` in var siteaccess dir
-
-```shell
-cd ezpublish_legacy/var/site/;
-mv storage storage-empty;
-ln -s ../../../src/AppBundle/ezpublish_legacy/var/site/storage .;
-cd ../../../;
-```
-
-### Install `app` bundle public dir symlink in web/bundles
-
-```shell
-cd web/bundles/;
-ln -s ../../src/AppBundle/Resources/public app;
-cd ../../;
-```
-
-### Permissions: Replace user and group as needed or desired
-
-```shell
-chown -R www-data:www-data .;
-```
+| Address | Siteaccess |
+|---------|------------|
+| `/` | Front site, German (`de`, default) |
+| `/en/` | Front site, English |
+| `/admin/` | Platform admin |
+| `/ngadminui/` | Netgen Admin UI |
+| `/legacy_admin/` | Legacy admin |
+| `/nglayouts/admin/` | Netgen Layouts admin (sign in on the front site at `/login` first) |
 
 ## Siteaccess Configuration
 
-Remember to review the defeault siteaccess configuration yaml settings in `app/config/ezplatform_siteaccess.yml`
-
-You may wish to alter the Host (name) match doman names mappings to named siteaccesses. We recommend using at least 2 hosts. One for user and second for editor / admin ui.
-
-## Clear cache
-
-There might not be any cache or related issues but it's recommended practice to clear cache after completing your installation to avoid any possible issues.
-
-```shell
-php bin/console cache:clear --env=dev;
-```
-
-Both of these sets of demo data add an administrator user to the database. This user's username is admin and its password is publish.
-
+Review the default siteaccess configuration in `app/config/ezplatform_siteaccess.yml`.
+You may wish to change the host name to siteaccess mappings (`Map\Host`); we recommend at
+least two hosts, one for the site and one for the editors and admin interfaces.
 
 ### Additional Instructions
 
@@ -273,186 +265,7 @@ This software is based upon the elder 1.x branch of 7x Media-site.
 
 * Installation Guide for the Media-site software requirements (Helpful): https://github.com/se7enxweb/media-site/blob/1.12/doc/netgen/INSTALL.md
 
-*Security Note*: Like all Symfony based applications please remember to set the yaml parameter `SYMFONY_SECRET` durring the installation process (towards the end of a successfull instalation durring app/config/parameters.yml content population prompts) to asign a very unique, long, secure and regularly updated to a new secure value each financial quarter (maintinence). This is this the most commonly reported cause of eZ Platform based attacks. Make note that if you secure this text string value securely (hash of keys; not words) your attack vector is drasticaly reduced both in principle and in general proven security best-practice for Symfony Web App Developers. We can not repeate proven fact enough. Protect your installations on a regular basis and don't forget to rotate your keys each financial quarter. 
-
-# Composer Installation Guide
-
-## Create Database
-
-### MySQL database
-
-Use the following MySQL DDL to create a database which will be used for your project:
-
-```mysql
-CREATE DATABASE <db_name> CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_general_ci;
-```
-
-## Install Exponential Platform Nexus required PHP libraries like Zeta Components and Exponential Platform Bundles and Bundle extensions as specified in this project's composer.json.
-
-```shell
-cd www-root-directory; composer create-project se7enxweb/exponential-platform-nexus:v1.0.0.x-dev --ignore-platform-reqs;
-```
-
-Note: For the short term future the composer argument '--ignore-platform-reqs' is required to install the software via composer package dependencies successfully. This limitation will soon be removed in the future as we continue to update requirements within the composer package definition files for each package repostiory (tedious detail oriented work which is ongoing).
-
-## Install default installation demo site database
-
-Run the built-in console installer. It imports the schema and content from the
-[`se7enxweb/cjw-exponential-media-site-data`](https://github.com/se7enxweb/cjw-exponential-media-site-data)
-package (installed automatically by Composer in the previous step).
-
-```shell
-php bin/console ezplatform:install cjw-exponential-media
-```
-
-This installs the full JAC Example project with content, content classes, sections,
-languages (ger-DE + eng-GB), and all required configuration.
-
-**Default Admin Credentials:**
-- Username: `admin`
-- Password: `publish`
-
-**⚠️ IMPORTANT:** Change the admin password immediately after installation!
-
-#### Available installer types
-
-| Type | Description |
-|------|-------------|
-| `cjw-exponential-media` | **Default.** Full JAC Example site with demo content |
-| `exponential-oss` | Minimal clean schema only, no content |
-
-** Later step comming up, Composr! Install Exponential Platform Nexus required PHP libraries like Zeta Components and Exponential Platform bundles and bundle extensions as specified in this project's composer.json. **
-
-## Install Node
-
-### Download Node.js
-
-* https://nodejs.org/en/download
-
-## Install Node.js
-
-### Download and install nvm:
-
-```shell 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-```
-
-### in lieu of restarting the shell
-
-```shell
-\. "$HOME/.nvm/nvm.sh"
-```
-
-### Download and install Node.js:
-
-```shell
-nvm install 20
-```
-
-### Verify the Node.js version:
-
-```shell
-node -v # Should print "v20.20.0".
-```
-
-### Verify npm version:
-
-```shell 
-npm -v # Should print "10.8.2".
-```
-
-## Install Yarn
-
-### Download Yarn
-
-* https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable
-
-### Install Yarn
-
-```shell
-npm install --global yarn
-```
-
-## Install the required composer packages and start the installation process
-
-```shell
-cd exponential-platform-nexus; composer install --keep-vcs --ignore-platform-reqs;
-```
-
-*Note*: For the short term future the composer argument '--ignore-platform-reqs' is required to install the software via composer package dependencies successfully. This limitation will soon be removed in the future as we continue to update requirements within the composer package definition files for each package repostiory (tedious detail oriented work which is currently on going).
-
-### (Option) Run via composer script
-
-```shell
-composer run ezplatform-install
-```
-
-This is equivalent to running `php bin/console ezplatform:install cjw-exponential-media` directly.
-
-## Assign Database User, Password and Database Name information in app/config/parameters.yml
-
-## Manual Symlink Installation for default legacy storage images is required. 
-
-This is required to store the storage directory outside of the ezpublish_legacy directory which is *erased* upon composer update (when new releases are installed via update of package se7enxweb/exponential). This is a known issue due to the behavior and nature of composer usage.
-
-To see the images provided in the starter design and avoid a potential site bug of missing images perform the following commands:
-
-### Install `app` ezpublish_legacy extension (Required by 7x admin-ui-bundle/ngadminui).
-
-```shell
-cd ezpublish_legacy/extension/;
-ln -s ../../../src/AppBundle/ezpublish_legacy/extension/app .;
-cd ../../../;
-```
-
-### Install `app storage dir symlink` in var siteaccess dir
-
-```shell
-cd ezpublish_legacy/var/site/;
-mv storage storage-empty;
-ln -s ../../../src/AppBundle/ezpublish_legacy/var/site/storage .;
-cd ../../../;
-```
-
-### Install `app` bundle public dir symlink in web/bundles
-
-```shell
-cd web/bundles/;
-ln -s ../../src/AppBundle/Resources/public app;
-cd ../../;
-```
-
-### Permissions: Replace user and group as needed or desired
-
-```shell
-chown -R www-data:www-data .;
-```
-
-## Siteaccess Configuration
-
-Remember to review the defeault siteaccess configuration yaml settings in `app/config/ezplatform_siteaccess.yml`
-
-You may wish to alter the Host (name) match doman names mappings to named siteaccesses. We recommend using at least 2 hosts. One for user and second for editor / admin ui.
-
-## Clear cache
-
-There might not be any cache or related issues but it's recommended practice to clear cache after completing your installation to avoid any possible issues.
-
-```shell
-php bin/console cache:clear --env=dev;
-```
-
-Both of these sets of demo data add an administrator user to the database. This user's username is admin and its password is publish.
-
-
-### Additional Instructions
-
-For the rest of the installation steps you will find the installation guide at https://exponential.doc.exponential.earth/display/DEVELOPER/Step%2b1_%2bInstallation.html
-
-- And at: https://exponential.doc.exponential.earth/display/DEVELOPER/Installation%2bUsing%2bComposer.html
-
-- And at: https://exponential.doc.exponential.earth/display/DEVELOPER/Installation%2bGuide%2bfor%2bUnix-Based%2bSystems.html
-
-This software is based upon the elder 1.x branch of 7x Media-site.
-
-* Installation Guide for the Media-site software requirements (Helpful): https://github.com/se7enxweb/media-site/blob/1.12/doc/netgen/INSTALL.md
+*Security Note*: Like all Symfony based applications, set `env(SYMFONY_SECRET)` in
+`app/config/parameters.yml` to a unique, long, random value during the installation and
+replace it regularly. A guessable secret is the most commonly reported cause of attacks on
+Platform based sites.
