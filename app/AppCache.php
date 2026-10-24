@@ -79,6 +79,15 @@ class AppCache extends PlatformHttpCacheBundleAppCache
         if ($response->headers->has('Set-Cookie')) {
             return;
         }
+
+        // Do NOT override for a request with a session (a signed-in user): the page is that user's own.
+        // Made public, a browser kept showing it for an hour (in the legacy admin, without the bookmark
+        // folder just created) and a shared cache could hand it to someone else.
+        foreach (array_keys($request->cookies->all()) as $cookieName) {
+            if (strpos((string)$cookieName, 'eZSESSID') === 0) {
+                return;
+            }
+        }
         
         // Do NOT override if response has X-User-Context-Hash (user-specific)
         if ($response->headers->has('X-User-Context-Hash')) {

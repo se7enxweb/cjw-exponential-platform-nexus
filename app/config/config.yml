@@ -197,11 +197,28 @@ swiftmailer:
 fos_http_cache:
     cache_control:
         rules:
+            # Rule 0: the admin siteaccesses (legacy admin, Netgen Admin UI) answer signed-in users with
+            # pages of their own: never cacheable, by browsers or by shared caches. Marked public, the
+            # legacy admin showed a browser's cached copy for an hour, without the folder or bookmark
+            # that had just been added, and a shared cache could hand one editor's page to another.
+            # app/AppCache.php leaves these responses alone (http_cache.yml: uncached_url_patterns,
+            # uncached_siteaccesses, uncached_hostnames).
+            -
+                match:
+                    path: "^/(admin|legacy_admin|ngadminui)(/|$)"
+                headers:
+                    overwrite: true
+                    cache_control:
+                        private: true
+                        no_cache: true
+                        max_age: 0
+                        s_maxage: 0
+
             # Rule 1 (NEW): Default public pages are cacheable for 1 hour
             # These are non-admin, non-API pages that should benefit from shared caching
             -
                 match:
-                    path: "^(?!/admin|/api|/login|/logout|/user|/_|/ngadminui|/ng/)"
+                    path: "^(?!/admin|/legacy_admin|/api|/login|/logout|/user|/_|/ngadminui|/ng/)"
                 headers:
                     overwrite: true
                     cache_control:

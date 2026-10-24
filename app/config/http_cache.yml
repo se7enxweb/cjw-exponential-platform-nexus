@@ -27,4 +27,5 @@ http_cache:
         - '^/user'       # User profile/account pages
         - '^/_'          # System/internal routes
         - '^/ngadminui'  # eZ Platform admin UI
+        - '^/legacy_admin(/|$)' # Legacy admin (URI-matched siteaccess; signed-in pages of their own)
         - '^/ng/'        # Admin/internal ng routes
