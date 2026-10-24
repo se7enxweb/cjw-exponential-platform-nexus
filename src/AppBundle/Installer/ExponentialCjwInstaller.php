@@ -37,6 +37,8 @@ class ExponentialCjwInstaller extends CoreInstaller
 
     private const PROJECT_SQL_DIR = '/src/AppBundle/Resources/database/sql/';
 
+    private const LEGACY_KERNEL_SCHEMA = '/ezpublish_legacy/share/db_schema.dba';
+
     /** @var string */
     private $projectDir;
 
@@ -66,7 +68,21 @@ class ExponentialCjwInstaller extends CoreInstaller
 
             default:
                 parent::importSchema();
+
+                return;
         }
+
+        // The dumps describe the legacy kernel they were made with; add the tables and columns
+        // that the installed legacy kernel's own schema has on top of them.
+        $completer = new LegacyKernelSchemaCompleter(
+            $this->db,
+            $this->projectDir . self::LEGACY_KERNEL_SCHEMA
+        );
+        $queries = $completer->complete();
+        $this->output->writeln(sprintf(
+            '<info>Completed the schema with the installed legacy kernel\'s tables and columns: <comment>%d</comment> statement(s)</info>',
+            count($queries)
+        ));
     }
 
     public function importData(): void
