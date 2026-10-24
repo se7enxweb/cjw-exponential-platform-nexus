@@ -41,13 +41,17 @@ netgen_site_legacy:
             injected_settings:
                 site.ini:
                     DesignSettings/SiteDesign: admin3
-                    
+
             injected_merge_settings:
                 site.ini:
                     SiteAccessRules/Rules:
                         - access;enable
                         - moduleall
                         - module;visual
+                    # The legacy admin design of the Exponential 6.0.15 kernel (installed on PHP 8.0) calls
+                    # the ezjscore functions of expui (exp::core, exp::io, exp::datatable ...).
+                    ExtensionSettings/ActiveAccessExtensions:
+                        - expui
 
         default:
             injected_merge_settings:
