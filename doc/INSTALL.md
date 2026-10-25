@@ -132,6 +132,19 @@ Several packages of this Symfony 3.4 / Platform 2.5 stack still declare an upper
 PHP version below a package's minimum is still refused and the PHP extension checks still
 run. To set it once for the shell instead: `export COMPOSER_IGNORE_PLATFORM_REQ=php+`.
 
+**Security blocking stays on.** Composer 2.9 and later refuse packages with known security advisories, and Composer
+2.11 refuses development versions with advisories as well. The 2.5 stack needs several packages at versions upstream
+no longer fixes, so the project requires se7enxweb forks that carry the backported fixes and replace the upstream
+names: `se7enxweb/symfony` (`symfony/*` 3.4), `se7enxweb/twig` (`twig/twig` 2.x), `se7enxweb/flysystem`
+(`league/flysystem` 1.x), `se7enxweb/graphql-php` (`webonyx/graphql-php` 0.13), `se7enxweb/symfony-mime`
+(`symfony/mime`), `se7enxweb/ezplatform-http-cache` 0.9.6 (`ezsystems/ezplatform-http-cache`) and
+`se7enxweb/information-collection-bundle` 1.9.6 (`netgen/information-collection-bundle`, whose XLS export uses
+PhpSpreadsheet instead of the abandoned PHPExcel). The advisories whose ranges still name a fork's version are listed in
+`config.policy.advisories.ignore-id` and `config.audit.ignore` of `composer.json`, each with the fix the fork carries;
+every other advisory blocks the install. PSR-7 comes from `guzzlehttp/psr7` 2.x, and the dev dependencies no longer
+include the Goutte Mink driver (it needs Guzzle 6, for which no fixed release exists). Never set
+`COMPOSER_NO_SECURITY_BLOCKING` or `audit.block-insecure: false` to get past an advisory.
+
 When Composer asks for the parameters of `app/config/parameters.yml`, the defaults can be
 accepted; the database is configured in the next step. The install ends with `yarn install`,
 the Encore build of the site assets and `yarn ezplatform` (the Platform admin assets).
