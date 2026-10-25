@@ -12,6 +12,9 @@
 namespace Symfony\Component\Security\Http\Tests\Session;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Csrf\TokenStorage\ClearableTokenStorageInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
 class SessionAuthenticationStrategyTest extends TestCase
@@ -51,6 +54,18 @@ class SessionAuthenticationStrategyTest extends TestCase
         $session->expects($this->once())->method('invalidate');
 
         $strategy = new SessionAuthenticationStrategy(SessionAuthenticationStrategy::INVALIDATE);
+        $strategy->onAuthentication($this->getRequest($session), $this->getToken());
+    }
+
+    public function testCsrfTokensAreCleared()
+    {
+        $session = $this->createMock(SessionInterface::class);
+        $session->expects($this->once())->method('migrate')->with($this->equalTo(true));
+
+        $csrfStorage = $this->createMock(ClearableTokenStorageInterface::class);
+        $csrfStorage->expects($this->once())->method('clear');
+
+        $strategy = new SessionAuthenticationStrategy(SessionAuthenticationStrategy::MIGRATE, $csrfStorage);
         $strategy->onAuthentication($this->getRequest($session), $this->getToken());
     }
 

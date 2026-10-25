@@ -113,7 +113,6 @@ final class Factory
     private function setupConfig(string $path, array $settings = []): Config
     {
         $file = new Json($path);
-
         return $file->exists()
             ? $this->loadConfigFromFile($path, $settings)
             : new Config($path, false, $settings);
@@ -199,10 +198,11 @@ final class Factory
     {
         $config->setEnabled($json['enabled'] ?? true);
         foreach ($json['actions'] as $actionJson) {
+            $action     = is_array($actionJson['action']) ? implode(' ', $actionJson['action']) : $actionJson['action'];
             $options    = $this->extractOptions($actionJson);
             $conditions = $this->extractConditions($actionJson);
             $settings   = $this->extractSettings($actionJson);
-            $config->addAction(new Config\Action($actionJson['action'], $options, $conditions, $settings));
+            $config->addAction(new Config\Action($action, $options, $conditions, $settings));
         }
     }
 

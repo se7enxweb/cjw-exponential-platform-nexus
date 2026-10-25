@@ -398,7 +398,7 @@ class Config
         }
 
         foreach (Hooks::getValidHooks() as $hook => $value) {
-            if ($this->hooks[$hook]->isEnabled() || $this->hooks[$hook]->hasActions()) {
+            if ($this->hooks[$hook]->hasLocalActions()) {
                 $data[$hook] = $this->hooks[$hook]->getJsonData();
             }
         }

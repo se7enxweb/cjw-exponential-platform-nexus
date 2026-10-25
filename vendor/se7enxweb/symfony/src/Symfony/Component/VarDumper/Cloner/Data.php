@@ -143,7 +143,11 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->__isset($key);
     }
 
-    public function offsetGet($key): mixed
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($key)
     {
         return $this->__get($key);
     }

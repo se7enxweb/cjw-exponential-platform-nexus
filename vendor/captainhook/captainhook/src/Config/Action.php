@@ -153,6 +153,16 @@ class Action
     }
 
     /**
+     * Indicates if a label is set
+     *
+     * @return bool
+     */
+    public function hasLabel(): bool
+    {
+        return isset($this->settings[Config\Settings::LABEL]);
+    }
+
+    /**
      * Return the label or the action if no label is set
      *
      * @return string

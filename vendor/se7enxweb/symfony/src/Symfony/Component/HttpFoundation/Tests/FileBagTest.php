@@ -142,6 +142,55 @@ class FileBagTest extends TestCase
         $this->assertEquals($file, $files['child']['sub']['file']);
     }
 
+    public function testShouldConvertNestedUploadedFilesWithPhp81FullPath()
+    {
+        $tmpFile = $this->createTempFile();
+        $file = new UploadedFile($tmpFile, basename($tmpFile), 'text/plain', 100, 0);
+
+        $bag = new FileBag([
+            'child' => [
+                'name' => [
+                    'sub' => ['file' => basename($tmpFile)],
+                ],
+                'full_path' => [
+                    'sub' => ['file' => basename($tmpFile)],
+                ],
+                'type' => [
+                    'sub' => ['file' => 'text/plain'],
+                ],
+                'tmp_name' => [
+                    'sub' => ['file' => $tmpFile],
+                ],
+                'error' => [
+                    'sub' => ['file' => 0],
+                ],
+                'size' => [
+                    'sub' => ['file' => 100],
+                ],
+            ],
+        ]);
+
+        $files = $bag->all();
+        $this->assertEquals($file, $files['child']['sub']['file']);
+    }
+
+    public function testShouldSetEmptyNestedUploadedFilesWithPhp81FullPathToNull()
+    {
+        $bag = new FileBag([
+            'child' => [
+                'name' => ['sub' => ['file' => '']],
+                'full_path' => ['sub' => ['file' => '']],
+                'type' => ['sub' => ['file' => '']],
+                'tmp_name' => ['sub' => ['file' => '']],
+                'error' => ['sub' => ['file' => UPLOAD_ERR_NO_FILE]],
+                'size' => ['sub' => ['file' => 0]],
+            ],
+        ]);
+
+        $files = $bag->all();
+        $this->assertNull($files['child']['sub']['file']);
+    }
+
     public function testShouldNotConvertNestedUploadedFiles()
     {
         $tmpFile = $this->createTempFile();

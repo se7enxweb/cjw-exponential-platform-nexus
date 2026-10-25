@@ -14,7 +14,8 @@ namespace CaptainHook\App\Runner\Action\Cli\Command;
 use CaptainHook\App\Config;
 use CaptainHook\App\Console\IO;
 use CaptainHook\App\Hooks;
-use CaptainHook\App\Runner\Action\Cli\Command\Placeholder\Arg;
+use CaptainHook\App\Runner\Action\Cli\Command\Placeholder\Processor;
+use CaptainHook\App\Runner\Action\Cli\Command\Placeholder\Processor\Arg;
 use SebastianFeldmann\Git\Repository;
 
 /**
@@ -54,13 +55,13 @@ class Formatter
      * @var array<string, string>
      */
     private static array $placeholders = [
-        'arg'           => Placeholder\Arg::class,
-        'config'        => Placeholder\Config::class,
-        'env'           => Placeholder\Env::class,
-        'staged_files'  => Placeholder\StagedFiles::class,
-        'changed_files' => Placeholder\ChangedFiles::class,
-        'branch_files'  => Placeholder\BranchFiles::class,
-        'stdin'         => Placeholder\StdIn::class,
+        'arg'           => Processor\Arg::class,
+        'config'        => Processor\Config::class,
+        'env'           => Processor\Env::class,
+        'staged_files'  => Processor\StagedFiles::class,
+        'changed_files' => Processor\ChangedFiles::class,
+        'branch_files'  => Processor\BranchFiles::class,
+        'stdin'         => Processor\StdIn::class,
     ];
 
     /**
@@ -141,55 +142,59 @@ class Formatter
     /**
      * Return a given placeholder value
      *
-     * @param  string $placeholder
+     * @param  string $placeholderRaw
      * @return string
      */
-    private function replace(string $placeholder): string
+    private function replace(string $placeholderRaw): string
     {
-        // if the placeholder references an original hook argument set up the real placeholder
+        // if the placeholder references an original hook argument, set up the real placeholder
         // {$FILE} => ARG|value-of:message-file
-        if (array_key_exists($placeholder, self::$legacyPlaceHolder)) {
-            $argument = self::$legacyPlaceHolder[$placeholder];
-            $placeholder = 'ARG|value-of:' . Arg::toPlaceholder($argument);
+        if (array_key_exists($placeholderRaw, self::$legacyPlaceHolder)) {
+            $argument       = self::$legacyPlaceHolder[$placeholderRaw];
+            $placeholderRaw = 'ARG|value-of:' . Arg::toPlaceholder($argument);
         }
-        return $this->computedPlaceholder($placeholder);
+        // create the placeholder
+        $placeholder = new Placeholder($placeholderRaw);
+        // make sure it is allowed
+        if (!$this->isPlaceholderValid($placeholder->name())) {
+            return '';
+        }
+        // compute the placeholder value
+        $replacement = $this->computedPlaceholder($placeholder);
+        $this->write($placeholder, $replacement);
+        return $replacement;
     }
 
     /**
      * Compute the placeholder value
      *
-     * @param  string $rawPlaceholder Placeholder syntax {$NAME[|OPTION:VALUE]...}
+     * @param  \CaptainHook\App\Runner\Action\Cli\Command\Placeholder $placeholder
      * @return string
      */
-    private function computedPlaceholder(string $rawPlaceholder): string
+    private function computedPlaceholder(Placeholder $placeholder): string
     {
         // to not compute the same placeholder multiple times
-        if (!$this->isCached($rawPlaceholder)) {
-            // extract placeholder name and options
-            $parts       = explode('|', $rawPlaceholder);
-            $placeholder = strtolower($parts[0]);
-            $options     = $this->parseOptions(array_slice($parts, 1));
+        if (!$this->isCached($placeholder->key())) {
+            $processor   = $this->createProcessor($placeholder->name());
+            $replacement = $processor->replacement($placeholder->options());
 
-            if (!$this->isPlaceholderValid($placeholder)) {
-                return '';
+            if (!$placeholder->isCacheable()) {
+                return $replacement;
             }
-
-            $this->io->write('  <fg=cyan>Placeholder: ' . $placeholder . '</>', true, IO::VERBOSE);
-            $processor = $this->createPlaceholder($placeholder);
-            $this->cache($rawPlaceholder, $processor->replacement($options));
+            $this->cache($placeholder->key(), $replacement);
         }
-        return $this->cached($rawPlaceholder);
+        return $this->cached($placeholder->key());
     }
 
     /**
      * Placeholder factory method
      *
      * @param  string $placeholder
-     * @return \CaptainHook\App\Runner\Action\Cli\Command\Placeholder
+     * @return \CaptainHook\App\Runner\Action\Cli\Command\Placeholder\Processor
      */
-    private function createPlaceholder(string $placeholder): Placeholder
+    private function createProcessor(string $placeholder): Processor
     {
-        /** @var class-string<\CaptainHook\App\Runner\Action\Cli\Command\Placeholder> $class */
+        /** @var class-string<\CaptainHook\App\Runner\Action\Cli\Command\Placeholder\Processor> $class */
         $class = self::$placeholders[$placeholder];
         return new $class($this->io, $this->config, $this->repository);
     }
@@ -203,24 +208,6 @@ class Formatter
     private function isPlaceholderValid(string $placeholder): bool
     {
         return isset(self::$placeholders[$placeholder]);
-    }
-
-    /**
-     * Parse options from ["name:'value'", "name:'value'"] to ["name" => "value", "name" => "value"]
-     *
-     * @param  array<int, string> $raw
-     * @return array<string, string>
-     */
-    private function parseOptions(array $raw): array
-    {
-        $options = [];
-        foreach ($raw as $rawOption) {
-            $matches = [];
-            if (preg_match('#^([a-z_\-]+):(.*)?$#i', $rawOption, $matches)) {
-                $options[strtolower($matches[1])] = $matches[2] ?? '';
-            }
-        }
-        return $options;
     }
 
     /**
@@ -254,5 +241,42 @@ class Formatter
     private static function cached(string $placeholder): string
     {
         return self::$cache[$placeholder] ?? '';
+    }
+
+    /**
+     * Write some verbose placeholder output
+     *
+     * @param  \CaptainHook\App\Runner\Action\Cli\Command\Placeholder $placeholder
+     * @param  string                                                 $replacement
+     * @return void
+     */
+    private function write(Placeholder $placeholder, string $replacement): void
+    {
+        $this->io->write(
+            [
+                '  <fg=cyan>Placeholder:</> ' . $placeholder->name(),
+                '    options: <fg=gray>' .  $this->optionsAsString($placeholder->options()) . '</>',
+                '    replacement: <fg=gray>' . $replacement . '</>',
+            ],
+            true,
+            IO::VERBOSE
+        );
+    }
+
+    /**
+     * Generate the options output string
+     *
+     * ['foo' => 'bar'] => '(foo:bar)'
+     *
+     * @param  array<string, string> $options
+     * @return string
+     */
+    private function optionsAsString(array $options): string
+    {
+        $optionsStrings = [];
+        foreach ($options as $name => $value) {
+            $optionsStrings[] = $name . ':' . $value;
+        }
+        return empty($options) ? '' : ' (' . implode(', ', $optionsStrings) . ')';
     }
 }

@@ -35,12 +35,9 @@ require_once dirname( __FILE__ ) . '/relation_prefetch_test.php';
  */
 class ezcPersistentSessionIdentityDecoratorRelationObjectExtractorTest extends ezcPersistentSessionIdentityDecoratorRelationPrefetchTest
 {
-    protected $sesstion;
-
+    protected $session;
     protected $idMap;
-
     protected $extractor;
-
     protected $options;
 
     public static function suite()
@@ -48,7 +45,7 @@ class ezcPersistentSessionIdentityDecoratorRelationObjectExtractorTest extends e
         return new \PHPUnit\Framework\TestSuite( __CLASS__ );
     }
 
-    public function setup()
+    public function setUp(): void
     {
         parent::setup();
 
@@ -72,7 +69,7 @@ class ezcPersistentSessionIdentityDecoratorRelationObjectExtractorTest extends e
         );
     }
 
-    public function teardown()
+    public function tearDown(): void
     {
         RelationTestEmployer::cleanup( $this->db );
     }

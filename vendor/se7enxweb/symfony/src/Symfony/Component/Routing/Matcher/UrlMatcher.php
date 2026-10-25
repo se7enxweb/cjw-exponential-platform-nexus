@@ -268,6 +268,10 @@ class UrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
             return null;
         }
 
+        // the path info is decoded: encode again what Request::create() refuses in a URI
+        // (backslashes, control characters and spaces), so that matching such a path still ends in a 404
+        $pathinfo = preg_replace_callback('/[\x00-\x20\\\\]/', function ($m) { return rawurlencode($m[0]); }, $pathinfo);
+
         return Request::create($this->context->getScheme().'://'.$this->context->getHost().$this->context->getBaseUrl().$pathinfo, $this->context->getMethod(), $this->context->getParameters(), [], [], [
             'SCRIPT_FILENAME' => $this->context->getBaseUrl(),
             'SCRIPT_NAME' => $this->context->getBaseUrl(),

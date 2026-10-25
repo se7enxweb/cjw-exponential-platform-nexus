@@ -35,6 +35,11 @@ class Inline
     private static $constantSupport = false;
 
     /**
+     * @var ParserState|null The limits of the document being parsed
+     */
+    private static $state;
+
+    /**
      * @param int         $flags
      * @param int|null    $parsedLineNumber
      * @param string|null $parsedFilename
@@ -58,13 +63,17 @@ class Inline
      * @param string $value      A YAML string
      * @param int    $flags      A bit field of PARSE_* constants to customize the YAML parser behavior
      * @param array  $references Mapping of variable names to values
+     * @param ParserState|null $state The limits shared with the block parser (internal)
      *
      * @return mixed A PHP value
      *
      * @throws ParseException
      */
-    public static function parse($value, $flags = 0, $references = [])
+    public static function parse($value, $flags = 0, $references = [], $state = null)
     {
+        // the fourth argument is a boolean in the deprecated signature handled below
+        $parserState = $state instanceof ParserState ? $state : new ParserState();
+
         if (\is_bool($flags)) {
             @trigger_error('Passing a boolean flag to toggle exception handling is deprecated since Symfony 3.1 and will be removed in 4.0. Use the Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE flag instead.', \E_USER_DEPRECATED);
 
@@ -110,6 +119,9 @@ class Inline
             mb_internal_encoding('ASCII');
         }
 
+        $previousState = self::$state;
+        self::$state = $parserState;
+
         try {
             $i = 0;
             $tag = self::parseTag($value, $i, $flags);
@@ -137,10 +149,25 @@ class Inline
 
             return $result;
         } finally {
+            self::$state = $previousState;
+
             if (isset($mbEncoding)) {
                 mb_internal_encoding($mbEncoding);
             }
         }
+    }
+
+    /**
+     * @return ParserState
+     */
+    private static function getState()
+    {
+        if (null === self::$state) {
+            // parseScalar() called on its own: limits apply to this call only
+            return new ParserState();
+        }
+
+        return self::$state;
     }
 
     /**
@@ -411,6 +438,28 @@ class Inline
      */
     private static function parseSequence($sequence, $flags, &$i = 0, $references = [])
     {
+        $state = self::getState();
+        $state->enterNestingLevel(self::$parsedLineNumber + 1, null, self::$parsedFilename);
+
+        try {
+            return self::doParseSequence($sequence, $flags, $i, $references);
+        } finally {
+            $state->leaveNestingLevel();
+        }
+    }
+
+    /**
+     * @param string $sequence
+     * @param int    $flags
+     * @param int    &$i
+     * @param array  $references
+     *
+     * @return array
+     *
+     * @throws ParseException When malformed inline YAML string is parsed
+     */
+    private static function doParseSequence($sequence, $flags, &$i, $references)
+    {
         $output = [];
         $len = \strlen($sequence);
         ++$i;
@@ -479,6 +528,28 @@ class Inline
      * @throws ParseException When malformed inline YAML string is parsed
      */
     private static function parseMapping($mapping, $flags, &$i = 0, $references = [])
+    {
+        $state = self::getState();
+        $state->enterNestingLevel(self::$parsedLineNumber + 1, null, self::$parsedFilename);
+
+        try {
+            return self::doParseMapping($mapping, $flags, $i, $references);
+        } finally {
+            $state->leaveNestingLevel();
+        }
+    }
+
+    /**
+     * @param string $mapping
+     * @param int    $flags
+     * @param int    &$i
+     * @param array  $references
+     *
+     * @return array|\stdClass
+     *
+     * @throws ParseException When malformed inline YAML string is parsed
+     */
+    private static function doParseMapping($mapping, $flags, &$i, $references)
     {
         $output = [];
         $len = \strlen($mapping);
@@ -646,6 +717,8 @@ class Inline
             if (!\array_key_exists($value, $references)) {
                 throw new ParseException(sprintf('Reference "%s" does not exist.', $value), self::$parsedLineNumber + 1, $value, self::$parsedFilename);
             }
+
+            self::getState()->countAlias($references[$value], self::$parsedLineNumber + 1, null, self::$parsedFilename);
 
             return $references[$value];
         }

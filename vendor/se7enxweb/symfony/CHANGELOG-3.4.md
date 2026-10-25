@@ -7,6 +7,34 @@ in 3.4 minor versions.
 To get the diff for a specific change, go to https://github.com/symfony/symfony/commit/XXX where XXX is the change hash
 To get the diff between two versions, go to https://github.com/symfony/symfony/compare/v3.4.0...v3.4.1
 
+* 3.4.58 (se7enxweb/symfony)
+
+ Security fixes backported from upstream 4.4/5.4 to the 3.4 line. Packagist's advisories for these list all of
+ 3.4 as affected (upstream stopped fixing it), so projects on this fork list the advisory ids in
+ config.policy.advisories.ignore-id with the reason each one is fixed here or does not apply.
+
+ * security #cve-2022-24894 [HttpKernel] Remove private headers before storing responses with HttpCache
+ * security #cve-2022-24895 [Security/Http] Remove CSRF tokens from storage on successful login
+ * security #cve-2023-46734 [TwigBridge] Ensure CodeExtension's filters properly escape their input
+ * security #cve-2024-50343 [Validator] Add the D regex modifier in the card scheme, date, e-mail, time and URL validators
+ * security #cve-2024-50345 [HttpFoundation] Reject URIs that contain invalid characters
+ * security #cve-2024-51736 [Process] Use an absolute path to load cmd.exe on Windows
+ * security #cve-2025-64500 [HttpFoundation] Fix parsing pathinfo with no leading slash
+ * security #cve-2026-24739 [Process] Fix escaping for MSYS on Windows
+ * security #cve-2026-45063 [Security] Anchor the emailAddress regex to an RDN boundary in X509AuthenticationListener
+ * security #cve-2026-45065 [Routing] Fix regex alternation anchoring in UrlGenerator requirement validation
+ * security #cve-2026-45071 [DomCrawler] Fix XXE in addXmlContent() by not enabling validateOnParse
+ * security #cve-2026-45073 [Cache] Bind the namespace in PdoTrait::doClear() (the 3.4 line has no clear($prefix))
+ * security #cve-2026-45077 [WebServerBundle][MonologBridge] Bind server:log to localhost and unserialize only log records
+ * security #cve-2026-45133 [Yaml] Bound recursion depth in the parser
+ * security #cve-2026-45304 [Yaml] Bound collection-alias resolution in the parser
+ * security #cve-2026-45305 [Yaml] Harden the Parser::cleanup() regexes against catastrophic backtracking
+ * security #cve-2026-48489 [Security] Don't honor user-supplied _failure_path on failure_forward
+ * security #cve-2026-48784 [Routing] Fix dot-segment encoding for chained "../" and "./" in generated URLs
+ * security #cve-2026-109413 [Yaml] Bound the nesting of inline sequences and mappings
+ * security #cve-2026-109449 [ExpressionLanguage] Bound the nesting level of parsed expressions
+ * not applicable: cve-2026-45067, cve-2026-45070 (Mime) and cve-2026-45068 (Mailer), components the 3.4 line does not have
+
 * 3.4.49 (2021-05-19)
 
  * security #cve-2021-21424 [Security\Core] Fix user enumeration via response body on invalid credentials (chalasr)

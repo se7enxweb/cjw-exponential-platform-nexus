@@ -115,6 +115,11 @@ class ServerLogHandler extends AbstractHandler
             }
         }
 
+        // server:log only unserializes the dumper's classes: send the date as a string
+        if (isset($recordFormatted['datetime']) && $recordFormatted['datetime'] instanceof \DateTimeInterface) {
+            $recordFormatted['datetime'] = $recordFormatted['datetime']->format('Y-m-d\TH:i:s.uP');
+        }
+
         return base64_encode(serialize($recordFormatted))."\n";
     }
 }

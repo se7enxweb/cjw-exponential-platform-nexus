@@ -82,6 +82,35 @@ class X509AuthenticationListenerTest extends TestCase
         yield ['cert+something@example.com', 'emailAddress=cert+something@example.com,CN=Sample certificate DN'];
         yield ['cert+something@example.com', 'emailAddress=cert+something@example.com'];
         yield ['firstname.lastname@mycompany.co.uk', 'emailAddress=firstname.lastname@mycompany.co.uk,CN=Firstname.Lastname,OU=london,OU=company design and engineering,OU=Issuer London,OU=Roaming,OU=Interactive,OU=Users,OU=Standard,OU=Business,DC=england,DC=core,DC=company,DC=co,DC=uk'];
+        yield ['cert@example.com', '1.2.840.113549.1.9.1=cert@example.com,CN=Sample certificate DN'];
+        yield ['cert@example.com', 'CN=Sample certificate DN/1.2.840.113549.1.9.1=cert@example.com'];
+    }
+
+    /**
+     * @dataProvider provideSpoofedDns
+     */
+    public function testGetPreAuthenticatedDataRejectsSpoofedEmailInDn($dn)
+    {
+        $this->expectException('Symfony\Component\Security\Core\Exception\BadCredentialsException');
+        $request = new Request([], [], [], [], [], ['SSL_CLIENT_S_DN' => $dn]);
+
+        $tokenStorage = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')->getMock();
+        $authenticationManager = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface')->getMock();
+
+        $listener = new X509AuthenticationListener($tokenStorage, $authenticationManager, 'TheProviderKey');
+
+        $method = new \ReflectionMethod($listener, 'getPreAuthenticatedData');
+        $method->setAccessible(true);
+
+        $method->invokeArgs($listener, [$request]);
+    }
+
+    public static function provideSpoofedDns()
+    {
+        yield ['CN=emailAddress=admin@target.example,O=Attacker Corp'];
+        yield ['CN=foo,OU=emailAddress=admin@target.example,O=Attacker'];
+        yield ['CN=1.2.840.113549.1.9.1=admin@target.example,O=Attacker Corp'];
+        yield ['CN=foo,OU=1.2.840.113549.1.9.1=admin@target.example,O=Attacker'];
     }
 
     public function testGetPreAuthenticatedDataNoData()

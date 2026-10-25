@@ -18,25 +18,25 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '9c67151ae59aff4788964ce8eb2a0f43' => __DIR__ . '/..' . '/clue/stream-filter/src/functions_include.php',
         '8cff32064859f4559445b89279f3199c' => __DIR__ . '/..' . '/php-http/message/src/filters.php',
-        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
-        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
-        'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
-        'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
         'c15243c55ab4c20eff78d1e24be20dac' => __DIR__ . '/..' . '/cloudinary/cloudinary_php/src/Helpers.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
         '09f6b20656683369174dd6fa83b7e5fb' => __DIR__ . '/..' . '/symfony/polyfill-uuid/bootstrap.php',
+        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'efbdb45a35444ce51cadbb9eb81b771e' => __DIR__ . '/../..' . '/ezpublish_legacy/autoload.php',
         'fb4ca2d97fe7ba6af750497425204e70' => __DIR__ . '/..' . '/sentry/sentry/src/functions.php',
+        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'ce89ac35a6c330c55f4710717db9ff78' => __DIR__ . '/..' . '/kriswallsmith/assetic/src/functions.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'eb7e98e63c68d07fafdbd92bdcaa497e' => __DIR__ . '/..' . '/deployer/recipes/autoload.php',
         '7e9bd612cc444b3eed788ebbe46263a0' => __DIR__ . '/..' . '/laminas/laminas-zendframework-bridge/src/autoload.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
@@ -45,7 +45,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
     );
 
     public static $prefixLengthsPsr4 = array (
-        'e' => 
+        'e' =>
         array (
             'eZ\\Publish\\Core\\REST\\Common\\FieldTypeProcessor\\' => 47,
             'eZ\\Publish\\Core\\Persistence\\Legacy\\Content\\FieldValue\\Converter\\' => 64,
@@ -53,29 +53,28 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'eZ\\Publish\\Core\\FieldType\\XmlText\\' => 34,
             'eZ\\Bundle\\EzPublishLegacyBundle\\' => 32,
         ),
-        'c' => 
+        'c' =>
         array (
             'cweagans\\Composer\\' => 18,
         ),
-        'W' => 
+        'W' =>
         array (
             'WhiteOctober\\PagerfantaBundle\\' => 30,
             'Webimpress\\SafeWriter\\' => 22,
         ),
-        'V' => 
+        'V' =>
         array (
             'Version\\' => 8,
         ),
-        'T' => 
+        'T' =>
         array (
             'Twig\\Extensions\\' => 16,
             'Twig\\' => 5,
             'Tests\\' => 6,
         ),
-        'S' => 
+        'S' =>
         array (
             'Symfony\\WebpackEncoreBundle\\' => 28,
-            'Symfony\\Thanks\\' => 15,
             'Symfony\\Polyfill\\Uuid\\' => 22,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php73\\' => 23,
@@ -120,17 +119,17 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'SebastianFeldmann\\Camino\\' => 25,
             'ScssPhp\\ScssPhp\\' => 16,
         ),
-        'R' => 
+        'R' =>
         array (
             'ReCaptcha\\' => 10,
             'Ramsey\\Uuid\\' => 12,
             'Ramsey\\Collection\\' => 18,
         ),
-        'Q' => 
+        'Q' =>
         array (
             'QueryTranslator\\' => 16,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
@@ -159,14 +158,14 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'PHPStan\\ExtensionInstaller\\' => 27,
             'PHPStan\\' => 8,
         ),
-        'O' => 
+        'O' =>
         array (
             'Overblog\\GraphiQLBundle\\' => 24,
             'Overblog\\GraphQLGenerator\\' => 26,
             'Overblog\\GraphQLBundle\\' => 23,
             'Oneup\\FlysystemBundle\\' => 22,
         ),
-        'N' => 
+        'N' =>
         array (
             'Nyholm\\Psr7\\' => 12,
             'Netgen\\TagsBundle\\' => 18,
@@ -215,11 +214,11 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'Netgen\\Bundle\\AdminUIBundle\\' => 28,
             'Nelmio\\CorsBundle\\' => 18,
         ),
-        'M' => 
+        'M' =>
         array (
             'Monolog\\' => 8,
         ),
-        'L' => 
+        'L' =>
         array (
             'Lolautruche\\EzCoreExtraBundle\\' => 30,
             'Liuggio\\Fastest\\' => 16,
@@ -231,19 +230,19 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'Laminas\\ZendFrameworkBridge\\' => 28,
             'Laminas\\Code\\' => 13,
         ),
-        'K' => 
+        'K' =>
         array (
             'Knp\\Menu\\' => 9,
             'Knp\\Bundle\\MenuBundle\\' => 22,
             'Kaliop\\eZMigrationBundle\\' => 25,
         ),
-        'J' => 
+        'J' =>
         array (
             'JmesPath\\' => 9,
             'Jean85\\' => 7,
             'JMS\\TranslationBundle\\' => 22,
         ),
-        'I' => 
+        'I' =>
         array (
             'Incenteev\\ParameterHandler\\' => 27,
             'Imagine\\' => 8,
@@ -257,7 +256,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'Ibexa\\Bundle\\Core\\' => 18,
             'Ibexa\\AdminUi\\' => 14,
         ),
-        'H' => 
+        'H' =>
         array (
             'Http\\Promise\\' => 13,
             'Http\\Message\\' => 13,
@@ -270,7 +269,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'Http\\Client\\' => 12,
             'Hautelook\\TemplatedUriRouter\\' => 29,
         ),
-        'G' => 
+        'G' =>
         array (
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
@@ -278,7 +277,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'GraphQL\\' => 8,
             'Goutte\\' => 7,
         ),
-        'F' => 
+        'F' =>
         array (
             'Fig\\Link\\' => 9,
             'Faker\\' => 6,
@@ -287,7 +286,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'FOS\\HttpCache\\' => 14,
             'FOS\\HttpCacheBundle\\' => 20,
         ),
-        'E' => 
+        'E' =>
         array (
             'EzSystems\\SymfonyTools\\' => 23,
             'EzSystems\\SymfonyToolsBundle\\' => 29,
@@ -325,7 +324,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'Egulias\\EmailValidator\\' => 23,
             'EdiModric\\Twig\\' => 15,
         ),
-        'D' => 
+        'D' =>
         array (
             'Doctrine\\Persistence\\' => 21,
             'Doctrine\\ORM\\' => 13,
@@ -345,7 +344,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'Doctrine\\Bundle\\DoctrineBundle\\' => 31,
             'DeepCopy\\' => 9,
         ),
-        'C' => 
+        'C' =>
         array (
             'Cron\\' => 5,
             'Clue\\StreamFilter\\' => 18,
@@ -354,7 +353,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'CaptainHook\\App\\' => 16,
             'CJW\\CJWConfigProcessor\\' => 23,
         ),
-        'B' => 
+        'B' =>
         array (
             'Buzz\\' => 5,
             'Brick\\Math\\' => 11,
@@ -367,7 +366,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'Behat\\Behat\\' => 12,
             'Bazinga\\Bundle\\JsTranslationBundle\\' => 35,
         ),
-        'A' => 
+        'A' =>
         array (
             'Assert\\' => 7,
             'AppBundle\\' => 10,
@@ -375,1155 +374,1153 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
     );
 
     public static $prefixDirsPsr4 = array (
-        'eZ\\Publish\\Core\\REST\\Common\\FieldTypeProcessor\\' => 
+        'eZ\\Publish\\Core\\REST\\Common\\FieldTypeProcessor\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-xmltext-fieldtype/lib/REST/Common/FieldTypeProcessor',
         ),
-        'eZ\\Publish\\Core\\Persistence\\Legacy\\Content\\FieldValue\\Converter\\' => 
+        'eZ\\Publish\\Core\\Persistence\\Legacy\\Content\\FieldValue\\Converter\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-xmltext-fieldtype/lib/Persistence/Legacy/Content/FieldValue/Converter',
         ),
-        'eZ\\Publish\\Core\\MVC\\Legacy\\' => 
+        'eZ\\Publish\\Core\\MVC\\Legacy\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/legacy-bridge/mvc',
         ),
-        'eZ\\Publish\\Core\\FieldType\\XmlText\\' => 
+        'eZ\\Publish\\Core\\FieldType\\XmlText\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-xmltext-fieldtype/lib/FieldType/XmlText',
         ),
-        'eZ\\Bundle\\EzPublishLegacyBundle\\' => 
+        'eZ\\Bundle\\EzPublishLegacyBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/legacy-bridge/bundle',
         ),
-        'cweagans\\Composer\\' => 
+        'cweagans\\Composer\\' =>
         array (
             0 => __DIR__ . '/..' . '/cweagans/composer-patches/src',
             1 => __DIR__ . '/..' . '/cweagans/composer-configurable-plugin/src',
         ),
-        'WhiteOctober\\PagerfantaBundle\\' => 
+        'WhiteOctober\\PagerfantaBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/white-october/pagerfanta-bundle',
         ),
-        'Webimpress\\SafeWriter\\' => 
+        'Webimpress\\SafeWriter\\' =>
         array (
             0 => __DIR__ . '/..' . '/webimpress/safe-writer/src',
         ),
-        'Version\\' => 
+        'Version\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikolaposa/version/src',
         ),
-        'Twig\\Extensions\\' => 
+        'Twig\\Extensions\\' =>
         array (
             0 => __DIR__ . '/..' . '/twig/extensions/src',
         ),
-        'Twig\\' => 
+        'Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/twig/src',
         ),
-        'Tests\\' => 
+        'Tests\\' =>
         array (
             0 => __DIR__ . '/../..' . '/tests',
         ),
-        'Symfony\\WebpackEncoreBundle\\' => 
+        'Symfony\\WebpackEncoreBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/webpack-encore-bundle/src',
         ),
-        'Symfony\\Thanks\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/thanks/src',
-        ),
-        'Symfony\\Polyfill\\Uuid\\' => 
+        'Symfony\\Polyfill\\Uuid\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-uuid',
         ),
-        'Symfony\\Polyfill\\Php80\\' => 
+        'Symfony\\Polyfill\\Php80\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
-        'Symfony\\Polyfill\\Php73\\' => 
+        'Symfony\\Polyfill\\Php73\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
         ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
+        'Symfony\\Polyfill\\Mbstring\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
-        'Symfony\\Polyfill\\Intl\\Idn\\' => 
+        'Symfony\\Polyfill\\Intl\\Idn\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
         ),
-        'Symfony\\Polyfill\\Intl\\Icu\\' => 
+        'Symfony\\Polyfill\\Intl\\Icu\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-icu',
         ),
-        'Symfony\\Polyfill\\Intl\\Grapheme\\' => 
+        'Symfony\\Polyfill\\Intl\\Grapheme\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme',
         ),
-        'Symfony\\Polyfill\\Iconv\\' => 
+        'Symfony\\Polyfill\\Iconv\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-iconv',
         ),
-        'Symfony\\Polyfill\\Ctype\\' => 
+        'Symfony\\Polyfill\\Ctype\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'Symfony\\Polyfill\\Apcu\\' => 
+        'Symfony\\Polyfill\\Apcu\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-apcu',
         ),
-        'Symfony\\Contracts\\Translation\\' => 
+        'Symfony\\Contracts\\Translation\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/translation-contracts',
         ),
-        'Symfony\\Contracts\\Service\\' => 
+        'Symfony\\Contracts\\Service\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/service-contracts',
         ),
-        'Symfony\\Contracts\\HttpClient\\' => 
+        'Symfony\\Contracts\\HttpClient\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/http-client-contracts',
         ),
-        'Symfony\\Component\\String\\' => 
+        'Symfony\\Component\\String\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/string',
         ),
-        'Symfony\\Component\\Mime\\' => 
+        'Symfony\\Component\\Mime\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony-mime',
             1 => __DIR__ . '/..' . '/symfony/mime',
         ),
-        'Symfony\\Component\\HttpClient\\' => 
+        'Symfony\\Component\\HttpClient\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/http-client',
         ),
-        'Symfony\\Component\\Cache\\' => 
+        'Symfony\\Component\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony-cache',
         ),
-        'Symfony\\Component\\' => 
+        'Symfony\\Component\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Component',
         ),
-        'Symfony\\Cmf\\Component\\Routing\\' => 
+        'Symfony\\Cmf\\Component\\Routing\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony-cmf/routing/src',
         ),
-        'Symfony\\Bundle\\SwiftmailerBundle\\' => 
+        'Symfony\\Bundle\\SwiftmailerBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/swiftmailer-bundle',
         ),
-        'Symfony\\Bundle\\MonologBundle\\' => 
+        'Symfony\\Bundle\\MonologBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/monolog-bundle',
         ),
-        'Symfony\\Bundle\\AsseticBundle\\' => 
+        'Symfony\\Bundle\\AsseticBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/assetic-bundle',
         ),
-        'Symfony\\Bundle\\' => 
+        'Symfony\\Bundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Bundle',
         ),
-        'Symfony\\Bridge\\Twig\\' => 
+        'Symfony\\Bridge\\Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Bridge/Twig',
         ),
-        'Symfony\\Bridge\\ProxyManager\\' => 
+        'Symfony\\Bridge\\ProxyManager\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Bridge/ProxyManager',
         ),
-        'Symfony\\Bridge\\PhpUnit\\' => 
+        'Symfony\\Bridge\\PhpUnit\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/phpunit-bridge',
         ),
-        'Symfony\\Bridge\\Monolog\\' => 
+        'Symfony\\Bridge\\Monolog\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Bridge/Monolog',
         ),
-        'Symfony\\Bridge\\Doctrine\\' => 
+        'Symfony\\Bridge\\Doctrine\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Bridge/Doctrine',
         ),
-        'Swaggest\\JsonSchema\\' => 
+        'Swaggest\\JsonSchema\\' =>
         array (
             0 => __DIR__ . '/..' . '/swaggest/json-schema/src',
         ),
-        'Swaggest\\JsonDiff\\' => 
+        'Swaggest\\JsonDiff\\' =>
         array (
             0 => __DIR__ . '/..' . '/swaggest/json-diff/src',
         ),
-        'Snc\\RedisBundle\\' => 
+        'Snc\\RedisBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/snc/redis-bundle',
         ),
-        'Sevenx\\' => 
+        'Sevenx\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src/Sevenx',
         ),
-        'Sentry\\SentryBundle\\' => 
+        'Sentry\\SentryBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/sentry/sentry-symfony/src',
         ),
-        'Sentry\\' => 
+        'Sentry\\' =>
         array (
             0 => __DIR__ . '/..' . '/sentry/sentry/src',
         ),
-        'Sensio\\Bundle\\GeneratorBundle\\' => 
+        'Sensio\\Bundle\\GeneratorBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/sensio/generator-bundle',
         ),
-        'Sensio\\Bundle\\FrameworkExtraBundle\\' => 
+        'Sensio\\Bundle\\FrameworkExtraBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/sensio/framework-extra-bundle',
         ),
-        'Sensio\\Bundle\\DistributionBundle\\' => 
+        'Sensio\\Bundle\\DistributionBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/sensio-distribution-bundle',
         ),
-        'SensioLabs\\Security\\' => 
+        'SensioLabs\\Security\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/sensiolabs-security-checker/SensioLabs/Security',
             1 => __DIR__ . '/..' . '/sensiolabs/security-checker/SensioLabs/Security',
         ),
-        'SebastianFeldmann\\Git\\' => 
+        'SebastianFeldmann\\Git\\' =>
         array (
             0 => __DIR__ . '/..' . '/sebastianfeldmann/git/src',
         ),
-        'SebastianFeldmann\\Cli\\' => 
+        'SebastianFeldmann\\Cli\\' =>
         array (
             0 => __DIR__ . '/..' . '/sebastianfeldmann/cli/src',
         ),
-        'SebastianFeldmann\\Camino\\' => 
+        'SebastianFeldmann\\Camino\\' =>
         array (
             0 => __DIR__ . '/..' . '/sebastianfeldmann/camino/src',
         ),
-        'ScssPhp\\ScssPhp\\' => 
+        'ScssPhp\\ScssPhp\\' =>
         array (
             0 => __DIR__ . '/..' . '/scssphp/scssphp/src',
         ),
-        'ReCaptcha\\' => 
+        'ReCaptcha\\' =>
         array (
             0 => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha',
         ),
-        'Ramsey\\Uuid\\' => 
+        'Ramsey\\Uuid\\' =>
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
         ),
-        'Ramsey\\Collection\\' => 
+        'Ramsey\\Collection\\' =>
         array (
             0 => __DIR__ . '/..' . '/ramsey/collection/src',
         ),
-        'QueryTranslator\\' => 
+        'QueryTranslator\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/query-translator/lib',
         ),
-        'Psr\\SimpleCache\\' => 
+        'Psr\\SimpleCache\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
-        'Psr\\Log\\' => 
+        'Psr\\Log\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
-        'Psr\\Link\\' => 
+        'Psr\\Link\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/link/src',
         ),
-        'Psr\\Http\\Message\\' => 
+        'Psr\\Http\\Message\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
             1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Http\\Client\\' => 
+        'Psr\\Http\\Client\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Psr\\Cache\\' => 
+        'Psr\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-        'ProxyManager\\' => 
+        'ProxyManager\\' =>
         array (
             0 => __DIR__ . '/..' . '/ocramius/proxy-manager/src/ProxyManager',
         ),
-        'Prime\\Bundle\\TranslationsBundle\\' => 
+        'Prime\\Bundle\\TranslationsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/primedigital/translations-bundle/bundle',
         ),
-        'Predis\\' => 
+        'Predis\\' =>
         array (
             0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
-        'PhpParser\\' => 
+        'PhpParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
-        'PhpLang\\' => 
+        'PhpLang\\' =>
         array (
             0 => __DIR__ . '/..' . '/phplang/scope-exit/src',
         ),
-        'Peast\\' => 
+        'Peast\\' =>
         array (
             0 => __DIR__ . '/..' . '/mck89/peast/lib/Peast',
         ),
-        'Pagerfanta\\Twig\\' => 
+        'Pagerfanta\\Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Twig',
         ),
-        'Pagerfanta\\Solarium\\' => 
+        'Pagerfanta\\Solarium\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Adapter/Solarium',
         ),
-        'Pagerfanta\\Elastica\\' => 
+        'Pagerfanta\\Elastica\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Adapter/Elastica',
         ),
-        'Pagerfanta\\Doctrine\\PHPCRODM\\' => 
+        'Pagerfanta\\Doctrine\\PHPCRODM\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Adapter/Doctrine/PHPCRODM',
         ),
-        'Pagerfanta\\Doctrine\\ORM\\' => 
+        'Pagerfanta\\Doctrine\\ORM\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Adapter/Doctrine/ORM',
         ),
-        'Pagerfanta\\Doctrine\\MongoDBODM\\' => 
+        'Pagerfanta\\Doctrine\\MongoDBODM\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Adapter/Doctrine/MongoDBODM',
         ),
-        'Pagerfanta\\Doctrine\\DBAL\\' => 
+        'Pagerfanta\\Doctrine\\DBAL\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Adapter/Doctrine/DBAL',
         ),
-        'Pagerfanta\\Doctrine\\Collections\\' => 
+        'Pagerfanta\\Doctrine\\Collections\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Adapter/Doctrine/Collections',
         ),
-        'Pagerfanta\\Adapter\\' => 
+        'Pagerfanta\\Adapter\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/src/Adapter',
         ),
-        'Pagerfanta\\' => 
+        'Pagerfanta\\' =>
         array (
             0 => __DIR__ . '/..' . '/pagerfanta/pagerfanta/lib/Core',
         ),
-        'PackageVersions\\' => 
+        'PackageVersions\\' =>
         array (
             0 => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions',
         ),
-        'PHPStan\\ExtensionInstaller\\' => 
+        'PHPStan\\ExtensionInstaller\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpstan/extension-installer/src',
         ),
-        'PHPStan\\' => 
+        'PHPStan\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpstan/phpstan-symfony/src',
             1 => __DIR__ . '/..' . '/phpstan/phpstan-doctrine/src',
         ),
-        'Overblog\\GraphiQLBundle\\' => 
+        'Overblog\\GraphiQLBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/overblog/graphiql-bundle',
         ),
-        'Overblog\\GraphQLGenerator\\' => 
+        'Overblog\\GraphQLGenerator\\' =>
         array (
             0 => __DIR__ . '/..' . '/overblog/graphql-bundle/lib/generator/src',
         ),
-        'Overblog\\GraphQLBundle\\' => 
+        'Overblog\\GraphQLBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/overblog/graphql-bundle/src',
         ),
-        'Oneup\\FlysystemBundle\\' => 
+        'Oneup\\FlysystemBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/oneup/flysystem-bundle',
         ),
-        'Nyholm\\Psr7\\' => 
+        'Nyholm\\Psr7\\' =>
         array (
             0 => __DIR__ . '/..' . '/nyholm/psr7/src',
         ),
-        'Netgen\\TagsBundle\\' => 
+        'Netgen\\TagsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/tagsbundle/bundle',
         ),
-        'Netgen\\Layouts\\Standard\\' => 
+        'Netgen\\Layouts\\Standard\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/layouts-standard/lib',
         ),
-        'Netgen\\Layouts\\RemoteMedia\\' => 
+        'Netgen\\Layouts\\RemoteMedia\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-remote-media/lib',
         ),
-        'Netgen\\Layouts\\Migrations\\' => 
+        'Netgen\\Layouts\\Migrations\\' =>
         array (
-            0 => __DIR__ . '/..' . '/netgen/layouts-core/migrations',
+            0 => __DIR__ . '/..' . '/se7enxweb/layouts-core/migrations',
         ),
-        'Netgen\\Layouts\\Ez\\TagsQuery\\' => 
+        'Netgen\\Layouts\\Ez\\TagsQuery\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform-tags-query/lib',
         ),
-        'Netgen\\Layouts\\Ez\\SiteApi\\' => 
+        'Netgen\\Layouts\\Ez\\SiteApi\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform-site-api/lib',
         ),
-        'Netgen\\Layouts\\Ez\\RelationListQuery\\' => 
+        'Netgen\\Layouts\\Ez\\RelationListQuery\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform-relation-list-query/lib',
         ),
-        'Netgen\\Layouts\\Ez\\' => 
+        'Netgen\\Layouts\\Ez\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform/lib',
         ),
-        'Netgen\\Layouts\\' => 
+        'Netgen\\Layouts\\' =>
         array (
-            0 => __DIR__ . '/..' . '/netgen/layouts-core/lib',
+            0 => __DIR__ . '/..' . '/se7enxweb/layouts-core/lib',
         ),
-        'Netgen\\GitHooks\\' => 
+        'Netgen\\GitHooks\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/git-hooks/src',
         ),
-        'Netgen\\EzPlatformSiteApi\\' => 
+        'Netgen\\EzPlatformSiteApi\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-site-api/lib',
             1 => __DIR__ . '/..' . '/netgen/ezplatform-site-api/lib',
         ),
-        'Netgen\\EzPlatformSearchExtra\\' => 
+        'Netgen\\EzPlatformSearchExtra\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-search-extra/lib',
             1 => __DIR__ . '/..' . '/netgen/ezplatform-search-extra/lib',
         ),
-        'Netgen\\ContentBrowser\\Ez\\' => 
+        'Netgen\\ContentBrowser\\Ez\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/content-browser-ezplatform/lib',
         ),
-        'Netgen\\ContentBrowser\\' => 
+        'Netgen\\ContentBrowser\\' =>
         array (
-            0 => __DIR__ . '/..' . '/netgen/content-browser/lib',
+            0 => __DIR__ . '/..' . '/se7enxweb/content-browser/lib',
+            1 => __DIR__ . '/..' . '/netgen/content-browser/lib',
         ),
-        'Netgen\\Bundle\\SiteLegacyBundle\\' => 
+        'Netgen\\Bundle\\SiteLegacyBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/site-legacy-bundle/bundle',
         ),
-        'Netgen\\Bundle\\SiteInstallerBundle\\' => 
+        'Netgen\\Bundle\\SiteInstallerBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/site-installer-bundle/bundle',
         ),
-        'Netgen\\Bundle\\SiteGeneratorBundle\\' => 
+        'Netgen\\Bundle\\SiteGeneratorBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/site-generator-bundle/bundle',
         ),
-        'Netgen\\Bundle\\SiteBundle\\' => 
+        'Netgen\\Bundle\\SiteBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/site-bundle/bundle',
         ),
-        'Netgen\\Bundle\\SiteAccessRoutesBundle\\' => 
+        'Netgen\\Bundle\\SiteAccessRoutesBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/siteaccess-routes-bundle',
         ),
-        'Netgen\\Bundle\\RichTextDataTypeBundle\\' => 
+        'Netgen\\Bundle\\RichTextDataTypeBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/richtext-datatype-bundle',
             1 => __DIR__ . '/..' . '/netgen/richtext-datatype-bundle',
         ),
-        'Netgen\\Bundle\\RemoteMediaBundle\\' => 
+        'Netgen\\Bundle\\RemoteMediaBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/remote-media-bundle/bundle',
         ),
-        'Netgen\\Bundle\\OpenGraphBundle\\' => 
+        'Netgen\\Bundle\\OpenGraphBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/open-graph-bundle/bundle',
         ),
-        'Netgen\\Bundle\\MetadataBundle\\' => 
+        'Netgen\\Bundle\\MetadataBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/metadata-bundle/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsUIBundle\\' => 
+        'Netgen\\Bundle\\LayoutsUIBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/layouts-ui/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsStandardBundle\\' => 
+        'Netgen\\Bundle\\LayoutsStandardBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/layouts-standard/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsRemoteMediaBundle\\' => 
+        'Netgen\\Bundle\\LayoutsRemoteMediaBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-remote-media/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsEzPlatformTagsQueryBundle\\' => 
+        'Netgen\\Bundle\\LayoutsEzPlatformTagsQueryBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform-tags-query/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsEzPlatformSiteApiBundle\\' => 
+        'Netgen\\Bundle\\LayoutsEzPlatformSiteApiBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform-site-api/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsEzPlatformRelationListQueryBundle\\' => 
+        'Netgen\\Bundle\\LayoutsEzPlatformRelationListQueryBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform-relation-list-query/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsEzPlatformBundle\\' => 
+        'Netgen\\Bundle\\LayoutsEzPlatformBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/layouts-ezplatform/bundle',
         ),
-        'Netgen\\Bundle\\LayoutsDebugBundle\\' => 
+        'Netgen\\Bundle\\LayoutsDebugBundle\\' =>
         array (
-            0 => __DIR__ . '/..' . '/netgen/layouts-core/bundles/LayoutsDebugBundle',
+            0 => __DIR__ . '/..' . '/se7enxweb/layouts-core/bundles/LayoutsDebugBundle',
         ),
-        'Netgen\\Bundle\\LayoutsBundle\\' => 
+        'Netgen\\Bundle\\LayoutsBundle\\' =>
         array (
-            0 => __DIR__ . '/..' . '/netgen/layouts-core/bundles/LayoutsBundle',
+            0 => __DIR__ . '/..' . '/se7enxweb/layouts-core/bundles/LayoutsBundle',
         ),
-        'Netgen\\Bundle\\LayoutsAdminBundle\\' => 
+        'Netgen\\Bundle\\LayoutsAdminBundle\\' =>
         array (
-            0 => __DIR__ . '/..' . '/netgen/layouts-core/bundles/LayoutsAdminBundle',
+            0 => __DIR__ . '/..' . '/se7enxweb/layouts-core/bundles/LayoutsAdminBundle',
         ),
-        'Netgen\\Bundle\\InformationCollectionBundle\\' => 
+        'Netgen\\Bundle\\InformationCollectionBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/information-collection-bundle/bundle',
         ),
-        'Netgen\\Bundle\\EzPlatformSiteApiBundle\\' => 
+        'Netgen\\Bundle\\EzPlatformSiteApiBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-site-api/bundle',
             1 => __DIR__ . '/..' . '/netgen/ezplatform-site-api/bundle',
         ),
-        'Netgen\\Bundle\\EzPlatformSearchExtraBundle\\' => 
+        'Netgen\\Bundle\\EzPlatformSearchExtraBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-search-extra/bundle',
             1 => __DIR__ . '/..' . '/netgen/ezplatform-search-extra/bundle',
         ),
-        'Netgen\\Bundle\\EzFormsBundle\\' => 
+        'Netgen\\Bundle\\EzFormsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/ez-forms-bundle/bundle',
         ),
-        'Netgen\\Bundle\\EnhancedSelectionBundle\\' => 
+        'Netgen\\Bundle\\EnhancedSelectionBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/enhanced-selection-bundle/bundle',
         ),
-        'Netgen\\Bundle\\ContentTypeListBundle\\' => 
+        'Netgen\\Bundle\\ContentTypeListBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/content-type-list-bundle',
         ),
-        'Netgen\\Bundle\\ContentBrowserUIBundle\\' => 
+        'Netgen\\Bundle\\ContentBrowserUIBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/content-browser-ui/bundle',
         ),
-        'Netgen\\Bundle\\ContentBrowserEzPlatformBundle\\' => 
+        'Netgen\\Bundle\\ContentBrowserEzPlatformBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/content-browser-ezplatform/bundle',
         ),
-        'Netgen\\Bundle\\ContentBrowserBundle\\' => 
+        'Netgen\\Bundle\\ContentBrowserBundle\\' =>
         array (
-            0 => __DIR__ . '/..' . '/netgen/content-browser/bundle',
+            0 => __DIR__ . '/..' . '/se7enxweb/content-browser/bundle',
+            1 => __DIR__ . '/..' . '/netgen/content-browser/bundle',
         ),
-        'Netgen\\Bundle\\BirthdayBundle\\' => 
+        'Netgen\\Bundle\\BirthdayBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/netgen/birthday-bundle/bundle',
         ),
-        'Netgen\\Bundle\\AdminUIBundle\\' => 
+        'Netgen\\Bundle\\AdminUIBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/admin-ui-bundle/bundle',
         ),
-        'Nelmio\\CorsBundle\\' => 
+        'Nelmio\\CorsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/nelmio/cors-bundle',
         ),
-        'Monolog\\' => 
+        'Monolog\\' =>
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
-        'Lolautruche\\EzCoreExtraBundle\\' => 
+        'Lolautruche\\EzCoreExtraBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ez-core-extra-bundle',
         ),
-        'Liuggio\\Fastest\\' => 
+        'Liuggio\\Fastest\\' =>
         array (
             0 => __DIR__ . '/..' . '/liuggio/fastest/src',
             1 => __DIR__ . '/..' . '/liuggio/fastest/adapters',
         ),
-        'Liip\\ImagineBundle\\' => 
+        'Liip\\ImagineBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/liip-imagine-bundle',
         ),
-        'Lexik\\Bundle\\TranslationBundle\\' => 
+        'Lexik\\Bundle\\TranslationBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/lexik/translation-bundle',
         ),
-        'League\\MimeTypeDetection\\' => 
+        'League\\MimeTypeDetection\\' =>
         array (
             0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
         ),
-        'League\\Flysystem\\' => 
+        'League\\Flysystem\\' =>
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
         ),
-        'League\\Csv\\' => 
+        'League\\Csv\\' =>
         array (
             0 => __DIR__ . '/..' . '/league/csv/src',
         ),
-        'Laminas\\ZendFrameworkBridge\\' => 
+        'Laminas\\ZendFrameworkBridge\\' =>
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-zendframework-bridge/src',
         ),
-        'Laminas\\Code\\' => 
+        'Laminas\\Code\\' =>
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-code/src',
         ),
-        'Knp\\Menu\\' => 
+        'Knp\\Menu\\' =>
         array (
             0 => __DIR__ . '/..' . '/knplabs/knp-menu/src/Knp/Menu',
         ),
-        'Knp\\Bundle\\MenuBundle\\' => 
+        'Knp\\Bundle\\MenuBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/knplabs/knp-menu-bundle/src',
         ),
-        'Kaliop\\eZMigrationBundle\\' => 
+        'Kaliop\\eZMigrationBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezmigrationbundle',
         ),
-        'JmesPath\\' => 
+        'JmesPath\\' =>
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
         ),
-        'Jean85\\' => 
+        'Jean85\\' =>
         array (
             0 => __DIR__ . '/..' . '/jean85/pretty-package-versions/src',
         ),
-        'JMS\\TranslationBundle\\' => 
+        'JMS\\TranslationBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/jms/translation-bundle',
         ),
-        'Incenteev\\ParameterHandler\\' => 
+        'Incenteev\\ParameterHandler\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/composer-parameter-handler',
             1 => __DIR__ . '/..' . '/incenteev/composer-parameter-handler',
         ),
-        'Imagine\\' => 
+        'Imagine\\' =>
         array (
             0 => __DIR__ . '/..' . '/imagine/imagine/src',
         ),
-        'Ibexa\\GraphQL\\' => 
+        'Ibexa\\GraphQL\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-graphql/src',
         ),
-        'Ibexa\\Core\\' => 
+        'Ibexa\\Core\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/src/lib',
         ),
-        'Ibexa\\Contracts\\Core\\' => 
+        'Ibexa\\Contracts\\Core\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/src/contracts',
         ),
-        'Ibexa\\Bundle\\LegacySearchEngine\\' => 
+        'Ibexa\\Bundle\\LegacySearchEngine\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/src/bundle/LegacySearchEngine',
         ),
-        'Ibexa\\Bundle\\Installer\\' => 
+        'Ibexa\\Bundle\\Installer\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/src/bundle/Installer',
         ),
-        'Ibexa\\Bundle\\IO\\' => 
+        'Ibexa\\Bundle\\IO\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/src/bundle/IO',
         ),
-        'Ibexa\\Bundle\\Debug\\' => 
+        'Ibexa\\Bundle\\Debug\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/src/bundle/Debug',
         ),
-        'Ibexa\\Bundle\\Core\\' => 
+        'Ibexa\\Bundle\\Core\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/src/bundle/Core',
         ),
-        'Ibexa\\AdminUi\\' => 
+        'Ibexa\\AdminUi\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-admin-ui/src/lib',
         ),
-        'Http\\Promise\\' => 
+        'Http\\Promise\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/promise/src',
         ),
-        'Http\\Message\\' => 
+        'Http\\Message\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/message-factory/src',
             1 => __DIR__ . '/..' . '/php-http/message/src',
         ),
-        'Http\\HttplugBundle\\' => 
+        'Http\\HttplugBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/httplug-bundle/src',
         ),
-        'Http\\Factory\\Guzzle\\' => 
+        'Http\\Factory\\Guzzle\\' =>
         array (
             0 => __DIR__ . '/..' . '/http-interop/http-factory-guzzle/src',
         ),
-        'Http\\Discovery\\' => 
+        'Http\\Discovery\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/discovery/src',
         ),
-        'Http\\Client\\Curl\\' => 
+        'Http\\Client\\Curl\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/curl-client/src',
         ),
-        'Http\\Client\\Common\\Plugin\\' => 
+        'Http\\Client\\Common\\Plugin\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/stopwatch-plugin/src',
             1 => __DIR__ . '/..' . '/php-http/logger-plugin/src',
         ),
-        'Http\\Client\\Common\\' => 
+        'Http\\Client\\Common\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/client-common/src',
         ),
-        'Http\\Client\\' => 
+        'Http\\Client\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-http/httplug/src',
         ),
-        'Hautelook\\TemplatedUriRouter\\' => 
+        'Hautelook\\TemplatedUriRouter\\' =>
         array (
             0 => __DIR__ . '/..' . '/ibexa/templated-uri-router',
         ),
-        'GuzzleHttp\\Psr7\\' => 
+        'GuzzleHttp\\Psr7\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-        'GuzzleHttp\\Promise\\' => 
+        'GuzzleHttp\\Promise\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
         ),
-        'GuzzleHttp\\' => 
+        'GuzzleHttp\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
-        'GraphQL\\' => 
+        'GraphQL\\' =>
         array (
             0 => __DIR__ . '/..' . '/webonyx/graphql-php/src',
         ),
-        'Goutte\\' => 
+        'Goutte\\' =>
         array (
             0 => __DIR__ . '/..' . '/fabpot/goutte/Goutte',
         ),
-        'Fig\\Link\\' => 
+        'Fig\\Link\\' =>
         array (
             0 => __DIR__ . '/..' . '/fig/link-util/src',
         ),
-        'Faker\\' => 
+        'Faker\\' =>
         array (
             0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
-        'FOS\\JsRoutingBundle\\' => 
+        'FOS\\JsRoutingBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/friendsofsymfony-jsrouting-bundle',
         ),
-        'FOS\\HttpCache\\Tests\\' => 
+        'FOS\\HttpCache\\Tests\\' =>
         array (
             0 => __DIR__ . '/..' . '/friendsofsymfony/http-cache/tests',
         ),
-        'FOS\\HttpCache\\' => 
+        'FOS\\HttpCache\\' =>
         array (
             0 => __DIR__ . '/..' . '/friendsofsymfony/http-cache/src',
         ),
-        'FOS\\HttpCacheBundle\\' => 
+        'FOS\\HttpCacheBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/friendsofsymfony/http-cache-bundle',
         ),
-        'EzSystems\\SymfonyTools\\' => 
+        'EzSystems\\SymfonyTools\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony-tools/src/lib',
         ),
-        'EzSystems\\SymfonyToolsBundle\\' => 
+        'EzSystems\\SymfonyToolsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/symfony-tools/src/bundle',
         ),
-        'EzSystems\\RepositoryForms\\Features\\' => 
+        'EzSystems\\RepositoryForms\\Features\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/repository-forms/features',
         ),
-        'EzSystems\\RepositoryForms\\' => 
+        'EzSystems\\RepositoryForms\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/repository-forms/lib',
         ),
-        'EzSystems\\RepositoryFormsBundle\\' => 
+        'EzSystems\\RepositoryFormsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/repository-forms/bundle',
         ),
-        'EzSystems\\PlatformInstallerBundle\\' => 
+        'EzSystems\\PlatformInstallerBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/eZ/Bundle/PlatformInstallerBundle/src',
         ),
-        'EzSystems\\PlatformHttpCacheBundle\\Tests\\' => 
+        'EzSystems\\PlatformHttpCacheBundle\\Tests\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-http-cache/tests',
             1 => __DIR__ . '/..' . '/ezsystems/ezplatform-http-cache/tests',
         ),
-        'EzSystems\\PlatformHttpCacheBundle\\' => 
+        'EzSystems\\PlatformHttpCacheBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-http-cache/src',
             1 => __DIR__ . '/..' . '/ezsystems/ezplatform-http-cache/src',
         ),
-        'EzSystems\\PlatformBehatBundle\\' => 
+        'EzSystems\\PlatformBehatBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel/eZ/Bundle/PlatformBehatBundle',
         ),
-        'EzSystems\\EzSupportToolsBundle\\' => 
+        'EzSystems\\EzSupportToolsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ez-support-tools',
         ),
-        'EzSystems\\EzPlatformXmlTextFieldTypeBundle\\' => 
+        'EzSystems\\EzPlatformXmlTextFieldTypeBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-xmltext-fieldtype/bundle',
         ),
-        'EzSystems\\EzPlatformUser\\' => 
+        'EzSystems\\EzPlatformUser\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-user/src/lib',
         ),
-        'EzSystems\\EzPlatformUserBundle\\' => 
+        'EzSystems\\EzPlatformUserBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-user/src/bundle',
         ),
-        'EzSystems\\EzPlatformStandardDesignBundle\\' => 
+        'EzSystems\\EzPlatformStandardDesignBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-standard-design/src/bundle',
         ),
-        'EzSystems\\EzPlatformSolrSearchEngine\\Tests\\SetupFactory\\' => 
+        'EzSystems\\EzPlatformSolrSearchEngine\\Tests\\SetupFactory\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-solr-search-engine/tests/lib/SetupFactory',
         ),
-        'EzSystems\\EzPlatformSolrSearchEngine\\' => 
+        'EzSystems\\EzPlatformSolrSearchEngine\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-solr-search-engine/lib',
         ),
-        'EzSystems\\EzPlatformSolrSearchEngineBundle\\' => 
+        'EzSystems\\EzPlatformSolrSearchEngineBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-solr-search-engine/bundle',
         ),
-        'EzSystems\\EzPlatformRichText\\' => 
+        'EzSystems\\EzPlatformRichText\\' =>
         array (
             0 => __DIR__ . '/..' . '/ezsystems/ezplatform-richtext/src/lib',
             1 => __DIR__ . '/..' . '/se7enxweb/ezplatform-richtext/src/lib',
         ),
-        'EzSystems\\EzPlatformRichTextBundle\\' => 
+        'EzSystems\\EzPlatformRichTextBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/ezsystems/ezplatform-richtext/src/bundle',
             1 => __DIR__ . '/..' . '/se7enxweb/ezplatform-richtext/src/bundle',
         ),
-        'EzSystems\\EzPlatformMatrixFieldtype\\' => 
+        'EzSystems\\EzPlatformMatrixFieldtype\\' =>
         array (
             0 => __DIR__ . '/..' . '/ezsystems/ezplatform-matrix-fieldtype/src/lib',
         ),
-        'EzSystems\\EzPlatformMatrixFieldtypeBundle\\' => 
+        'EzSystems\\EzPlatformMatrixFieldtypeBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/ezsystems/ezplatform-matrix-fieldtype/src/bundle',
         ),
-        'EzSystems\\EzPlatformGraphQL\\' => 
+        'EzSystems\\EzPlatformGraphQL\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-graphql/src',
         ),
-        'EzSystems\\EzPlatformEncoreBundle\\' => 
+        'EzSystems\\EzPlatformEncoreBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-core/src/EzPlatformEncoreBundle/bundle',
         ),
-        'EzSystems\\EzPlatformDesignEngine\\' => 
+        'EzSystems\\EzPlatformDesignEngine\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-design-engine/lib',
         ),
-        'EzSystems\\EzPlatformDesignEngineBundle\\' => 
+        'EzSystems\\EzPlatformDesignEngineBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-design-engine/bundle',
         ),
-        'EzSystems\\EzPlatformCronBundle\\' => 
+        'EzSystems\\EzPlatformCronBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-cron/src/bundle',
         ),
-        'EzSystems\\EzPlatformCoreBundle\\' => 
+        'EzSystems\\EzPlatformCoreBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-core/src/EzPlatformCoreBundle/bundle',
         ),
-        'EzSystems\\EzPlatformAdminUi\\' => 
+        'EzSystems\\EzPlatformAdminUi\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-admin-ui/src/lib',
         ),
-        'EzSystems\\EzPlatformAdminUiModulesBundle\\' => 
+        'EzSystems\\EzPlatformAdminUiModulesBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-admin-ui-modules',
         ),
-        'EzSystems\\EzPlatformAdminUiBundle\\' => 
+        'EzSystems\\EzPlatformAdminUiBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-admin-ui/src/bundle',
         ),
-        'EzSystems\\EzPlatformAdminUiAssetsBundle\\' => 
+        'EzSystems\\EzPlatformAdminUiAssetsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/ezplatform-admin-ui-assets',
         ),
-        'EzSystems\\DoctrineSchema\\' => 
+        'EzSystems\\DoctrineSchema\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/doctrine-dbal-schema/src/lib',
         ),
-        'EzSystems\\DoctrineSchemaBundle\\' => 
+        'EzSystems\\DoctrineSchemaBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/doctrine-dbal-schema/src/bundle',
         ),
-        'Egulias\\EmailValidator\\' => 
+        'Egulias\\EmailValidator\\' =>
         array (
             0 => __DIR__ . '/..' . '/egulias/email-validator/src',
         ),
-        'EdiModric\\Twig\\' => 
+        'EdiModric\\Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/emodric/twig-package-versions/src',
         ),
-        'Doctrine\\Persistence\\' => 
+        'Doctrine\\Persistence\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Persistence',
         ),
-        'Doctrine\\ORM\\' => 
+        'Doctrine\\ORM\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/orm/lib/Doctrine/ORM',
         ),
-        'Doctrine\\Migrations\\' => 
+        'Doctrine\\Migrations\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/migrations/lib/Doctrine/Migrations',
         ),
-        'Doctrine\\Instantiator\\' => 
+        'Doctrine\\Instantiator\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
-        'Doctrine\\Inflector\\' => 
+        'Doctrine\\Inflector\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
         ),
-        'Doctrine\\Deprecations\\' => 
+        'Doctrine\\Deprecations\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/deprecations/src',
         ),
-        'Doctrine\\DBAL\\' => 
+        'Doctrine\\DBAL\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/dbal/lib/Doctrine/DBAL',
         ),
-        'Doctrine\\Common\\Lexer\\' => 
+        'Doctrine\\Common\\Lexer\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer',
         ),
-        'Doctrine\\Common\\Inflector\\' => 
+        'Doctrine\\Common\\Inflector\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
         ),
-        'Doctrine\\Common\\Collections\\' => 
+        'Doctrine\\Common\\Collections\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/collections/lib/Doctrine/Common/Collections',
         ),
-        'Doctrine\\Common\\Cache\\' => 
+        'Doctrine\\Common\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
         ),
-        'Doctrine\\Common\\Annotations\\' => 
+        'Doctrine\\Common\\Annotations\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
         ),
-        'Doctrine\\Common\\' => 
+        'Doctrine\\Common\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
             1 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Common',
             2 => __DIR__ . '/..' . '/doctrine/reflection/lib/Doctrine/Common',
             3 => __DIR__ . '/..' . '/doctrine/event-manager/src',
         ),
-        'Doctrine\\Bundle\\MigrationsBundle\\' => 
+        'Doctrine\\Bundle\\MigrationsBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/doctrine-migrations-bundle',
         ),
-        'Doctrine\\Bundle\\DoctrineCacheBundle\\' => 
+        'Doctrine\\Bundle\\DoctrineCacheBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/doctrine-cache-bundle',
         ),
-        'Doctrine\\Bundle\\DoctrineBundle\\' => 
+        'Doctrine\\Bundle\\DoctrineBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/doctrine-bundle',
         ),
-        'DeepCopy\\' => 
+        'DeepCopy\\' =>
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
-        'Cron\\' => 
+        'Cron\\' =>
         array (
             0 => __DIR__ . '/..' . '/cron/cron/src',
         ),
-        'Clue\\StreamFilter\\' => 
+        'Clue\\StreamFilter\\' =>
         array (
             0 => __DIR__ . '/..' . '/clue/stream-filter/src',
         ),
-        'Cjw\\' => 
+        'Cjw\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src/Cjw',
         ),
-        'CaptainHook\\Secrets\\' => 
+        'CaptainHook\\Secrets\\' =>
         array (
             0 => __DIR__ . '/..' . '/captainhook/secrets/src',
         ),
-        'CaptainHook\\App\\' => 
+        'CaptainHook\\App\\' =>
         array (
             0 => __DIR__ . '/..' . '/captainhook/captainhook/src',
         ),
-        'CJW\\CJWConfigProcessor\\' => 
+        'CJW\\CJWConfigProcessor\\' =>
         array (
             0 => __DIR__ . '/..' . '/cjw-network/cjw-config-processor',
             1 => __DIR__ . '/..' . '/cjw-network/cjw-config-processor',
         ),
-        'Buzz\\' => 
+        'Buzz\\' =>
         array (
             0 => __DIR__ . '/..' . '/kriswallsmith/buzz/lib',
         ),
-        'Brick\\Math\\' => 
+        'Brick\\Math\\' =>
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
         ),
-        'Bex\\Behat\\ScreenshotExtension\\Driver\\' => 
+        'Bex\\Behat\\ScreenshotExtension\\Driver\\' =>
         array (
             0 => __DIR__ . '/..' . '/ezsystems/behat-screenshot-image-driver-cloudinary/src',
         ),
-        'Behat\\Transliterator\\' => 
+        'Behat\\Transliterator\\' =>
         array (
             0 => __DIR__ . '/..' . '/behat/transliterator/src/Behat/Transliterator',
         ),
-        'Behat\\Testwork\\' => 
+        'Behat\\Testwork\\' =>
         array (
             0 => __DIR__ . '/..' . '/behat/behat/src/Behat/Testwork',
         ),
-        'Behat\\Mink\\Driver\\' => 
+        'Behat\\Mink\\Driver\\' =>
         array (
             0 => __DIR__ . '/..' . '/behat/mink-selenium2-driver/src',
             1 => __DIR__ . '/..' . '/behat/mink-goutte-driver/src',
             2 => __DIR__ . '/..' . '/behat/mink-browserkit-driver/src',
         ),
-        'Behat\\Mink\\' => 
+        'Behat\\Mink\\' =>
         array (
             0 => __DIR__ . '/..' . '/behat/mink/src',
         ),
-        'Behat\\Gherkin\\' => 
+        'Behat\\Gherkin\\' =>
         array (
             0 => __DIR__ . '/..' . '/behat/gherkin/src',
         ),
-        'Behat\\Behat\\' => 
+        'Behat\\Behat\\' =>
         array (
             0 => __DIR__ . '/..' . '/behat/behat/src/Behat/Behat',
         ),
-        'Bazinga\\Bundle\\JsTranslationBundle\\' => 
+        'Bazinga\\Bundle\\JsTranslationBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/willdurand/js-translation-bundle',
         ),
-        'Assert\\' => 
+        'Assert\\' =>
         array (
             0 => __DIR__ . '/..' . '/beberlei/assert/lib/Assert',
         ),
-        'AppBundle\\' => 
+        'AppBundle\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src/AppBundle',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'e' => 
+        'e' =>
         array (
-            'eZ\\Publish\\Composer' => 
+            'eZ\\Publish\\Composer' =>
             array (
                 0 => __DIR__ . '/..' . '/se7enxweb/exponential-legacy-installer/src',
                 1 => __DIR__ . '/..' . '/se7enxweb/ezpublish-legacy-installer/src',
             ),
-            'eZ' => 
+            'eZ' =>
             array (
                 0 => __DIR__ . '/..' . '/se7enxweb/ezpublish-kernel',
             ),
         ),
-        'W' => 
+        'W' =>
         array (
-            'WebDriver' => 
+            'WebDriver' =>
             array (
                 0 => __DIR__ . '/..' . '/instaclick/php-webdriver/lib',
             ),
         ),
-        'T' => 
+        'T' =>
         array (
-            'Twig_Extensions_' => 
+            'Twig_Extensions_' =>
             array (
                 0 => __DIR__ . '/..' . '/twig/extensions/lib',
             ),
-            'Twig_' => 
+            'Twig_' =>
             array (
                 0 => __DIR__ . '/..' . '/se7enxweb/twig/lib',
             ),
         ),
-        'P' => 
+        'P' =>
         array (
-            'Parsedown' => 
+            'Parsedown' =>
             array (
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
-            'PHPExcel' => 
+            'PHPExcel' =>
             array (
                 0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
             ),
         ),
-        'N' => 
+        'N' =>
         array (
-            'Netgen\\Bundle\\RemoteMediaBundle' => 
+            'Netgen\\Bundle\\RemoteMediaBundle' =>
             array (
                 0 => __DIR__ . '/..' . '/se7enxweb/remote-media-bundle',
             ),
         ),
-        'J' => 
+        'J' =>
         array (
-            'JsonpCallbackValidator' => 
+            'JsonpCallbackValidator' =>
             array (
                 0 => __DIR__ . '/..' . '/willdurand/jsonp-callback-validator/src',
             ),
         ),
-        'H' => 
+        'H' =>
         array (
-            'Hautelook\\TemplatedUriBundle' => 
+            'Hautelook\\TemplatedUriBundle' =>
             array (
                 0 => __DIR__ . '/..' . '/ibexa/templated-uri-bundle',
             ),
-            'HTMLPurifier' => 
+            'HTMLPurifier' =>
             array (
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),
         ),
-        'G' => 
+        'G' =>
         array (
-            'Guzzle\\Tests' => 
+            'Guzzle\\Tests' =>
             array (
                 0 => __DIR__ . '/..' . '/guzzle/guzzle/tests',
             ),
-            'Guzzle' => 
+            'Guzzle' =>
             array (
                 0 => __DIR__ . '/..' . '/guzzle/guzzle/src',
             ),
         ),
-        'E' => 
+        'E' =>
         array (
-            'EzSystems\\BehatBundle' => 
+            'EzSystems\\BehatBundle' =>
             array (
                 0 => __DIR__ . '/..' . '/ezsystems/behatbundle',
             ),
         ),
-        'B' => 
+        'B' =>
         array (
-            'Bex\\Behat\\ScreenshotExtension\\' => 
+            'Bex\\Behat\\ScreenshotExtension\\' =>
             array (
                 0 => __DIR__ . '/..' . '/bex/behat-screenshot/src',
             ),
-            'Behat\\Symfony2Extension' => 
+            'Behat\\Symfony2Extension' =>
             array (
                 0 => __DIR__ . '/..' . '/behat/symfony2-extension/src',
             ),
-            'Behat\\MinkExtension' => 
+            'Behat\\MinkExtension' =>
             array (
                 0 => __DIR__ . '/..' . '/behat/mink-extension/src',
             ),
         ),
-        'A' => 
+        'A' =>
         array (
-            'Assetic' => 
+            'Assetic' =>
             array (
                 0 => __DIR__ . '/..' . '/kriswallsmith/assetic/src',
             ),
@@ -1624,6 +1621,7 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
         'HTMLPurifier_TagTransform_Font2' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/TagTransform/Font2.php',
         'HTMLPurifier_URIFilter_HTML5_SafeLink' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/URIFilter/HTML5/SafeLink.php',
         'IntlDateFormatter' => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Component/Intl/Resources/stubs/IntlDateFormatter.php',
+        'IntlListFormatter' => __DIR__ . '/..' . '/symfony/polyfill-intl-icu/Resources/stubs/IntlListFormatter.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'Locale' => __DIR__ . '/..' . '/se7enxweb/symfony/src/Symfony/Component/Intl/Resources/stubs/Locale.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',

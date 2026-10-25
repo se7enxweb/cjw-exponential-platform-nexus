@@ -96,7 +96,7 @@ abstract class Hook extends RepositoryAware
         $this->determineVerbosity($output, $config);
 
         try {
-            $this->handleBootstrap($config);
+            BootstrapUtil::handleBootstrap($config, $this->resolver);
 
             $class = '\\CaptainHook\\App\\Runner\\Hook\\' . HookUtil::getHookCommand($this->hookName);
             /** @var \CaptainHook\App\Runner\Hook $hook */
@@ -107,35 +107,6 @@ abstract class Hook extends RepositoryAware
             return 0;
         } catch (Throwable $t) {
             return $this->crash($output, $t);
-        }
-    }
-
-    /**
-     * If CaptainHook is executed via PHAR this handles the bootstrap file inclusion
-     *
-     * @param \CaptainHook\App\Config $config
-     */
-    private function handleBootstrap(Config $config): void
-    {
-        // we only have to care about bootstrapping PHAR builds because for
-        // Composer installations the bootstrapping is already done in the bin script
-        if ($this->isBootstrapRequired($config)) {
-            // check the custom and default autoloader
-            $bootstrapFile = BootstrapUtil::validateBootstrapPath($this->resolver->isPharRelease(), $config);
-            // since the phar has its own autoloader, we don't need to do anything
-            // if the bootstrap file is not actively set
-            if (empty($bootstrapFile)) {
-                return;
-            }
-            // the bootstrap file exists, so let's load it
-            try {
-                require $bootstrapFile;
-            } catch (Throwable $t) {
-                throw new RuntimeException(
-                    'Loading bootstrap file failed: ' . $bootstrapFile . PHP_EOL .
-                    $t->getMessage() . PHP_EOL
-                );
-            }
         }
     }
 
@@ -155,19 +126,5 @@ abstract class Hook extends RepositoryAware
             }
         }
         return false;
-    }
-
-    /**
-     * Returns true if a bootstrapping is necessary
-     *
-     * We have to take care of bootstrapping PHAR builds and Composer installations
-     * if we the bootstrap file is not the composer autoloader.
-     *
-     * @param  \CaptainHook\App\Config $config
-     * @return bool
-     */
-    private function isBootstrapRequired(Config $config): bool
-    {
-        return $this->resolver->isPharRelease() || $config->getBootstrap() !== 'vendor/autoload.php';
     }
 }

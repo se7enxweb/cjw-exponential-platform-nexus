@@ -38,11 +38,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '2.16.1';
-    public const VERSION_ID = 21601;
+    public const VERSION = '2.16.5';
+    public const VERSION_ID = 21605;
     public const MAJOR_VERSION = 2;
     public const MINOR_VERSION = 16;
-    public const RELEASE_VERSION = 1;
+    public const RELEASE_VERSION = 5;
     public const EXTRA_VERSION = '';
 
     private $charset;
@@ -443,7 +443,7 @@ class Environment
      * @throws LoaderError When the template cannot be found
      * @throws SyntaxError When an error occurred during compilation
      */
-    public function createTemplate($template, string $name = null)
+    public function createTemplate($template, ?string $name = null)
     {
         $hash = hash(\PHP_VERSION_ID < 80100 ? 'sha256' : 'xxh128', $template, false);
         if (null !== $name) {

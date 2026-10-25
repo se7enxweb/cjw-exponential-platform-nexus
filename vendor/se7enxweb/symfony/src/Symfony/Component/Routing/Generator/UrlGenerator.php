@@ -143,7 +143,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
             if ('variable' === $token[0]) {
                 if (!$optional || !\array_key_exists($token[3], $defaults) || null !== $mergedParams[$token[3]] && (string) $mergedParams[$token[3]] !== (string) $defaults[$token[3]]) {
                     // check requirement (while ignoring look-around patterns)
-                    if (null !== $this->strictRequirements && !preg_match('#^'.preg_replace('/\(\?(?:=|<=|!|<!)((?:[^()\\\\]+|\\\\.|\((?1)\))*)\)/', '', $token[2]).'$#'.(empty($token[4]) ? '' : 'u'), $mergedParams[$token[3]])) {
+                    if (null !== $this->strictRequirements && !preg_match('#^(?:'.preg_replace('/\(\?(?:=|<=|!|<!)((?:[^()\\\\]+|\\\\.|\((?1)\))*)\)/', '', $token[2]).')$#'.(empty($token[4]) ? '' : 'u'), $mergedParams[$token[3]])) {
                         if ($this->strictRequirements) {
                             throw new InvalidParameterException(strtr($message, ['{parameter}' => $token[3], '{route}' => $name, '{expected}' => $token[2], '{given}' => $mergedParams[$token[3]]]));
                         }
@@ -175,11 +175,17 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
         // the path segments "." and ".." are interpreted as relative reference when resolving a URI; see http://tools.ietf.org/html/rfc3986#section-3.3
         // so we need to encode them as they are not used for this purpose here
         // otherwise we would generate a URI that, when followed by a user agent (e.g. browser), does not match this route
-        $url = strtr($url, ['/../' => '/%2E%2E/', '/./' => '/%2E/']);
-        if ('/..' === substr($url, -3)) {
-            $url = substr($url, 0, -2).'%2E%2E';
-        } elseif ('/.' === substr($url, -2)) {
-            $url = substr($url, 0, -1).'%2E';
+        // every segment is checked on its own: strtr() skips every other one of chained "../" or "./"
+        if (false !== strpos($url, '/.')) {
+            $segments = explode('/', $url);
+            foreach ($segments as $i => $segment) {
+                if ('.' === $segment) {
+                    $segments[$i] = '%2E';
+                } elseif ('..' === $segment) {
+                    $segments[$i] = '%2E%2E';
+                }
+            }
+            $url = implode('/', $segments);
         }
 
         $schemeAuthority = '';
@@ -198,7 +204,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
             foreach ($hostTokens as $token) {
                 if ('variable' === $token[0]) {
                     // check requirement (while ignoring look-around patterns)
-                    if (null !== $this->strictRequirements && !preg_match('#^'.preg_replace('/\(\?(?:=|<=|!|<!)((?:[^()\\\\]+|\\\\.|\((?1)\))*)\)/', '', $token[2]).'$#i'.(empty($token[4]) ? '' : 'u'), $mergedParams[$token[3]])) {
+                    if (null !== $this->strictRequirements && !preg_match('#^(?:'.preg_replace('/\(\?(?:=|<=|!|<!)((?:[^()\\\\]+|\\\\.|\((?1)\))*)\)/', '', $token[2]).')$#i'.(empty($token[4]) ? '' : 'u'), $mergedParams[$token[3]])) {
                         if ($this->strictRequirements) {
                             throw new InvalidParameterException(strtr($message, ['{parameter}' => $token[3], '{route}' => $name, '{expected}' => $token[2], '{given}' => $mergedParams[$token[3]]]));
                         }

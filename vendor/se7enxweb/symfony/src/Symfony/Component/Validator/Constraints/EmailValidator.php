@@ -81,7 +81,7 @@ class EmailValidator extends ConstraintValidator
 
                 return;
             }
-        } elseif (!preg_match('/^.+\@\S+\.\S+$/', $value)) {
+        } elseif (!preg_match('/^.+\@\S+\.\S+$/D', $value)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(Email::INVALID_FORMAT_ERROR)

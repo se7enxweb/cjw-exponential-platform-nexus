@@ -12,7 +12,7 @@
 namespace CaptainHook\App\Console\Command;
 
 use CaptainHook\App\Console\IOUtil;
-use CaptainHook\App\Runner\Config\Reader;
+use CaptainHook\App\Runner\Config\Visualizer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,26 +43,26 @@ class Info extends RepositoryAware
              ->setHelp('Displays information about the configuration')
              ->addArgument('hook', InputArgument::OPTIONAL, 'Hook you want to investigate')
              ->addOption(
-                 'list-actions',
+                 'actions',
                  'a',
                  InputOption::VALUE_NONE,
                  'List all actions'
              )
              ->addOption(
-                 'list-conditions',
+                 'conditions',
                  'p',
                  InputOption::VALUE_NONE,
                  'List all conditions'
              )
              ->addOption(
-                 'list-options',
+                 'options',
                  'o',
                  InputOption::VALUE_NONE,
                  'List all options'
              )
              ->addOption(
-                 'list-config',
-                 's',
+                 'action-config',
+                 null,
                  InputOption::VALUE_NONE,
                  'List all action settings'
              )
@@ -99,13 +99,13 @@ class Info extends RepositoryAware
 
             $this->determineVerbosity($output, $config);
 
-            $editor = new Reader($io, $config, $repo);
+            $editor = new Visualizer($io, $config, $repo);
             $editor->setHook(IOUtil::argToString($input->getArgument('hook')))
-                   ->display(Reader::OPT_ACTIONS, $input->getOption('list-actions'))
-                   ->display(Reader::OPT_CONDITIONS, $input->getOption('list-conditions'))
-                   ->display(Reader::OPT_OPTIONS, $input->getOption('list-options'))
-                   ->display(Reader::OPT_CONFIG, $input->getOption('list-config'))
-                   ->display(Reader::OPT_SETTINGS, $input->getOption('application-config'))
+                   ->display(Visualizer\Settings::OPT_ACTIONS, $input->getOption('actions'))
+                   ->display(Visualizer\Settings::OPT_CONDITIONS, $input->getOption('conditions'))
+                   ->display(Visualizer\Settings::OPT_OPTIONS, $input->getOption('options'))
+                   ->display(Visualizer\Settings::OPT_CONFIG, $input->getOption('action-config'))
+                   ->display(Visualizer\Settings::OPT_SETTINGS, $input->getOption('application-config'))
                    ->extensive($input->getOption('extensive'))
                    ->run();
 

@@ -70,11 +70,13 @@ class ExecutableFinder
             );
         }
 
-        $suffixes = [''];
+        $suffixes = [];
         if ('\\' === \DIRECTORY_SEPARATOR) {
             $pathExt = getenv('PATHEXT');
-            $suffixes = array_merge($pathExt ? explode(\PATH_SEPARATOR, $pathExt) : $this->suffixes, $suffixes);
+            $suffixes = $pathExt ? explode(\PATH_SEPARATOR, $pathExt) : $this->suffixes;
         }
+        // a name with an extension is looked up as given first, a bare name only after the executable suffixes
+        $suffixes = '' !== pathinfo($name, \PATHINFO_EXTENSION) ? array_merge([''], $suffixes) : array_merge($suffixes, ['']);
         foreach ($suffixes as $suffix) {
             foreach ($dirs as $dir) {
                 if (@is_file($file = $dir.\DIRECTORY_SEPARATOR.$name.$suffix) && ('\\' === \DIRECTORY_SEPARATOR || @is_executable($file))) {

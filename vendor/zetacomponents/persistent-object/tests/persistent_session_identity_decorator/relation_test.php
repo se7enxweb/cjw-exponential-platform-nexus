@@ -38,17 +38,16 @@ require_once dirname( __FILE__ ) . "/../data/relation_test_address.php";
 class ezcPersistentSessionIdentityDecoratorRelationTest extends ezcTestCase
 {
     protected $session;
-
     protected $idSession;
-
     protected $idMap;
+    protected $db;
 
     public static function suite()
     {
         return new \PHPUnit\Framework\TestSuite( __CLASS__ );
     }
 
-    public function setup()
+    public function setUp(): void
     {
         try
         {
@@ -76,7 +75,7 @@ class ezcPersistentSessionIdentityDecoratorRelationTest extends ezcTestCase
         );
     }
 
-    public function teardown()
+    public function tearDown(): void
     {
         RelationTestEmployer::cleanup();
     }
@@ -656,27 +655,19 @@ class ezcPersistentSessionIdentityDecoratorRelationTest extends ezcTestCase
         $relObject = new RelationTestAddress();
         $relObject->id = 42;
 
-        $idMap = $this->getMock(
-            'ezcPersistentBasicIdentityMap',
-            array( 'getRelatedObjects' ),
-            array(),
-            '',
-            false,
-            false
-        );
+        $idMap = $this->getMockBuilder( 'ezcPersistentBasicIdentityMap' )
+            ->disableOriginalConstructor()
+            ->onlyMethods( array( 'getRelatedObjects' ) )
+            ->getMock();
         $idMap->expects( $this->once() )
               ->method( 'getRelatedObjects' )
               ->with( $srcObject, 'RelationTestAddress', null )
               ->will( $this->returnValue( array( 42 => $relObject ) ) );
 
-        $session = $this->getMock(
-            'ezcPersistentSession',
-            array( 'isRelated' ),
-            array(),
-            '',
-            false,
-            false
-        );
+        $session = $this->getMockBuilder( 'ezcPersistentSession' )
+            ->disableOriginalConstructor()
+            ->onlyMethods( array( 'isRelated' ) )
+            ->getMock();
         $session->expects( $this->never() )
                 ->method( 'isRelated' );
 
@@ -696,27 +687,19 @@ class ezcPersistentSessionIdentityDecoratorRelationTest extends ezcTestCase
         $relObject = new RelationTestAddress();
         $relObject->id = 42;
 
-        $idMap = $this->getMock(
-            'ezcPersistentBasicIdentityMap',
-            array( 'getRelatedObjects' ),
-            array(),
-            '',
-            false,
-            false
-        );
+        $idMap = $this->getMockBuilder( 'ezcPersistentBasicIdentityMap' )
+            ->disableOriginalConstructor()
+            ->onlyMethods( array( 'getRelatedObjects' ) )
+            ->getMock();
         $idMap->expects( $this->once() )
               ->method( 'getRelatedObjects' )
               ->with( $srcObject, 'RelationTestAddress', null )
               ->will( $this->returnValue( null ) );
 
-        $session = $this->getMock(
-            'ezcPersistentSession',
-            array( 'isRelated' ),
-            array(),
-            '',
-            false,
-            false
-        );
+        $session = $this->getMockBuilder( 'ezcPersistentSession' )
+            ->disableOriginalConstructor()
+            ->onlyMethods( array( 'isRelated' ) )
+            ->getMock();
         $session->expects( $this->once() )
                 ->method( 'isRelated' )
                 ->with( $srcObject, $relObject )

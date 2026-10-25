@@ -35,15 +35,15 @@ require_once dirname( __FILE__ ) . "/data/database_type_test_object.php";
  */
 class ezcPersistentDatabaseTypeTest extends ezcTestCase
 {
-
     private $session;
+    private $db;
 
     public static function suite()
     {
         return new \PHPUnit\Framework\TestSuite( __CLASS__ );
     }
 
-    public function setup()
+    public function setUp(): void
     {
         try
         {
@@ -61,7 +61,7 @@ class ezcPersistentDatabaseTypeTest extends ezcTestCase
         );
     }
 
-    public function teardown()
+    public function tearDown(): void
     {
         // DatabaseTypeTestObject::cleanup();
     }
@@ -75,11 +75,11 @@ class ezcPersistentDatabaseTypeTest extends ezcTestCase
         $obj = $this->session->load( 'DatabaseTypeTestObject', 1 );
 
         $this->assertSame(
-            '1',
+            1,
             $obj->id
         );
         $this->assertSame(
-            '23',
+            23,
             $obj->int
         );
         $this->assertSame(
@@ -380,11 +380,11 @@ class ezcPersistentDatabaseTypeTest extends ezcTestCase
         $obj  = $objs[1];
 
         $this->assertSame(
-            '1',
+            1,
             $obj->id
         );
         $this->assertSame(
-            '23',
+            23,
             $obj->int
         );
         $this->assertSame(

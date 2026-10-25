@@ -14,9 +14,10 @@ namespace Twig\Node\Expression;
 
 use Twig\Compiler;
 use Twig\Extension\SandboxExtension;
+use Twig\Node\CoercesChildrenToStringInterface;
 use Twig\Template;
 
-class GetAttrExpression extends AbstractExpression
+class GetAttrExpression extends AbstractExpression implements CoercesChildrenToStringInterface
 {
     public function __construct(AbstractExpression $node, AbstractExpression $attribute, ?AbstractExpression $arguments, string $type, int $lineno)
     {
@@ -31,6 +32,7 @@ class GetAttrExpression extends AbstractExpression
     public function compile(Compiler $compiler)
     {
         $env = $compiler->getEnvironment();
+        $arrayAccessSandbox = false;
 
         // optimize array calls
         if (
@@ -45,16 +47,36 @@ class GetAttrExpression extends AbstractExpression
                 ->subcompile($this->getNode('node'))
                 ->raw(') && is_array(')
                 ->raw($var)
+            ;
+
+            if (!$env->hasExtension(SandboxExtension::class)) {
+                $compiler
+                    ->raw(') || ')
+                    ->raw($var)
+                    ->raw(' instanceof ArrayAccess ? (')
+                    ->raw($var)
+                    ->raw('[')
+                    ->subcompile($this->getNode('attribute'))
+                    ->raw('] ?? null) : null)')
+                ;
+
+                return;
+            }
+
+            // with the sandbox, only native array-like classes skip the attribute check
+            $arrayAccessSandbox = true;
+
+            $compiler
                 ->raw(') || ')
                 ->raw($var)
-                ->raw(' instanceof ArrayAccess ? (')
+                ->raw(' instanceof ArrayAccess && in_array(get_class(')
+                ->raw($var)
+                ->raw('), \Twig\Extension\CoreExtension::ARRAY_LIKE_CLASSES, true) ? (')
                 ->raw($var)
                 ->raw('[')
                 ->subcompile($this->getNode('attribute'))
-                ->raw('] ?? null) : null)')
+                ->raw('] ?? null) : ')
             ;
-
-            return;
         }
 
         $compiler->raw('twig_get_attribute($this->env, $this->source, ');
@@ -83,6 +105,16 @@ class GetAttrExpression extends AbstractExpression
             ->raw(', ')->repr($this->getNode('node')->getTemplateLine())
             ->raw(')')
         ;
+
+        if ($arrayAccessSandbox) {
+            $compiler->raw(')');
+        }
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // for a method-like access, the host PHP method may coerce any of its arguments to string
+        return $this->hasNode('arguments') ? ['arguments'] : [];
     }
 }
 

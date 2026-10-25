@@ -12,7 +12,7 @@ final class GeneratedConfig
 	public const EXTENSIONS = array (
   'phpstan/phpstan-doctrine' => 
   array (
-    'install_path' => '/var/www/vhosts/platform.cjw.alpha.se7enx.com/doc/ezp25-jacexample/vendor/phpstan/phpstan-doctrine',
+    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/repos/cjw-exponential-platform-nexus--vendor-refresh/vendor/phpstan/phpstan-doctrine',
     'relative_install_path' => '../../phpstan-doctrine',
     'extra' => 
     array (
@@ -27,7 +27,7 @@ final class GeneratedConfig
   ),
   'phpstan/phpstan-symfony' => 
   array (
-    'install_path' => '/var/www/vhosts/platform.cjw.alpha.se7enx.com/doc/ezp25-jacexample/vendor/phpstan/phpstan-symfony',
+    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/repos/cjw-exponential-platform-nexus--vendor-refresh/vendor/phpstan/phpstan-symfony',
     'relative_install_path' => '../../phpstan-symfony',
     'extra' => 
     array (

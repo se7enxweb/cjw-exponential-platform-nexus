@@ -175,6 +175,18 @@ EOF
         $this->assertEquals('foo', $crawler->filterXPath('//div')->attr('class'), '->addXmlContent() adds nodes from an XML string');
     }
 
+    public function testAddXmlContentDoesNotExpandExternalEntities()
+    {
+        $crawler = new Crawler();
+        $crawler->addXmlContent(
+            '<?xml version="1.0"?>'
+            .'<!DOCTYPE r [<!ENTITY xxe SYSTEM "file:///etc/hosts">]>'
+            .'<r>&xxe;</r>'
+        );
+
+        $this->assertSame('', $crawler->text());
+    }
+
     public function testAddXmlContentCharset()
     {
         $crawler = new Crawler();

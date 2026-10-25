@@ -20,9 +20,9 @@ use Twig\Node\Expression\ConstantExpression;
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class DeprecatedNode extends Node
+class DeprecatedNode extends Node implements CoercesChildrenToStringInterface
 {
-    public function __construct(AbstractExpression $expr, int $lineno, string $tag = null)
+    public function __construct(AbstractExpression $expr, int $lineno, ?string $tag = null)
     {
         parent::__construct(['expr' => $expr], [], $lineno, $tag);
     }
@@ -49,6 +49,12 @@ class DeprecatedNode extends Node
             ->string(sprintf(' ("%s" at line %d).', $this->getTemplateName(), $this->getTemplateLine()))
             ->raw(", E_USER_DEPRECATED);\n")
         ;
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // the message is concatenated with `.`
+        return ['expr'];
     }
 }
 

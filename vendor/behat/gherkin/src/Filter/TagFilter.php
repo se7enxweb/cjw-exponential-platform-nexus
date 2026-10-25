@@ -12,6 +12,7 @@ namespace Behat\Gherkin\Filter;
 
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\OutlineNode;
+use Behat\Gherkin\Node\RuleNode;
 use Behat\Gherkin\Node\ScenarioInterface;
 
 /**
@@ -26,84 +27,55 @@ class TagFilter extends ComplexFilter
      */
     protected $filterString;
 
+    private TagFilterMatcher $filterMatcher;
+
+    private ?RuleNode $currentlyFilteringRule = null;
+
     public function __construct(string $filterString)
     {
-        $filterString = trim($filterString);
-        $fixedFilterString = $this->fixLegacyFilterStringWithoutPrefixes($filterString);
-        // @todo trigger a deprecation here $filterString !== $fixedFilterString
-        $this->filterString = $fixedFilterString;
+        $this->filterMatcher = new TagFilterMatcher($filterString);
+        // Because `filterString` is protected (and therefore could in theory be modified by a child class at runtime),
+        // we need to check if the parsed filter is up to date every time isTagsMatchCondition is called.
+        //
+        // But in previous releases, we normalised the actual `$this->filterString` value in the constructor. Therefore,
+        // we render the (normalised) parsed value back to the filter string to avoid a behaviour change here. This
+        // means we also have to update the value in the `parsedFilter` array, to avoid parsing it again.
+        //
+        // This can all be removed in the next major if we make `filterString` private and/or readonly and remove the
+        // normalisation of deprecated syntax.
+        $this->filterString = $this->filterMatcher->getNormalisedFilterString();
 
-        if (preg_match('/\s/u', $this->filterString)) {
-            trigger_error(
-                'Tags with whitespace are deprecated and may be removed in a future version',
-                E_USER_DEPRECATED
-            );
-        }
+        // Always filter the individual children, don't check the feature itself
+        parent::__construct(skipFilteringChildrenIfFeatureMatches: false);
     }
 
-    /**
-     * Fix tag expressions where the filter string does not include the `@` prefixes.
-     *
-     * e.g. `new TagFilter('wip&&~slow')` rather than `new TagFilter('@wip&&~@slow')`. These were historically
-     * supported, although not officially, and have been reinstated to solve a BC issue. This syntax will be deprecated
-     * and removed in future.
-     */
-    private function fixLegacyFilterStringWithoutPrefixes(string $filterString): string
+    protected function filterScenario(FeatureNode $feature, ?RuleNode $rule, ScenarioInterface $scenario): ScenarioInterface|false
     {
-        if ($filterString === '') {
-            return '';
+        $this->currentlyFilteringRule = $rule;
+        try {
+            $isScenarioMatch = $this->isScenarioMatch($feature, $scenario);
+        } finally {
+            $this->currentlyFilteringRule = null;
         }
 
-        $allParts = [];
-        foreach (explode('&&', $filterString) as $andTags) {
-            $allParts[] = implode(
-                ',',
-                array_map(
-                    fn (string $tag): string => match (true) {
-                        // Valid - tag filter contains the `@` prefix
-                        str_starts_with($tag, '@'),
-                        str_starts_with($tag, '~@') => $tag,
-                        // Invalid / legacy cases - insert the missing `@` prefix in the right place
-                        str_starts_with($tag, '~') => '~@' . substr($tag, 1),
-                        default => '@' . $tag,
-                    },
-                    explode(',', $andTags),
-                ),
-            );
+        if (!$isScenarioMatch) {
+            return false;
         }
 
-        return implode('&&', $allParts);
-    }
+        $tags = [...$feature->getTags(), ...$scenario->getTags(), ...($rule?->getTags() ?? [])];
 
-    /**
-     * Filters feature according to the filter.
-     *
-     * @return FeatureNode
-     */
-    public function filterFeature(FeatureNode $feature)
-    {
-        $scenarios = [];
-        foreach ($feature->getScenarios() as $scenario) {
-            if (!$this->isScenarioMatch($feature, $scenario)) {
-                continue;
-            }
-
-            if ($scenario instanceof OutlineNode && $scenario->hasExamples()) {
-                $exampleTables = [];
-
-                foreach ($scenario->getExampleTables() as $exampleTable) {
-                    if ($this->isTagsMatchCondition(array_merge($feature->getTags(), $scenario->getTags(), $exampleTable->getTags()))) {
-                        $exampleTables[] = $exampleTable;
-                    }
+        if ($scenario instanceof OutlineNode && $scenario->hasExamples()) {
+            $exampleTables = [];
+            foreach ($scenario->getExampleTables() as $exampleTable) {
+                if ($this->isTagsMatchCondition([...$tags, ...$exampleTable->getTags()])) {
+                    $exampleTables[] = $exampleTable;
                 }
-
-                $scenario = $scenario->withTables($exampleTables);
             }
 
-            $scenarios[] = $scenario;
+            return $scenario->withTables($exampleTables);
         }
 
-        return $feature->withScenarios($scenarios);
+        return $scenario;
     }
 
     /**
@@ -128,9 +100,19 @@ class TagFilter extends ComplexFilter
      */
     public function isScenarioMatch(FeatureNode $feature, ScenarioInterface $scenario)
     {
+        // Note, this will only consider Rule tags when filtering features using our implementation of `filterFeature`.
+        // It will not consider Rule tags if:
+        // - this method is called from outside our main `filterFeature` loop (e.g. to check a tagged hook in Behat)
+        // - an end-user has extended `TagFilter` and overridden this method instead of customising `filterFeature`
+        //
+        // For the same reason, we can't refactor this method / filterFeature to avoid iterating the tables twice -
+        // because that would break end-user assumptions about the relationship between these two methods if they
+        // have extended either method.
+        $tags = [...$feature->getTags(), ...$scenario->getTags(), ...($this->currentlyFilteringRule?->getTags() ?? [])];
+
         if ($scenario instanceof OutlineNode && $scenario->hasExamples()) {
             foreach ($scenario->getExampleTables() as $example) {
-                if ($this->isTagsMatchCondition(array_merge($feature->getTags(), $scenario->getTags(), $example->getTags()))) {
+                if ($this->isTagsMatchCondition([...$tags, ...$example->getTags()])) {
                     return true;
                 }
             }
@@ -138,7 +120,7 @@ class TagFilter extends ComplexFilter
             return false;
         }
 
-        return $this->isTagsMatchCondition(array_merge($feature->getTags(), $scenario->getTags()));
+        return $this->isTagsMatchCondition($tags);
     }
 
     /**
@@ -150,35 +132,12 @@ class TagFilter extends ComplexFilter
      */
     protected function isTagsMatchCondition(array $tags)
     {
-        if ($this->filterString === '') {
-            return true;
+        if ($this->filterMatcher->getNormalisedFilterString() !== $this->filterString) {
+            // A child class has modified the filter string since the last call.
+            $this->filterMatcher = new TagFilterMatcher($this->filterString);
+            $this->filterString = $this->filterMatcher->getNormalisedFilterString();
         }
 
-        // If the file was parsed in legacy mode, the `@` prefix will have been removed from the individual tags on the
-        // parsed node. The tags in the filter expression still have their @ so we add the prefix back here if required.
-        // This can be removed once legacy parsing mode is removed.
-        $tags = array_map(
-            static fn (string $tag) => str_starts_with($tag, '@') ? $tag : '@' . $tag,
-            $tags
-        );
-
-        foreach (explode('&&', $this->filterString) as $andTags) {
-            $satisfiesComma = false;
-
-            foreach (explode(',', $andTags) as $tag) {
-                if ($tag[0] === '~') {
-                    $tag = mb_substr($tag, 1, mb_strlen($tag, 'utf8') - 1, 'utf8');
-                    $satisfiesComma = !in_array($tag, $tags, true) || $satisfiesComma;
-                } else {
-                    $satisfiesComma = in_array($tag, $tags, true) || $satisfiesComma;
-                }
-            }
-
-            if (!$satisfiesComma) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->filterMatcher->isMatch($tags);
     }
 }

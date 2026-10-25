@@ -36,15 +36,15 @@ require_once dirname( __FILE__ ) . "/../data/relation_test_person.php";
  */
 class ezcPersistentManyToOneRelationTest extends ezcTestCase
 {
-
     private $session;
+    private $db;
 
     public static function suite()
     {
         return new \PHPUnit\Framework\TestSuite( "ezcPersistentManyToOneRelationTest" );
     }
 
-    public function setup()
+    public function setUp(): void
     {
         try
         {
@@ -62,7 +62,7 @@ class ezcPersistentManyToOneRelationTest extends ezcTestCase
         );
     }
 
-    public function teardown()
+    public function tearDown(): void
     {
         RelationTestEmployer::cleanup();
     }

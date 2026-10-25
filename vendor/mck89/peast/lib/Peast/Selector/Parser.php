@@ -11,7 +11,7 @@ namespace Peast\Selector;
 
 /**
  * Selector parser class
- * 
+ *
  * @author Marco Marchiò <marco.mm89@gmail.com>
  */
 class Parser
@@ -84,7 +84,7 @@ class Parser
      *
      * @param string $selector  Selector string
      * @param array  $options   Options array. See Query class
- *                              documentation for available options
+     *                          documentation for available options
      */
     public function __construct($selector, $options = array())
     {

@@ -74,6 +74,20 @@ use Twig\TwigTest;
 
 final class CoreExtension extends AbstractExtension
 {
+    public const ARRAY_LIKE_CLASSES = [
+        'ArrayIterator',
+        'ArrayObject',
+        'CachingIterator',
+        'RecursiveArrayIterator',
+        'RecursiveCachingIterator',
+        'SplDoublyLinkedList',
+        'SplFixedArray',
+        'SplObjectStorage',
+        'SplQueue',
+        'SplStack',
+        'WeakMap',
+    ];
+
     private $dateFormats = ['F j, Y H:i', '%d days'];
     private $numberFormat = [0, '.', ','];
     private $timezone = null;
@@ -232,7 +246,7 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('striptags', 'twig_striptags'),
             new TwigFilter('trim', 'twig_trim_filter'),
             new TwigFilter('nl2br', 'twig_nl2br', ['pre_escape' => 'html', 'is_safe' => ['html']]),
-            new TwigFilter('spaceless', 'twig_spaceless', ['is_safe' => ['html']]),
+            new TwigFilter('spaceless', 'twig_spaceless', ['pre_escape' => 'html', 'is_safe' => ['html']]),
 
             // array helpers
             new TwigFilter('join', 'twig_join_filter'),
@@ -240,7 +254,7 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('sort', 'twig_sort_filter', ['needs_environment' => true]),
             new TwigFilter('merge', 'twig_array_merge'),
             new TwigFilter('batch', 'twig_array_batch'),
-            new TwigFilter('column', 'twig_array_column'),
+            new TwigFilter('column', 'twig_array_column', ['needs_environment' => true]),
             new TwigFilter('filter', 'twig_array_filter', ['needs_environment' => true]),
             new TwigFilter('map', 'twig_array_map', ['needs_environment' => true]),
             new TwigFilter('reduce', 'twig_array_reduce', ['needs_environment' => true]),
@@ -347,6 +361,8 @@ namespace {
     use Twig\Extension\CoreExtension;
     use Twig\Extension\SandboxExtension;
     use Twig\Markup;
+    use Twig\Sandbox\SecurityNotAllowedMethodError;
+    use Twig\Sandbox\SecurityNotAllowedPropertyError;
     use Twig\Source;
     use Twig\Template;
     use Twig\TemplateWrapper;
@@ -1159,12 +1175,16 @@ function twig_call_macro(Template $template, string $method, array $args, int $l
         $parent = $template;
         while ($parent = $parent->getParent($context)) {
             if (method_exists($parent, $method)) {
+                $parent->ensureSecurityChecked();
+
                 return $parent->$method(...$args);
             }
         }
 
         throw new RuntimeError(sprintf('Macro "%s" is not defined in template "%s".', substr($method, \strlen('macro_')), $template->getTemplateName()), $lineno, $source);
     }
+
+    $template->ensureSecurityChecked();
 
     return $template->$method(...$args);
 }
@@ -1278,10 +1298,6 @@ function twig_include(Environment $env, $context, $template, $variables = [], $w
             if (!$ignoreMissing) {
                 throw $e;
             }
-        }
-
-        if ($isSandboxed && $loaded) {
-            $loaded->unwrap()->checkSecurity();
         }
 
         return $loaded ? $loaded->render($variables) : '';
@@ -1400,9 +1416,24 @@ function twig_array_batch($items, $size, $fill = null, $preserveKeys = true)
  */
 function twig_get_attribute(Environment $env, Source $source, $object, $item, array $arguments = [], $type = /* Template::ANY_CALL */ 'any', $isDefinedTest = false, $ignoreStrictCheck = false, $sandboxed = false, int $lineno = -1)
 {
+    $propertyNotAllowedError = null;
+    if ($sandboxed && \is_object($item) && method_exists($item, '__toString')) {
+        $env->getExtension(SandboxExtension::class)->ensureToStringAllowed($item, $lineno, $source);
+    }
+
     // array
     if (/* Template::METHOD_CALL */ 'method' !== $type) {
         $arrayItem = \is_bool($item) || \is_float($item) ? (int) $item : $item;
+
+        if ($sandboxed && $object instanceof ArrayAccess && !\in_array(\get_class($object), CoreExtension::ARRAY_LIKE_CLASSES, true)) {
+            try {
+                $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $arrayItem, $lineno, $source);
+            } catch (SecurityNotAllowedPropertyError $propertyNotAllowedError) {
+                // the method lookup below expects a string item (no float-to-int key deprecation on PHP 8.1+)
+                $item = (string) $item;
+                goto methodCheck;
+            }
+        }
 
         if (((\is_array($object) || $object instanceof \ArrayObject) && (isset($object[$arrayItem]) || \array_key_exists($arrayItem, (array) $object)))
             || ($object instanceof ArrayAccess && isset($object[$arrayItem]))
@@ -1475,18 +1506,24 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
 
     // object property
     if (/* Template::METHOD_CALL */ 'method' !== $type) {
+        if ($sandboxed) {
+            try {
+                $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $item, $lineno, $source);
+            } catch (SecurityNotAllowedPropertyError $propertyNotAllowedError) {
+                goto methodCheck;
+            }
+        }
+
         if (isset($object->$item) || \array_key_exists((string) $item, (array) $object)) {
             if ($isDefinedTest) {
                 return true;
             }
 
-            if ($sandboxed) {
-                $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $item, $lineno, $source);
-            }
-
             return $object->$item;
         }
     }
+
+    methodCheck:
 
     static $cache = [];
 
@@ -1546,6 +1583,10 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
             return false;
         }
 
+        if ($propertyNotAllowedError) {
+            throw $propertyNotAllowedError;
+        }
+
         if ($ignoreStrictCheck || !$env->isStrictVariables()) {
             return;
         }
@@ -1553,12 +1594,24 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
         throw new RuntimeError(sprintf('Neither the property "%1$s" nor one of the methods "%1$s()", "get%1$s()"/"is%1$s()"/"has%1$s()" or "__call()" exist and have public access in class "%2$s".', $item, $class), $lineno, $source);
     }
 
-    if ($isDefinedTest) {
-        return true;
+    if ($sandboxed) {
+        try {
+            $env->getExtension(SandboxExtension::class)->checkMethodAllowed($object, $method, $lineno, $source);
+        } catch (SecurityNotAllowedMethodError $e) {
+            if ($isDefinedTest) {
+                return false;
+            }
+
+            if ($propertyNotAllowedError) {
+                throw $propertyNotAllowedError;
+            }
+
+            throw $e;
+        }
     }
 
-    if ($sandboxed) {
-        $env->getExtension(SandboxExtension::class)->checkMethodAllowed($object, $method, $lineno, $source);
+    if ($isDefinedTest) {
+        return true;
     }
 
     // Some objects throw exceptions when they have __call, and the method we try
@@ -1592,12 +1645,27 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
  *
  * @return array The array of values
  */
-function twig_array_column($array, $name, $index = null): array
+function twig_array_column(Environment $env, $array, $name, $index = null): array
 {
     if ($array instanceof Traversable) {
         $array = iterator_to_array($array);
     } elseif (!\is_array($array)) {
         throw new RuntimeError(sprintf('The column filter only works with arrays or "Traversable", got "%s" as first argument.', \gettype($array)));
+    }
+
+    if (twig_resolve_is_sandboxed($env)) {
+        // array_column() reads public properties of objects, so the property policy applies; the sandbox
+        // may be enabled by a SourcePolicyInterface for the calling template only, so the policy is
+        // checked directly instead of through SandboxExtension::checkPropertyAllowed()
+        $policy = $env->getExtension(SandboxExtension::class)->getSecurityPolicy();
+        foreach ($array as $item) {
+            if (\is_object($item)) {
+                $policy->checkPropertyAllowed($item, (string) $name);
+                if (null !== $index) {
+                    $policy->checkPropertyAllowed($item, (string) $index);
+                }
+            }
+        }
     }
 
     return array_column($array, $name, $index);
@@ -1648,8 +1716,46 @@ function twig_array_reduce(Environment $env, $array, $arrow, $initial = null)
 
 function twig_check_arrow_in_sandbox(Environment $env, $arrow, $thing, $type)
 {
-    if (!$arrow instanceof Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+    if (!$arrow instanceof Closure && twig_resolve_is_sandboxed($env)) {
         throw new RuntimeError(sprintf('The callable passed to the "%s" %s must be a Closure in sandbox mode.', $thing, $type));
     }
+}
+
+/**
+ * Recovers the Source of the calling template by walking the PHP backtrace.
+ *
+ * The filters and tests of this file have no access to the template that calls them, while a
+ * SourcePolicyInterface decides per template whether the sandbox applies.
+ *
+ * @internal
+ */
+function twig_resolve_caller_source(): ?Source
+{
+    foreach (debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT | \DEBUG_BACKTRACE_IGNORE_ARGS) as $trace) {
+        if (isset($trace['object']) && $trace['object'] instanceof Template) {
+            return $trace['object']->getSourceContext();
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Tells whether the sandbox applies to the calling template, including a sandbox enabled by a source policy.
+ *
+ * @internal
+ */
+function twig_resolve_is_sandboxed(Environment $env): bool
+{
+    if (!$env->hasExtension(SandboxExtension::class)) {
+        return false;
+    }
+
+    $sandbox = $env->getExtension(SandboxExtension::class);
+    if ($sandbox->isSandboxed()) {
+        return true;
+    }
+
+    return $sandbox->hasSourcePolicy() && $sandbox->isSandboxed(twig_resolve_caller_source());
 }
 }

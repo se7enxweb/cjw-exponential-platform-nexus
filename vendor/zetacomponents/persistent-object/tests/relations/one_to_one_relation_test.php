@@ -37,15 +37,15 @@ require_once dirname( __FILE__ ) . "/../data/relation_test_birthday.php";
  */
 class ezcPersistentOneToOneRelationTest extends ezcTestCase
 {
-
     private $session;
+    private $db;
 
     public static function suite()
     {
         return new \PHPUnit\Framework\TestSuite( "ezcPersistentOneToOneRelationTest" );
     }
 
-    public function setup()
+    public function setUp(): void
     {
         try
         {
@@ -63,7 +63,7 @@ class ezcPersistentOneToOneRelationTest extends ezcTestCase
         );
     }
 
-    public function teardown()
+    public function tearDown(): void
     {
         RelationTestBirthday::cleanup();
     }

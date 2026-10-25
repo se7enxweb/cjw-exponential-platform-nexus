@@ -241,7 +241,12 @@ trait PdoTrait
                 $sql = "TRUNCATE TABLE $this->table";
             }
         } else {
-            $sql = "DELETE FROM $this->table WHERE $this->idCol LIKE '$namespace%'";
+            // the namespace is bound, never interpolated into the SQL
+            $stmt = $conn->prepare("DELETE FROM $this->table WHERE $this->idCol LIKE :namespace");
+            $stmt->bindValue(':namespace', sprintf('%s%%', $namespace), \PDO::PARAM_STR);
+            $stmt->execute();
+
+            return true;
         }
 
         if (method_exists($conn, 'executeStatement')) {

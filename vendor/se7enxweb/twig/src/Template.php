@@ -93,6 +93,14 @@ abstract class Template
             return $this->parent;
         }
 
+        // The compiled doGetParent() may evaluate user expressions (filters,
+        // functions, method calls) when the parent name is dynamic. Make sure
+        // the sandbox security check runs first so those expressions cannot
+        // bypass the allow-list when getParent() is reached before the first
+        // ensureSecurityChecked() call on this template (e.g. via a macro call
+        // or displayBlock() into a pre-warmed instance).
+        $this->ensureSecurityChecked();
+
         try {
             $parent = $this->doGetParent($context);
 
@@ -159,7 +167,7 @@ abstract class Template
      * @param array  $blocks    The current set of blocks
      * @param bool   $useBlocks Whether to use the current set of blocks
      */
-    public function displayBlock($name, array $context, array $blocks = [], $useBlocks = true, self $templateContext = null)
+    public function displayBlock($name, array $context, array $blocks = [], $useBlocks = true, ?self $templateContext = null)
     {
         if ($useBlocks && isset($blocks[$name])) {
             $template = $blocks[$name][0];
@@ -179,6 +187,7 @@ abstract class Template
 
         if (null !== $template) {
             try {
+                $template->ensureSecurityChecked();
                 $template->$block($context, $blocks);
             } catch (Error $e) {
                 if (!$e->getSourceContext()) {
@@ -402,6 +411,7 @@ abstract class Template
     protected function displayWithErrorHandling(array $context, array $blocks = [])
     {
         try {
+            $this->ensureSecurityChecked();
             $this->doDisplay($context, $blocks);
         } catch (Error $e) {
             if (!$e->getSourceContext()) {
@@ -421,6 +431,19 @@ abstract class Template
 
             throw $e;
         }
+    }
+
+    /**
+     * Runs the sandbox security check against the current sandbox state.
+     *
+     * The check runs every time the template (or one of its blocks or macros)
+     * is used, not once when the instance is created, so a cached instance
+     * honours a sandbox enabled, disabled or reconfigured after its creation.
+     *
+     * @internal
+     */
+    public function ensureSecurityChecked(): void
+    {
     }
 
     /**

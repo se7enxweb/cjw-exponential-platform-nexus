@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\HttpFoundation;
 
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Exception\ConflictingHeadersException;
 use Symfony\Component\HttpFoundation\Exception\SuspiciousOperationException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -338,6 +339,8 @@ class Request
      * @param string|resource|null $content    The raw body data
      *
      * @return static
+     *
+     * @throws BadRequestException When the URI is invalid
      */
     public static function create($uri, $method = 'GET', $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
@@ -359,7 +362,23 @@ class Request
         $server['PATH_INFO'] = '';
         $server['REQUEST_METHOD'] = strtoupper($method);
 
+        $uri = (string) $uri;
         $components = parse_url($uri);
+
+        if (false === $components) {
+            throw new BadRequestException('Invalid URI.');
+        }
+
+        if (false !== ($i = strpos($uri, '\\')) && $i < strcspn($uri, '?#')) {
+            throw new BadRequestException('Invalid URI: A URI cannot contain a backslash.');
+        }
+        if (\strlen($uri) !== strcspn($uri, "\r\n\t")) {
+            throw new BadRequestException('Invalid URI: A URI cannot contain CR/LF/TAB characters.');
+        }
+        if ('' !== $uri && (\ord($uri[0]) <= 32 || \ord($uri[\strlen($uri) - 1]) <= 32)) {
+            throw new BadRequestException('Invalid URI: A URI must not start nor end with ASCII control characters or spaces.');
+        }
+
         if (isset($components['host'])) {
             $server['SERVER_NAME'] = $components['host'];
             $server['HTTP_HOST'] = $components['host'];
@@ -2010,9 +2029,8 @@ class Request
         }
 
         $pathInfo = substr($requestUri, \strlen($baseUrl));
-        if (false === $pathInfo || '' === $pathInfo) {
-            // If substr() returns false then PATH_INFO is set to an empty string
-            return '/';
+        if (false === $pathInfo || '' === $pathInfo || '/' !== $pathInfo[0]) {
+            return '/'.$pathInfo;
         }
 
         return (string) $pathInfo;

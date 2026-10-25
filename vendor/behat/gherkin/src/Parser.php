@@ -14,14 +14,17 @@ use Behat\Gherkin\Exception\FilesystemException;
 use Behat\Gherkin\Exception\InvalidTagContentException;
 use Behat\Gherkin\Exception\LexerException;
 use Behat\Gherkin\Exception\NodeException;
+use Behat\Gherkin\Exception\NoSuchLanguageException;
 use Behat\Gherkin\Exception\ParserException;
 use Behat\Gherkin\Exception\UnexpectedParserNodeException;
 use Behat\Gherkin\Exception\UnexpectedTaggedNodeException;
+use Behat\Gherkin\Node\ArgumentInterface;
 use Behat\Gherkin\Node\BackgroundNode;
 use Behat\Gherkin\Node\ExampleTableNode;
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\OutlineNode;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\RuleNode;
 use Behat\Gherkin\Node\ScenarioInterface;
 use Behat\Gherkin\Node\ScenarioNode;
 use Behat\Gherkin\Node\StepNode;
@@ -51,7 +54,7 @@ use LogicException;
  * @phpstan-import-type TTableRowToken from Lexer
  * @phpstan-import-type TTitleKeyword from Lexer
  *
- * @phpstan-type TParsedExpressionResult FeatureNode|BackgroundNode|ScenarioNode|OutlineNode|ExampleTableNode|TableNode|PyStringNode|StepNode|string
+ * @phpstan-type TParsedExpressionResult FeatureNode|BackgroundNode|ScenarioNode|OutlineNode|ExampleTableNode|TableNode|PyStringNode|StepNode|RuleNode|string
  */
 class Parser implements ParserInterface
 {
@@ -81,32 +84,40 @@ class Parser implements ParserInterface
         $this->lexer->setCompatibilityMode($this->compatibilityMode);
 
         try {
-            $this->lexer->analyse($this->input);
-        } catch (LexerException $e) {
-            throw new ParserException(
-                sprintf('Lexer exception "%s" thrown for file %s', $e->getMessage(), $file),
-                0,
-                $e
-            );
-        }
-
-        $feature = null;
-        while ($this->predictTokenType() !== 'EOS') {
-            $node = $this->parseExpression();
-
-            if ($node === "\n" || $node === '') {
-                continue;
+            try {
+                $this->lexer->analyse($this->input);
+            } catch (LexerException $e) {
+                throw new ParserException(
+                    sprintf('Lexer exception "%s" thrown for file %s', $e->getMessage(), $file),
+                    0,
+                    $e
+                );
             }
 
-            if (!$feature && $node instanceof FeatureNode) {
-                $feature = $node;
-                continue;
+            $feature = null;
+            while ($this->predictTokenType() !== 'EOS') {
+                $node = $this->parseExpression();
+
+                if ($node === "\n" || $node === '') {
+                    continue;
+                }
+
+                if (!$feature && $node instanceof FeatureNode) {
+                    $feature = $node;
+                    continue;
+                }
+
+                throw new UnexpectedParserNodeException('Feature', $node, $this->file);
             }
 
-            throw new UnexpectedParserNodeException('Feature', $node, $this->file);
+            return $feature;
+        } catch (NoSuchLanguageException $e) {
+            throw new ParserException(sprintf(
+                '%s%s',
+                $e->getMessage(),
+                $this->file ? ' in file: ' . $this->file : ''
+            ), previous: $e);
         }
-
-        return $feature;
     }
 
     public function parseFile(string $file): ?FeatureNode
@@ -211,6 +222,7 @@ class Parser implements ParserInterface
             'Feature' => $this->parseFeature(),
             'Background' => $this->parseBackground(),
             'Scenario' => $this->parseScenario(),
+            'Rule' => $this->parseRule(),
             'Outline' => $this->parseOutline(),
             'Examples' => $this->parseExamples(),
             'TableRow' => $this->parseTable(),
@@ -219,6 +231,7 @@ class Parser implements ParserInterface
             'Text' => $this->parseText(),
             'Newline' => $this->parseNewline(),
             'Tag' => $this->parseTags(),
+            /* @phpstan-ignore method.deprecated (this is retained for BC with older lexer & parser extensions) */
             'Language' => $this->parseLanguage(),
             'EOS' => '',
             default => throw new ParserException(sprintf('Unknown token type: %s', $type)),
@@ -260,7 +273,7 @@ class Parser implements ParserInterface
                 continue;
             }
 
-            if ($node instanceof ScenarioInterface) {
+            if ($node instanceof RuleNode || $node instanceof ScenarioInterface) {
                 $scenarios[] = $node;
                 continue;
             }
@@ -284,6 +297,57 @@ class Parser implements ParserInterface
             $keyword,
             $language,
             $file,
+            $line
+        );
+    }
+
+    private function parseRule(): RuleNode
+    {
+        $token = $this->expectTokenType('Rule');
+
+        ['title' => $title, 'description' => $description] = $this->parseTitleAndDescription($token);
+        $tags = $this->popTags();
+        $keyword = $token['keyword'];
+        $line = $token['line'];
+        $children = [];
+
+        // The only thing that ends a Rule is another Rule, or the end of the file.
+        // Note that any tags before the next Rule will be consumed before control returns to our loop.
+        while (!in_array($this->predictTokenType(), ['Rule', 'EOS'])) {
+            $node = $this->parseExpression();
+
+            if ($node === "\n") {
+                continue;
+            }
+
+            $isBackgroundAllowed = ($children === []);
+
+            if ($isBackgroundAllowed && $node instanceof BackgroundNode) {
+                $children[] = $node;
+                continue;
+            }
+
+            if ($node instanceof ScenarioInterface) {
+                $children[] = $node;
+                continue;
+            }
+
+            throw new UnexpectedParserNodeException(
+                match ($isBackgroundAllowed) {
+                    true => 'Background, Scenario or Outline',
+                    false => 'Scenario or Outline',
+                },
+                $node,
+                $this->file,
+            );
+        }
+
+        return new RuleNode(
+            $title,
+            $description,
+            $tags,
+            $children,
+            $keyword,
             $line
         );
     }
@@ -444,7 +508,7 @@ class Parser implements ParserInterface
                     continue;
                 }
 
-                if (in_array($nextType, ['Feature', 'Examples', 'Scenario', 'Outline'], true)) {
+                if (in_array($nextType, ['Feature', 'Examples', 'Scenario', 'Outline', 'Rule'], true)) {
                     // These are the only taggable node types
                     return $nextType;
                 }
@@ -482,7 +546,42 @@ class Parser implements ParserInterface
             }
         }
 
-        return new StepNode($token['value'], trim($token['text']), $arguments, $token['line'], $token['keyword_type']);
+        $this->validateStepArguments($arguments);
+
+        return new StepNode($token['value'], trim($token['text']), $arguments, $token['line'], $token['keyword_type'], $token['fullText']);
+    }
+
+    /**
+     * @param list<ArgumentInterface> $arguments
+     */
+    private function validateStepArguments(array $arguments): void
+    {
+        if (count($arguments) <= 1) {
+            return;
+        }
+
+        if (!$this->compatibilityMode->supportsMultipleStepArguments()) {
+            throw new UnexpectedParserNodeException(
+                'only one Step argument',
+                // The unexpected argument is the second one
+                $arguments[1],
+                $this->file
+            );
+        }
+
+        // cucumber/gherkin >= 42.0.0 allows a step to have both a DataTable and a DocString,
+        // but it cannot have more than one of a given type.
+        $types = [];
+        foreach ($arguments as $arg) {
+            if (in_array($arg::class, $types, true)) {
+                throw new UnexpectedParserNodeException(
+                    'only one Step argument of any given type',
+                    $arg,
+                    $this->file
+                );
+            }
+            $types[] = $arg::class;
+        }
     }
 
     /**
@@ -745,7 +844,8 @@ class Parser implements ParserInterface
             $node->getText(),
             $node->getArguments(),
             $node->getLine(),
-            $keywordType
+            $keywordType,
+            $node->getFullText(),
         );
     }
 

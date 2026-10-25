@@ -7,6 +7,76 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 This project follows the [Behat release and version support policies]
 (https://docs.behat.org/en/latest/releases.html).
 
+# [4.18.0] - 2026-09-25
+
+## Changed
+
+* Deprecate FilterInterface, SimpleFilter and friends by @acoulton in [#432](https://github.com/Behat/Gherkin/pull/432)
+* Update cucumber/gherkin parity tests and translations to v42.0.1.
+  Parsing a step with invalid multiple table / docstring arguments now throws ParserException
+  instead of NodeException.
+  By @behat-gherkin-updater[bot] and @acoulton in [#425](https://github.com/Behat/Gherkin/pull/425) 
+  and [#424](https://github.com/Behat/Gherkin/pull/424)
+
+## Added
+
+* GHERKIN_32 compatibility mode is now officially complete and stable. The new GHERKIN_42 mode
+  added in this release is also complete and stable. LEGACY mode remains the default, but is
+  not recommended for new projects.
+  By @acoulton in [#441](https://github.com/Behat/Gherkin/pull/441)
+* Support `Rule` nodes in >= GHERKIN_32 mode (backwards compatible).
+  NB: Scenarios within Rules will be parsed, filtered, and executed as expected with
+  any caller. However, callers that have not been updated to support this feature will
+  receive a modified node tree with all Rule details stripped out. This will behave as
+  though any Scenarios were a direct child of the Feature - with any Rule Background steps
+  repeated as the first steps of each Scenario.
+  By @acoulton in [#430](https://github.com/Behat/Gherkin/pull/430)
+* Support steps with both DocString and DataTable arguments in GHERKIN_42 mode.
+  By @acoulton in [#440](https://github.com/Behat/Gherkin/pull/440)
+* Document (and test) how multiple filters combine by @Amoifr in [#431](https://github.com/Behat/Gherkin/pull/431)
+
+## Fixed
+
+* LineFilter and LineRangeFilter should handle varied Example tables by @acoulton in [#434](https://github.com/Behat/Gherkin/pull/434)
+
+## Internal
+
+* Refactor filter implementations and tests, cover missed test cases by @acoulton in [#433](https://github.com/Behat/Gherkin/pull/433)
+* Refactor internal implementations of Filter classes by @acoulton in [#436](https://github.com/Behat/Gherkin/pull/436)
+* Don't use our own deprecated code by @acoulton in [#435](https://github.com/Behat/Gherkin/pull/435)
+* Migrate ParserTest fixtures to the cucumber gherkin testdata format by @Amoifr in [#427](https://github.com/Behat/Gherkin/pull/427)
+* Add an automated Backwards Compatibility check to the build by @acoulton in [#437](https://github.com/Behat/Gherkin/pull/437)
+* Bump actions versions by @dependabot[bot] in [#423](https://github.com/Behat/Gherkin/pull/423)
+  and [#426](https://github.com/Behat/Gherkin/pull/426)
+* Fix deprecated client-id param in update job actions by @acoulton in [#438](https://github.com/Behat/Gherkin/pull/438)
+* Pin PHPStan to 2.2.14 rather than always taking latest by @acoulton in [#439](https://github.com/Behat/Gherkin/pull/439)
+
+# [4.17.0] - 2026-05-18
+
+### Changed
+
+* Emit deprecation if filter string does not contain @ prefixes by @acoulton in https://github.com/Behat/Gherkin/pull/417
+
+### Added
+
+* Add a `getFullText()` method to a StepNode - returns the keyword & text as it appears in the feature file 
+  by @acoulton in https://github.com/Behat/Gherkin/pull/421
+
+### Fixed
+
+* Wrap NoSuchLanguageException in a parser exception by @stof in https://github.com/Behat/Gherkin/pull/419
+* Ignore whitespace around operators in tag filter strings by @acoulton in https://github.com/Behat/Gherkin/pull/416
+
+### Internal
+
+* Update cucumber/gherkin parity tests and translations to v39.1.0 by @behat-gherkin-updater[bot] 
+  in https://github.com/Behat/Gherkin/pull/409, https://github.com/Behat/Gherkin/pull/411,
+  and https://github.com/Behat/Gherkin/pull/420
+* refactor: Only parse tag filter expression once by @acoulton in https://github.com/Behat/Gherkin/pull/418
+* Fix Phpstan errors in current master build by @acoulton in https://github.com/Behat/Gherkin/pull/413
+* Bump github actions versions by @dependabot[bot] in https://github.com/Behat/Gherkin/pull/412, 
+  https://github.com/Behat/Gherkin/pull/414 and https://github.com/Behat/Gherkin/pull/415
+
 # [4.16.1] - 2025-12-08
 
 ### Fixed
@@ -596,6 +666,8 @@ This project follows the [Behat release and version support policies]
 - 47 brand new translations (see i18n)
 - Full test suite for everything from AST nodes to translations
 
+[4.18.0]: https://github.com/Behat/Gherkin/compare/v4.17.0...v4.18.0
+[4.17.0]: https://github.com/Behat/Gherkin/compare/v4.16.1...v4.17.0
 [4.16.1]: https://github.com/Behat/Gherkin/compare/v4.16.0...v4.16.1
 [4.16.0]: https://github.com/Behat/Gherkin/compare/v4.15.0...v4.16.0
 [4.15.0]: https://github.com/Behat/Gherkin/compare/v4.14.0...v4.15.0

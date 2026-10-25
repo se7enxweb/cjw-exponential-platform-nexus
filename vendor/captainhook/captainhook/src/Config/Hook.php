@@ -97,6 +97,24 @@ class Hook
     }
 
     /**
+     * Check if a hook config has local actions that were not loaded from other config files
+     *
+     * @return bool
+     */
+    public function hasLocalActions(): bool
+    {
+        if (!$this->hasActions()) {
+            return false;
+        }
+        foreach ($this->actions as $action) {
+            if (!$action->isIncluded()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Add an action to the list
      *
      * @param \CaptainHook\App\Config\Action ...$actions

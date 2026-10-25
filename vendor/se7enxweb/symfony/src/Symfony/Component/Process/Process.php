@@ -1663,7 +1663,18 @@ class Process implements \IteratorAggregate
             $cmd
         );
 
-        $cmd = 'cmd /V:ON /E:ON /D /C ('.str_replace("\n", ' ', $cmd).')';
+        static $comSpec;
+
+        if (!$comSpec) {
+            // use an absolute path to prevent CreateProcess() from looking for "cmd" in the current directory
+            $finder = new ExecutableFinder();
+            $comSpec = $finder->find('cmd.exe') ?: (getenv('SystemRoot') ?: 'C:\Windows').'\System32\cmd.exe';
+
+            // Escape according to CommandLineToArgvW rules
+            $comSpec = '"'.preg_replace('{(\\\\*+)"}', '$1$1\"', $comSpec).'"';
+        }
+
+        $cmd = $comSpec.' /V:ON /E:ON /D /C ('.str_replace("\n", ' ', $cmd).')';
         foreach ($this->processPipes->getFiles() as $offset => $filename) {
             $cmd .= ' '.$offset.'>"'.$filename.'"';
         }
@@ -1717,7 +1728,7 @@ class Process implements \IteratorAggregate
         if (false !== strpos($argument, "\0")) {
             $argument = str_replace("\0", '?', $argument);
         }
-        if (!preg_match('/[\/()%!^"<>&|\s]/', $argument)) {
+        if (!preg_match('/[\/()%!^"<>&|\s[\]=;*?\'$]/', $argument)) {
             return $argument;
         }
         $argument = preg_replace('/(\\\\+)$/', '$1$1', $argument);

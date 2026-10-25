@@ -12,7 +12,9 @@
 namespace CaptainHook\App\Runner\Bootstrap;
 
 use CaptainHook\App\Config;
+use CaptainHook\App\Console\Runtime\Resolver;
 use RuntimeException;
+use Throwable;
 
 /**
  * Bootstrap Util
@@ -24,6 +26,53 @@ use RuntimeException;
  */
 class Util
 {
+    /**
+     * Check if bootstrapping is required and do it if needed
+     *
+     * @param  \CaptainHook\App\Config $config
+     * @param  \CaptainHook\App\Console\Runtime\Resolver $resolver
+     * @return void
+     * @throws \RuntimeException
+     */
+    public static function handleBootstrap(Config $config, Resolver $resolver): void
+    {
+        // we only have to care about bootstrapping PHAR builds because for
+        // Composer installations the bootstrapping is already done in the bin script
+        if (self::isBootstrapRequired($config, $resolver)) {
+            // check the custom and default autoloader
+            $bootstrapFile = self::validateBootstrapPath($resolver->isPharRelease(), $config);
+            // since the phar has its own autoloader, we don't need to do anything
+            // if the bootstrap file is not actively set
+            if (empty($bootstrapFile)) {
+                return;
+            }
+            // the bootstrap file exists, so let's load it
+            try {
+                require $bootstrapFile;
+            } catch (Throwable $t) {
+                throw new RuntimeException(
+                    'Loading bootstrap file failed: ' . $bootstrapFile . PHP_EOL .
+                    $t->getMessage() . PHP_EOL
+                );
+            }
+        }
+    }
+
+    /**
+     * Checks if we have to bootstrap the application
+     *
+     * If we run in composer mode and the bootstrap file is `vendor/autoload.php`, we don't need to do anything
+     * In PHAR mode we need to do bootstrap anyway.
+     *
+     * @param  \CaptainHook\App\Config $config
+     * @param  \CaptainHook\App\Console\Runtime\Resolver $resolver
+     * @return bool
+     */
+    public static function isBootstrapRequired(Config $config, Resolver $resolver): bool
+    {
+        return $resolver->isPharRelease() || $config->getBootstrap() !== 'vendor/autoload.php';
+    }
+
     /**
      * Return the bootstrap file to load (can be empty)
      *

@@ -28,13 +28,13 @@ use function assert;
  * @final since 4.15.0
  *
  * @phpstan-type TStepKeyword 'Given'|'When'|'Then'|'And'|'But'
- * @phpstan-type TTitleKeyword 'Feature'|'Background'|'Scenario'|'Outline'|'Examples'
+ * @phpstan-type TTitleKeyword 'Feature'|'Background'|'Scenario'|'Outline'|'Examples'|'Rule'
  * @phpstan-type TTokenType 'Text'|'Comment'|'EOS'|'Newline'|'PyStringOp'|'TableRow'|'Tag'|'Language'|'Step'|TTitleKeyword
  * @phpstan-type TToken TStringValueToken|TNullValueToken|TTitleToken|TStepToken|TTagToken|TTableRowToken
  * @phpstan-type TStringValueToken array{type: TTokenType, value: string, line: int, deferred: bool}
  * @phpstan-type TNullValueToken array{type: TTokenType, value: null, line: int, deferred: bool}
  * @phpstan-type TTitleToken array{type: TTitleKeyword, value: null|non-empty-string, line: int, deferred: bool, keyword: string, indent: int}
- * @phpstan-type TStepToken array{type: 'Step', value: string, line: int, deferred: bool, keyword_type: string, text: string}
+ * @phpstan-type TStepToken array{type: 'Step', value: string, line: int, deferred: bool, keyword_type: string, text: string, fullText: string}
  * @phpstan-type TTagToken array{type: 'Tag', value: null, line: int, deferred: bool, tags: list<string>}
  * @phpstan-type TTableRowToken array{type: 'TableRow', value: null, line: int, deferred: bool, columns: list<string>}
  * @phpstan-type TDocStringSeparator '"""'|'```'
@@ -358,6 +358,7 @@ class Lexer
             ?? $this->scanPyStringContent()
             ?? $this->scanStep()
             ?? $this->scanScenario()
+            ?? $this->scanRule()
             ?? $this->scanBackground()
             ?? $this->scanOutline()
             ?? $this->scanExamples()
@@ -500,6 +501,7 @@ class Lexer
         $keywords = match ($type) {
             'Feature' => $this->currentDialect->getFeatureKeywords(),
             'Background' => $this->currentDialect->getBackgroundKeywords(),
+            'Rule' => $this->currentDialect->getRuleKeywords(),
             'Scenario' => $this->currentDialect->getScenarioKeywords(),
             'Outline' => $this->currentDialect->getScenarioOutlineKeywords(),
             'Examples' => $this->currentDialect->getExamplesKeywords(),
@@ -592,6 +594,28 @@ class Lexer
     }
 
     /**
+     * @phpstan-return TTitleToken|null
+     */
+    protected function scanRule(): ?array
+    {
+        if (!$this->compatibilityMode->supportsRuleKeyword()) {
+            return null;
+        }
+
+        $token = $this->scanTitleLine($this->currentDialect->getRuleKeywords(), 'Rule');
+
+        if ($token === null) {
+            return null;
+        }
+
+        $this->allowMultilineArguments = false;
+        $this->allowSteps = false;
+        $this->allowExamples = false;
+
+        return $token;
+    }
+
+    /**
      * Scans Scenario Outline from input & returns it if found.
      *
      * @return array|null
@@ -671,6 +695,7 @@ class Lexer
         $token = $this->takeToken('Step', $nodeKeyword);
         $token['keyword_type'] = $this->getStepKeywordType($matchedKeyword);
         $token['text'] = $text;
+        $token['fullText'] = $matchedKeyword . $text;
 
         $this->consumeLine();
         $this->allowMultilineArguments = true;

@@ -36,8 +36,9 @@ require_once 'test_classes.php';
 class ezcPersistentObjectInstanceDelayedInitTest extends ezcTestCase
 {
     private $default;
+    private $db;
 
-    public function setUp()
+    public function setUp(): void
     {
         try
         {

@@ -51,6 +51,28 @@ abstract class IOUtil
     }
 
     /**
+     * Convert a string to boolean
+     *
+     * @param  string $string  The string to convert
+     * @param  bool   $default Either look for true or false values
+     * @return bool
+     */
+    public static function stringToBool(string $string, bool $default = false): bool
+    {
+        // convert to lowercase to make it easier to compare
+        $string = strtolower($string);
+
+        // if the default is true, we only look for false values
+        // if we can't find any, we return true
+        if ($default) {
+            return !in_array($string, ['false', 'n', 'no', '0', 'off']);
+        }
+        // if the default is false, we only look for true values,
+        // and if we can't find any, we return false'
+        return in_array($string, ['true', 'y', 'yes', 'ok', '1', 'on']);
+    }
+
+    /**
      * Convert a user answer to boolean
      *
      * @param  string $answer
@@ -58,11 +80,11 @@ abstract class IOUtil
      */
     public static function answerToBool(string $answer): bool
     {
-        return in_array(strtolower($answer), ['y', 'yes', 'ok']);
+        return self::stringToBool($answer, false);
     }
 
     /**
-     * Create formatted cli headline
+     * Create a formatted cli headline
      *
      * ">>>> HEADLINE <<<<"
      * "==== HEADLINE ===="

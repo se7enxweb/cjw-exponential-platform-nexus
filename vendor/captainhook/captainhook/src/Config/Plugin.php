@@ -11,9 +11,6 @@
 
 namespace CaptainHook\App\Config;
 
-use CaptainHook\App\Exception\InvalidPlugin;
-use CaptainHook\App\Plugin\CaptainHook;
-
 /**
  * Class Plugin
  *
@@ -46,10 +43,6 @@ class Plugin
      */
     public function __construct(string $plugin, array $options = [])
     {
-        if (!is_a($plugin, CaptainHook::class, true)) {
-            throw new InvalidPlugin("{$plugin} is not a valid CaptainHook plugin.");
-        }
-
         $this->plugin = $plugin;
         $this->setupOptions($options);
     }

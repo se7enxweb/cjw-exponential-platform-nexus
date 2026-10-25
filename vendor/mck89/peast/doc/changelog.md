@@ -1,6 +1,22 @@
 Changelog
 ==========
 
+#### 1.18.1
+* Fixed bug where rendering a "using" or "using await" declaration inside a switch case not always wrap it into brackets
+
+#### 1.18.0
+* Added ES2026 parser with no additional features
+* Added ES2027 parser and implemented explicit resource management
+
+#### 1.17.7
+* Fixed deprecation warning about null array index on PHP 8.5 when parsing trailing comments
+
+#### 1.17.6
+* Fixed bug where single BlockStatement where wrongly expanded removing brackets
+
+#### 1.17.5
+* Fixed bug when parsing SpreadElement followed by NewExpression between parenthesis
+
 #### 1.17.4
 * Fixed warning on PHP 8.5 when handling large numbers
 

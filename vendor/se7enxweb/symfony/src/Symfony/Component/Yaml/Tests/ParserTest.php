@@ -2389,6 +2389,182 @@ YAML;
         // (before, there was no \n after row2)
         $this->assertSame(['a' => ['b' => "row\nrow2\n"], 'c' => 'd'], $this->parser->parse($longDocument));
     }
+
+    public function testParseRejectsDocumentsThatExceedTheDefaultNestingDepth()
+    {
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        $this->expectExceptionMessage('Maximum nesting depth');
+
+        $yaml = "root:\n";
+        for ($i = 1; $i <= Parser::DEFAULT_MAX_NESTING_LEVEL + 1; ++$i) {
+            $yaml .= str_repeat('  ', $i).sprintf("level%d:\n", $i);
+        }
+
+        $this->parser->parse($yaml);
+    }
+
+    public function testParseAcceptsDocumentsAtTheConfiguredNestingDepth()
+    {
+        $this->parser->setMaxNestingLevel(300);
+
+        $yaml = "root:\n";
+        for ($i = 1; $i <= Parser::DEFAULT_MAX_NESTING_LEVEL + 1; ++$i) {
+            $yaml .= str_repeat('  ', $i).sprintf("level%d:\n", $i);
+        }
+
+        $this->assertArrayHasKey('root', $this->parser->parse($yaml));
+    }
+
+    public function testParseRejectsUnterminatedInlineSequencesThatExceedTheNestingDepth()
+    {
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        $this->expectExceptionMessage('Maximum nesting depth of 128 exceeded');
+
+        $this->parser->parse(str_repeat('[', Parser::DEFAULT_MAX_NESTING_LEVEL + 1));
+    }
+
+    public function testParseRejectsInlineMappingsThatExceedTheNestingDepth()
+    {
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        $this->expectExceptionMessage('Maximum nesting depth of 128 exceeded');
+
+        $this->parser->parse(str_repeat('{a: ', Parser::DEFAULT_MAX_NESTING_LEVEL + 1).'1'.str_repeat('}', Parser::DEFAULT_MAX_NESTING_LEVEL + 1));
+    }
+
+    public function testParseRejectsDeeplyNestedInlineSequences()
+    {
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        $this->expectExceptionMessage('Maximum nesting depth of 128 exceeded');
+
+        $this->parser->parse(str_repeat('[', 70000).str_repeat(']', 70000));
+    }
+
+    public function testParseAcceptsInlineSequencesAtTheNestingDepth()
+    {
+        $expected = [];
+        for ($i = 1; $i < Parser::DEFAULT_MAX_NESTING_LEVEL; ++$i) {
+            $expected = [$expected];
+        }
+
+        $yaml = str_repeat('[', Parser::DEFAULT_MAX_NESTING_LEVEL).str_repeat(']', Parser::DEFAULT_MAX_NESTING_LEVEL);
+
+        $this->assertSame($expected, $this->parser->parse($yaml));
+    }
+
+    public function testParseRejectsDocumentsThatExceedTheConfiguredCollectionAliasLimit()
+    {
+        $this->parser->setMaxAliasesForCollections(5);
+
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        $this->expectExceptionMessage('Maximum number of collection aliases');
+
+        $yaml = <<<YAML
+a0: &a0 [foo]
+a1: &a1 [*a0, *a0, *a0]
+payload: [*a1, *a1, *a1]
+YAML;
+
+        $this->parser->parse($yaml);
+    }
+
+    public function testParseRejectsTheDefaultCollectionAliasLimitInBlocks()
+    {
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        $this->expectExceptionMessage('Maximum number of collection aliases (128) exceeded');
+
+        $yaml = "a: &a [x, y]\n";
+        for ($i = 0; $i <= Parser::DEFAULT_MAX_ALIASES_FOR_COLLECTIONS; ++$i) {
+            $yaml .= "b$i: *a\n";
+        }
+
+        $this->parser->parse($yaml);
+    }
+
+    public function testParseCountsTaggedValueCollectionAliases()
+    {
+        $this->parser->setMaxAliasesForCollections(2);
+
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        $this->expectExceptionMessage('Maximum number of collection aliases');
+
+        $yaml = <<<YAML
+a: &a !my_tag [foo, bar]
+b: *a
+c: *a
+d: *a
+YAML;
+
+        $this->parser->parse($yaml, Yaml::PARSE_CUSTOM_TAGS);
+    }
+
+    public function testParseAcceptsScalarAliasesWithoutCountingThem()
+    {
+        $this->parser->setMaxAliasesForCollections(1);
+
+        $yaml = <<<YAML
+anchor: &val scalar_value
+a: *val
+b: *val
+c: *val
+d: *val
+YAML;
+
+        $result = $this->parser->parse($yaml);
+
+        $this->assertSame('scalar_value', $result['a']);
+        $this->assertSame('scalar_value', $result['d']);
+    }
+
+    public function testParseAcceptsLargeCollectionAliasedOnce()
+    {
+        $items = implode(', ', array_map(function ($i) { return "item$i"; }, range(1, 500)));
+        $yaml = <<<YAML
+defaults: &defaults [$items]
+a: *defaults
+YAML;
+
+        $result = $this->parser->parse($yaml);
+
+        $this->assertCount(500, $result['a']);
+    }
+
+    public function testParseResetsTheCollectionAliasCountBetweenDocuments()
+    {
+        $this->parser->setMaxAliasesForCollections(1);
+
+        $yaml = "a: &a [x]\nb: *a\n";
+
+        $this->assertSame(['a' => ['x'], 'b' => ['x']], $this->parser->parse($yaml));
+        $this->assertSame(['a' => ['x'], 'b' => ['x']], $this->parser->parse($yaml));
+    }
+
+    public function testParseHandlesLargeYamlHeaders()
+    {
+        $yaml = '%YAML:'.str_repeat('1', 100000)."\nfoo: bar\n";
+
+        $this->assertSame(['foo' => 'bar'], $this->parser->parse($yaml));
+    }
+
+    public function testParseHandlesLargeLeadingComments()
+    {
+        $yaml = '#'.str_repeat('comment', 20000)."\nfoo: bar\n";
+
+        $this->assertSame(['foo' => 'bar'], $this->parser->parse($yaml));
+    }
+
+    public function testParseHandlesLargeDocumentMarkers()
+    {
+        $yaml = '--- '.str_repeat('header', 20000)."\nfoo: bar\n...   ";
+
+        $this->assertSame(['foo' => 'bar'], $this->parser->parse($yaml));
+    }
+
+    public function testParseHandlesTrailingNewlinesAfterDocumentEndMarker()
+    {
+        $yaml = "---\nfoo: bar\n...\n\n";
+
+        $this->assertSame(['foo' => 'bar'], $this->parser->parse($yaml));
+    }
 }
 
 class B

@@ -12,8 +12,9 @@
 namespace Twig\Node\Expression;
 
 use Twig\Compiler;
+use Twig\Node\CoercesChildrenToStringInterface;
 
-class ArrayExpression extends AbstractExpression
+class ArrayExpression extends AbstractExpression implements CoercesChildrenToStringInterface
 {
     private $index;
 
@@ -56,13 +57,28 @@ class ArrayExpression extends AbstractExpression
         return false;
     }
 
-    public function addElement(AbstractExpression $value, AbstractExpression $key = null)
+    public function addElement(AbstractExpression $value, ?AbstractExpression $key = null)
     {
         if (null === $key) {
             $key = new ConstantExpression(++$this->index, $value->getTemplateLine());
         }
 
         array_push($this->nodes, $key, $value);
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // dynamic mapping keys (computed at runtime) are used as PHP array offsets;
+        // static keys (constants or sequence indexes) are emitted as PHP literals
+        $names = [];
+        $keys = array_keys($this->nodes);
+        for ($i = 0, $n = \count($keys); $i < $n; $i += 2) {
+            if (!$this->nodes[$keys[$i]] instanceof ConstantExpression) {
+                $names[] = (string) $keys[$i];
+            }
+        }
+
+        return $names;
     }
 
     public function compile(Compiler $compiler)

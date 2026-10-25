@@ -188,6 +188,14 @@ class UrlGeneratorTest extends TestCase
         $this->getGenerator($routes)->generate('test', ['foo' => '0'], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
+    public function testGenerateForRouteWithAlternationRequirementRejectsSubstringMatch()
+    {
+        $routes = $this->getRoutes('test', new Route('/{_locale}/blog', [], ['_locale' => 'en|fr|vi|de']));
+
+        $this->expectException('Symfony\Component\Routing\Exception\InvalidParameterException');
+        $this->getGenerator($routes)->generate('test', ['_locale' => '/evil.com']);
+    }
+
     public function testGenerateForRouteWithInvalidOptionalParameterNonStrict()
     {
         $routes = $this->getRoutes('test', new Route('/testing/{foo}', ['foo' => '1'], ['foo' => 'd+']));
@@ -341,6 +349,18 @@ class UrlGeneratorTest extends TestCase
         $this->assertSame('/app.php/dir/%2E/dir/%2E', $this->getGenerator($routes)->generate('test'));
         $routes = $this->getRoutes('test', new Route('/a./.a/a../..a/...'));
         $this->assertSame('/app.php/a./.a/a../..a/...', $this->getGenerator($routes)->generate('test'));
+    }
+
+    public function testEncodingOfChainedRelativePathSegments()
+    {
+        $routes = $this->getRoutes('test', new Route('/foo/{path}/bar', [], ['path' => '.+']));
+        $this->assertSame('/app.php/foo/%2E%2E/%2E%2E/%2E%2E/bar', $this->getGenerator($routes)->generate('test', ['path' => '../../..']));
+        $this->assertSame('/app.php/foo/%2E/%2E/%2E/bar', $this->getGenerator($routes)->generate('test', ['path' => '././.']));
+        $this->assertSame('/app.php/foo/%2E%2E/%2E/%2E/%2E%2E/bar', $this->getGenerator($routes)->generate('test', ['path' => '../././..']));
+
+        $routes = $this->getRoutes('test', new Route('/foo/{path}', [], ['path' => '.+']));
+        $this->assertSame('/app.php/foo/%2E%2E/%2E%2E/%2E%2E', $this->getGenerator($routes)->generate('test', ['path' => '../../..']));
+        $this->assertSame('/app.php/foo/%2E/%2E/%2E', $this->getGenerator($routes)->generate('test', ['path' => '././.']));
     }
 
     public function testAdjacentVariables()

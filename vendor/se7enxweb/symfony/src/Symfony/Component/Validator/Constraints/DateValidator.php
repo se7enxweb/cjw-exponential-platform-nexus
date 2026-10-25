@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  */
 class DateValidator extends ConstraintValidator
 {
-    const PATTERN = '/^(\d{4})-(\d{2})-(\d{2})$/';
+    const PATTERN = '/^(\d{4})-(\d{2})-(\d{2})$/D';
 
     /**
      * Checks whether a date is valid.

@@ -12,14 +12,17 @@ namespace Behat\Gherkin\Filter;
 
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\OutlineNode;
+use Behat\Gherkin\Node\RuleNode;
 use Behat\Gherkin\Node\ScenarioInterface;
 
 /**
  * Filters scenarios by definition line number.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
+ *
+ * @phpstan-ignore class.extendsDeprecatedClass (Needs to keep the existing interface for BC)
  */
-class LineFilter implements FilterInterface
+class LineFilter extends SimpleFilter
 {
     /**
      * @var int
@@ -34,6 +37,9 @@ class LineFilter implements FilterInterface
     public function __construct(int|string $filterLine)
     {
         $this->filterLine = (int) $filterLine;
+
+        // Always filter the individual children, don't check the feature itself
+        parent::__construct(skipFilteringChildrenIfFeatureMatches: false);
     }
 
     /**
@@ -54,6 +60,8 @@ class LineFilter implements FilterInterface
      * @param ScenarioInterface $scenario Scenario or Outline node instance
      *
      * @return bool
+     *
+     * @deprecated see FilterInterface for further information
      */
     public function isScenarioMatch(ScenarioInterface $scenario)
     {
@@ -62,46 +70,49 @@ class LineFilter implements FilterInterface
         }
 
         if ($scenario instanceof OutlineNode && $scenario->hasExamples()) {
-            return $this->filterLine === $scenario->getLine()
-                || in_array($this->filterLine, $scenario->getExampleTable()->getLines());
+            foreach ($scenario->getExampleTables() as $table) {
+                if (in_array($this->filterLine, $table->getLines())) {
+                    return true;
+                }
+            }
         }
 
         return false;
     }
 
-    /**
-     * Filters feature according to the filter and returns new one.
-     *
-     * @return FeatureNode
-     */
-    public function filterFeature(FeatureNode $feature)
+    private function isRuleOrScenarioMatch(?RuleNode $rule, ScenarioInterface $scenario): bool
     {
-        $scenarios = [];
-        foreach ($feature->getScenarios() as $scenario) {
-            if (!$this->isScenarioMatch($scenario)) {
-                continue;
-            }
-
-            if ($scenario instanceof OutlineNode && $scenario->hasExamples()) {
-                foreach ($scenario->getExampleTables() as $exampleTable) {
-                    $table = $exampleTable->getTable();
-                    $lines = array_keys($table);
-
-                    if (in_array($this->filterLine, $lines)) {
-                        $filteredTable = [$lines[0] => $table[$lines[0]]];
-
-                        if ($lines[0] !== $this->filterLine) {
-                            $filteredTable[$this->filterLine] = $table[$this->filterLine];
-                        }
-
-                        $scenario = $scenario->withTables([$exampleTable->withTable($filteredTable)]);
-                    }
-                }
-            }
-
-            $scenarios[] = $scenario;
+        if ($this->filterLine === $rule?->getLine()) {
+            return true;
         }
 
-        return $feature->withScenarios($scenarios);
+        /* @phpstan-ignore method.deprecated (Needs to keep the existing control flow for BC with classes that extend this) */
+        return $this->isScenarioMatch($scenario);
+    }
+
+    protected function filterScenario(FeatureNode $feature, ?RuleNode $rule, ScenarioInterface $scenario): ScenarioInterface|false
+    {
+        if (!$this->isRuleOrScenarioMatch($rule, $scenario)) {
+            return false;
+        }
+
+        if ($scenario instanceof OutlineNode && $scenario->hasExamples()) {
+            foreach ($scenario->getExampleTables() as $exampleTable) {
+                $table = $exampleTable->getTable();
+                $lines = array_keys($table);
+
+                if (in_array($this->filterLine, $lines)) {
+                    $filteredTable = [$lines[0] => $table[$lines[0]]];
+
+                    if ($lines[0] !== $this->filterLine) {
+                        $filteredTable[$this->filterLine] = $table[$this->filterLine];
+                    }
+
+                    return $scenario->withTables([$exampleTable->withTable($filteredTable)]);
+                }
+            }
+        }
+
+        return $scenario;
     }
 }

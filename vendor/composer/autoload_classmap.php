@@ -95,6 +95,7 @@ return array(
     'HTMLPurifier_TagTransform_Font2' => $vendorDir . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/TagTransform/Font2.php',
     'HTMLPurifier_URIFilter_HTML5_SafeLink' => $vendorDir . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/URIFilter/HTML5/SafeLink.php',
     'IntlDateFormatter' => $vendorDir . '/se7enxweb/symfony/src/Symfony/Component/Intl/Resources/stubs/IntlDateFormatter.php',
+    'IntlListFormatter' => $vendorDir . '/symfony/polyfill-intl-icu/Resources/stubs/IntlListFormatter.php',
     'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
     'Locale' => $vendorDir . '/se7enxweb/symfony/src/Symfony/Component/Intl/Resources/stubs/Locale.php',
     'Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
