@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sentry\SentryBundle\Command;
 
 use Sentry\SentrySdk;
@@ -9,14 +11,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SentryTestCommand extends Command
 {
-    protected static $defaultName = 'sentry:test';
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $currentHub = SentrySdk::getCurrentHub();
         $client = $currentHub->getClient();
 
-        if (! $client) {
+        if (!$client) {
             $output->writeln('<error>No client found</error>');
             $output->writeln('<info>Your DSN is probably missing, check your configuration</info>');
 

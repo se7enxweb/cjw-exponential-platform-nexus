@@ -1,52 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sentry\SentryBundle\EventListener;
 
-use Sentry\SentrySdk;
+use Sentry\State\HubInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Kernel;
 
-if (Kernel::MAJOR_VERSION >= 5) {
-    if (! class_exists(SubRequestListenerRequestEvent::class, false)) {
-        class_alias(RequestEvent::class, SubRequestListenerRequestEvent::class);
-    }
-} else {
-    if (! class_exists(SubRequestListenerRequestEvent::class, false)) {
-        class_alias(GetResponseEvent::class, SubRequestListenerRequestEvent::class);
-    }
-}
-
+/**
+ * This listener ensures that a new {@see \Sentry\State\Scope} is created for
+ * each subrequest.
+ */
 final class SubRequestListener
 {
     use KernelEventForwardCompatibilityTrait;
 
     /**
-     * Pushes a new {@see Scope} for each SubRequest
-     *
-     * @param SubRequestListenerRequestEvent $event
+     * @var HubInterface The current hub
      */
-    public function onKernelRequest(SubRequestListenerRequestEvent $event): void
-    {
-        if ($this->isMainRequest($event)) {
-            return;
-        }
+    private $hub;
 
-        SentrySdk::getCurrentHub()->pushScope();
+    /**
+     * Constructor.
+     *
+     * @param HubInterface $hub The current hub
+     */
+    public function __construct(HubInterface $hub)
+    {
+        $this->hub = $hub;
     }
 
     /**
-     * Pops a {@see Scope} for each finished SubRequest
+     * This method is called for each subrequest handled by the framework and
+     * pushes a new {@see \Sentry\State\Scope} onto the stack.
      *
-     * @param FinishRequestEvent $event
+     * @param SubRequestListenerRequestEvent $event The event
      */
-    public function onKernelFinishRequest(FinishRequestEvent $event): void
+    public function handleKernelRequestEvent(SubRequestListenerRequestEvent $event): void
     {
         if ($this->isMainRequest($event)) {
             return;
         }
 
-        SentrySdk::getCurrentHub()->popScope();
+        $this->hub->pushScope();
+    }
+
+    /**
+     * This method is called for each subrequest handled by the framework and
+     * pops a {@see \Sentry\State\Scope} from the stack.
+     *
+     * @param FinishRequestEvent $event The event
+     */
+    public function handleKernelFinishRequestEvent(FinishRequestEvent $event): void
+    {
+        if ($this->isMainRequest($event)) {
+            return;
+        }
+
+        $this->hub->popScope();
     }
 }

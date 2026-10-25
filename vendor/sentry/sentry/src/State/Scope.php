@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Sentry\State;
 
 use Sentry\Breadcrumb;
-use Sentry\Context\Context;
-use Sentry\Context\TagsContext;
-use Sentry\Context\UserContext;
 use Sentry\Event;
+use Sentry\EventHint;
+use Sentry\Options;
 use Sentry\Severity;
+use Sentry\Tracing\DynamicSamplingContext;
+use Sentry\Tracing\PropagationContext;
+use Sentry\Tracing\Span;
+use Sentry\Tracing\Transaction;
+use Sentry\UserDataBag;
 
 /**
  * The scope holds data that should implicitly be sent with Sentry events. It
@@ -18,12 +22,17 @@ use Sentry\Severity;
 final class Scope
 {
     /**
+     * @var PropagationContext
+     */
+    private $propagationContext;
+
+    /**
      * @var Breadcrumb[] The list of breadcrumbs recorded in this scope
      */
     private $breadcrumbs = [];
 
     /**
-     * @var UserContext The user data associated to this scope
+     * @var UserDataBag|null The user data associated to this scope
      */
     private $user;
 
@@ -33,14 +42,14 @@ final class Scope
     private $contexts = [];
 
     /**
-     * @var TagsContext The list of tags associated to this scope
+     * @var array<string, string> The list of tags associated to this scope
      */
-    private $tags;
+    private $tags = [];
 
     /**
-     * @var Context<mixed> A set of extra data associated to this scope
+     * @var array<string, mixed> A set of extra data associated to this scope
      */
-    private $extra;
+    private $extra = [];
 
     /**
      * @var string[] List of fingerprints used to group events together in
@@ -56,23 +65,26 @@ final class Scope
 
     /**
      * @var callable[] List of event processors
+     *
+     * @psalm-var array<callable(Event, EventHint): ?Event>
      */
     private $eventProcessors = [];
 
     /**
+     * @var Span|null Set a Span on the Scope
+     */
+    private $span;
+
+    /**
      * @var callable[] List of event processors
+     *
+     * @psalm-var array<callable(Event, EventHint): ?Event>
      */
     private static $globalEventProcessors = [];
 
-    /**
-     * Constructor.
-     */
-    public function __construct()
+    public function __construct(PropagationContext $propagationContext = null)
     {
-        $this->user = new UserContext();
-        $this->tags = new TagsContext();
-        $this->extra = new Context();
-        $this->contexts = [];
+        $this->propagationContext = $propagationContext ?? PropagationContext::fromDefaults();
     }
 
     /**
@@ -99,13 +111,27 @@ final class Scope
      */
     public function setTags(array $tags): self
     {
-        $this->tags->merge($tags);
+        $this->tags = array_merge($this->tags, $tags);
 
         return $this;
     }
 
     /**
-     * Sets context data with the given name.
+     * Removes a given tag from the tags context.
+     *
+     * @param string $key The key that uniquely identifies the tag
+     *
+     * @return $this
+     */
+    public function removeTag(string $key): self
+    {
+        unset($this->tags[$key]);
+
+        return $this;
+    }
+
+    /**
+     * Sets data to the context by a given name.
      *
      * @param string               $name  The name that uniquely identifies the context
      * @param array<string, mixed> $value The value
@@ -114,7 +140,9 @@ final class Scope
      */
     public function setContext(string $name, array $value): self
     {
-        $this->contexts[$name] = $value;
+        if (!empty($value)) {
+            $this->contexts[$name] = $value;
+        }
 
         return $this;
     }
@@ -157,30 +185,53 @@ final class Scope
      */
     public function setExtras(array $extras): self
     {
-        $this->extra->merge($extras);
+        $this->extra = array_merge($this->extra, $extras);
 
         return $this;
     }
 
     /**
-     * Sets the given data in the user context.
+     * Get the user context.
+     */
+    public function getUser(): ?UserDataBag
+    {
+        return $this->user;
+    }
+
+    /**
+     * Merges the given data in the user context.
      *
-     * @param array<string, mixed> $data  The data
-     * @param bool                 $merge If true, $data will be merged into user context instead of replacing it
+     * @param array<string, mixed>|UserDataBag $user The user data
      *
      * @return $this
      */
-    public function setUser(array $data, bool $merge = false): self
+    public function setUser($user): self
     {
-        if ($merge) {
-            $this->user->merge($data);
-
-            return $this;
+        if (!\is_array($user) && !$user instanceof UserDataBag) {
+            throw new \TypeError(sprintf('The $user argument must be either an array or an instance of the "%s" class. Got: "%s".', UserDataBag::class, get_debug_type($user)));
         }
 
-        @trigger_error('Replacing the data is deprecated since version 2.3 and will stop working from version 3.0. Set the second argument to `true` to merge the data instead.', \E_USER_DEPRECATED);
+        if (\is_array($user)) {
+            $user = UserDataBag::createFromArray($user);
+        }
 
-        $this->user->replaceData($data);
+        if (null === $this->user) {
+            $this->user = $user;
+        } else {
+            $this->user = $this->user->merge($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes all data of the user context.
+     *
+     * @return $this
+     */
+    public function removeUser(): self
+    {
+        $this->user = null;
 
         return $this;
     }
@@ -274,13 +325,13 @@ final class Scope
      */
     public function clear(): self
     {
-        $this->tags->clear();
-        $this->extra->clear();
-        $this->user->clear();
-
+        $this->user = null;
         $this->level = null;
+        $this->span = null;
         $this->fingerprint = [];
         $this->breadcrumbs = [];
+        $this->tags = [];
+        $this->extra = [];
         $this->contexts = [];
 
         return $this;
@@ -290,14 +341,11 @@ final class Scope
      * Applies the current context and fingerprint to the event. If the event has
      * already some breadcrumbs on it, the ones from this scope won't get merged.
      *
-     * @param Event                $event   The event object that will be enriched with scope data
-     * @param array<string, mixed> $payload The raw payload of the event that will be propagated to the event processors
+     * @param Event $event The event object that will be enriched with scope data
      */
-    public function applyToEvent(Event $event, array $payload): ?Event
+    public function applyToEvent(Event $event, ?EventHint $hint = null, ?Options $options = null): ?Event
     {
-        if (empty($event->getFingerprint())) {
-            $event->setFingerprint($this->fingerprint);
-        }
+        $event->setFingerprint(array_merge($event->getFingerprint(), $this->fingerprint));
 
         if (empty($event->getBreadcrumbs())) {
             $event->setBreadcrumb($this->breadcrumbs);
@@ -307,16 +355,59 @@ final class Scope
             $event->setLevel($this->level);
         }
 
-        $event->getTagsContext()->merge($this->tags->toArray());
-        $event->getExtraContext()->merge($this->extra->toArray());
-        $event->getUserContext()->merge($this->user->toArray());
+        if (!empty($this->tags)) {
+            $event->setTags(array_merge($this->tags, $event->getTags()));
+        }
+
+        if (!empty($this->extra)) {
+            $event->setExtra(array_merge($this->extra, $event->getExtra()));
+        }
+
+        if (null !== $this->user) {
+            $user = $event->getUser();
+
+            if (null === $user) {
+                $user = $this->user;
+            } else {
+                $user = $this->user->merge($user);
+            }
+
+            $event->setUser($user);
+        }
+
+        /**
+         * Apply the trace context to errors if there is a Span on the Scope.
+         * Else fallback to the propagation context.
+         */
+        if (null !== $this->span) {
+            $event->setContext('trace', $this->span->getTraceContext());
+
+            // Apply the dynamic sampling context to errors if there is a Transaction on the Scope
+            $transaction = $this->span->getTransaction();
+            if (null !== $transaction) {
+                $event->setSdkMetadata('dynamic_sampling_context', $transaction->getDynamicSamplingContext());
+            }
+        } else {
+            $event->setContext('trace', $this->propagationContext->getTraceContext());
+
+            $dynamicSamplingContext = $this->propagationContext->getDynamicSamplingContext();
+            if (null === $dynamicSamplingContext && null !== $options) {
+                $dynamicSamplingContext = DynamicSamplingContext::fromOptions($options, $this);
+            }
+            $event->setSdkMetadata('dynamic_sampling_context', $dynamicSamplingContext);
+        }
 
         foreach (array_merge($this->contexts, $event->getContexts()) as $name => $data) {
             $event->setContext($name, $data);
         }
 
+        // We create a empty `EventHint` instance to allow processors to always receive a `EventHint` instance even if there wasn't one
+        if (null === $hint) {
+            $hint = new EventHint();
+        }
+
         foreach (array_merge(self::$globalEventProcessors, $this->eventProcessors) as $processor) {
-            $event = $processor($event, $payload);
+            $event = $processor($event, $hint);
 
             if (null === $event) {
                 return null;
@@ -330,10 +421,59 @@ final class Scope
         return $event;
     }
 
+    /**
+     * Returns the span that is on the scope.
+     */
+    public function getSpan(): ?Span
+    {
+        return $this->span;
+    }
+
+    /**
+     * Sets the span on the scope.
+     *
+     * @param Span|null $span The span
+     *
+     * @return $this
+     */
+    public function setSpan(?Span $span): self
+    {
+        $this->span = $span;
+
+        return $this;
+    }
+
+    /**
+     * Returns the transaction attached to the scope (if there is one).
+     */
+    public function getTransaction(): ?Transaction
+    {
+        if (null !== $this->span) {
+            return $this->span->getTransaction();
+        }
+
+        return null;
+    }
+
+    public function getPropagationContext(): PropagationContext
+    {
+        return $this->propagationContext;
+    }
+
+    public function setPropagationContext(PropagationContext $propagationContext): self
+    {
+        $this->propagationContext = $propagationContext;
+
+        return $this;
+    }
+
     public function __clone()
     {
-        $this->user = clone $this->user;
-        $this->tags = clone $this->tags;
-        $this->extra = clone $this->extra;
+        if (null !== $this->user) {
+            $this->user = clone $this->user;
+        }
+        if (null !== $this->propagationContext) {
+            $this->propagationContext = clone $this->propagationContext;
+        }
     }
 }

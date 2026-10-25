@@ -1,46 +1,89 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sentry\SentryBundle\EventListener;
 
-use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
+use Symfony\Component\Console\Input\ArgvInput;
 
-final class ConsoleListener
+/**
+ * This listener handles all errors thrown while running a console command and
+ * logs them to Sentry.
+ *
+ * @final since version 4.1
+ */
+class ConsoleListener
 {
-    /** @var HubInterface */
+    /**
+     * @var HubInterface The current hub
+     */
     private $hub;
 
     /**
-     * ConsoleListener constructor.
-     * @param HubInterface $hub
+     * @var bool Whether to capture console errors
      */
-    public function __construct(HubInterface $hub)
+    private $captureErrors;
+
+    /**
+     * Constructor.
+     *
+     * @param HubInterface $hub           The current hub
+     * @param bool         $captureErrors Whether to capture console errors
+     */
+    public function __construct(HubInterface $hub, bool $captureErrors = true)
     {
-        $this->hub = $hub; // not used, needed to trigger instantiation
+        $this->hub = $hub;
+        $this->captureErrors = $captureErrors;
     }
 
     /**
-     * This method ensures that the client and error handlers are registered at the start of the command
-     * execution cycle, and not only on exceptions
+     * Handles the execution of a console command by pushing a new {@see Scope}.
      *
-     * @param ConsoleCommandEvent $event
-     *
-     * @return void
+     * @param ConsoleCommandEvent $event The event
      */
-    public function onConsoleCommand(ConsoleCommandEvent $event): void
+    public function handleConsoleCommandEvent(ConsoleCommandEvent $event): void
     {
+        $scope = $this->hub->pushScope();
         $command = $event->getCommand();
+        $input = $event->getInput();
 
-        $commandName = null;
-        if ($command) {
-            $commandName = $command->getName();
+        if (null !== $command && null !== $command->getName()) {
+            $scope->setTag('console.command', $command->getName());
         }
 
-        SentrySdk::getCurrentHub()
-            ->configureScope(static function (Scope $scope) use ($commandName): void {
-                $scope->setTag('command', $commandName ?? 'N/A');
-            });
+        if ($input instanceof ArgvInput) {
+            $scope->setExtra('Full command', (string) $input);
+        }
+    }
+
+    /**
+     * Handles the termination of a console command by popping the {@see Scope}.
+     *
+     * @param ConsoleTerminateEvent $event The event
+     */
+    public function handleConsoleTerminateEvent(ConsoleTerminateEvent $event): void
+    {
+        $this->hub->popScope();
+    }
+
+    /**
+     * Handles an error that happened while running a console command.
+     *
+     * @param ConsoleErrorEvent $event The event
+     */
+    public function handleConsoleErrorEvent(ConsoleErrorEvent $event): void
+    {
+        $this->hub->configureScope(function (Scope $scope) use ($event): void {
+            $scope->setTag('console.command.exit_code', (string) $event->getExitCode());
+
+            if ($this->captureErrors) {
+                $this->hub->captureException($event->getError());
+            }
+        });
     }
 }

@@ -12,6 +12,8 @@ use Sentry\Exception\SilencedErrorException;
  * error types and relays them to all configured listeners. Registering this
  * error handler more than once is not supported and will lead to nasty
  * problems. The code is based on the Symfony ErrorHandler component.
+ *
+ * @psalm-import-type StacktraceFrame from FrameBuilder
  */
 final class ErrorHandler
 {
@@ -20,7 +22,19 @@ final class ErrorHandler
      *
      * @internal
      */
-    public const DEFAULT_RESERVED_MEMORY_SIZE = 10240;
+    public const DEFAULT_RESERVED_MEMORY_SIZE = 16 * 1024; // 16 KiB
+
+    /**
+     * The regular expression used to match the message of an out of memory error.
+     *
+     * Regex inspired by https://github.com/php/php-src/blob/524b13460752fba908f88e3c4428b91fa66c083a/Zend/tests/new_oom.phpt#L15
+     */
+    private const OOM_MESSAGE_MATCHER = '/^Allowed memory size of (?<memory_limit>\d+) bytes exhausted[^\r\n]* \(tried to allocate \d+ bytes\)/';
+
+    /**
+     * The fatal error types that cannot be silenced using the @ operator in PHP 8+.
+     */
+    private const PHP8_UNSILENCEABLE_FATAL_ERRORS = \E_ERROR | \E_PARSE | \E_CORE_ERROR | \E_COMPILE_ERROR | \E_USER_ERROR | \E_RECOVERABLE_ERROR;
 
     /**
      * @var self|null The current registered handler (this class is a singleton)
@@ -82,13 +96,29 @@ final class ErrorHandler
     private $isFatalErrorHandlerRegistered = false;
 
     /**
-     * @var string|null A portion of pre-allocated memory data that will be reclaimed
-     *                  in case a fatal error occurs to handle it
+     * @var int|null the amount of bytes of memory to increase the memory limit by when we are capturing a out of memory error, set to null to not increase the memory limit
+     */
+    private $memoryLimitIncreaseOnOutOfMemoryErrorValue = 5 * 1024 * 1024; // 5 MiB
+
+    /**
+     * @var bool Whether the memory limit has been increased
+     */
+    private static $didIncreaseMemoryLimit = false;
+
+    /**
+     * @var string|null A portion of pre-allocated memory data that will be reclaimed in case a fatal error occurs to handle it
+     *
+     * @phpstan-ignore-next-line This property is used to reserve memory for the fatal error handler and is thus never read
      */
     private static $reservedMemory;
 
     /**
-     * @var array List of error levels and their description
+     * @var bool Whether the fatal error handler should be disabled
+     */
+    private static $disableFatalErrorHandler = false;
+
+    /**
+     * @var string[] List of error levels and their description
      */
     private const ERROR_LEVELS_DESCRIPTION = [
         \E_DEPRECATED => 'Deprecated',
@@ -118,38 +148,6 @@ final class ErrorHandler
     {
         $this->exceptionReflection = new \ReflectionProperty(\Exception::class, 'trace');
         $this->exceptionReflection->setAccessible(true);
-    }
-
-    /**
-     * Gets the current registered error handler; if none is present, it will
-     * register it. Subsequent calls will not change the reserved memory size.
-     *
-     * @param int  $reservedMemorySize The amount of memory to reserve for the
-     *                                 fatal error handler
-     * @param bool $triggerDeprecation Whether to trigger the deprecation about
-     *                                 the usage of this method. This is used
-     *                                 to avoid errors when this method is called
-     *                                 from other methods of this class until
-     *                                 their implementation and behavior of
-     *                                 registering all handlers can be changed
-     *
-     * @deprecated since version 2.1, to be removed in 3.0.
-     */
-    public static function registerOnce(int $reservedMemorySize = self::DEFAULT_RESERVED_MEMORY_SIZE, bool $triggerDeprecation = true): self
-    {
-        if ($triggerDeprecation) {
-            @trigger_error(sprintf('Method %s() is deprecated since version 2.1 and will be removed in 3.0. Please use the registerOnceErrorHandler(), registerOnceFatalErrorHandler() or registerOnceExceptionHandler() methods instead.', __METHOD__), \E_USER_DEPRECATED);
-        }
-
-        if (null === self::$handlerInstance) {
-            self::$handlerInstance = new self();
-        }
-
-        self::registerOnceErrorHandler();
-        self::registerOnceFatalErrorHandler($reservedMemorySize);
-        self::registerOnceExceptionHandler();
-
-        return self::$handlerInstance;
     }
 
     /**
@@ -235,72 +233,6 @@ final class ErrorHandler
     }
 
     /**
-     * Adds a listener to the current error handler to be called upon each
-     * invoked captured error; if no handler is registered, this method will
-     * instantiate and register it.
-     *
-     * @param callable $listener A callable that will act as a listener;
-     *                           this callable will receive a single
-     *                           \ErrorException argument
-     *
-     * @psalm-param callable(\ErrorException): void $listener
-     *
-     * @deprecated since version 2.1, to be removed in 3.0
-     */
-    public static function addErrorListener(callable $listener): void
-    {
-        @trigger_error(sprintf('Method %s() is deprecated since version 2.1 and will be removed in 3.0. Use the addErrorHandlerListener() method instead.', __METHOD__), \E_USER_DEPRECATED);
-
-        /** @psalm-suppress DeprecatedMethod */
-        $handler = self::registerOnce(self::DEFAULT_RESERVED_MEMORY_SIZE, false);
-        $handler->errorListeners[] = $listener;
-    }
-
-    /**
-     * Adds a listener to the current error handler to be called upon each
-     * invoked captured fatal error; if no handler is registered, this method
-     * will instantiate and register it.
-     *
-     * @param callable $listener A callable that will act as a listener;
-     *                           this callable will receive a single
-     *                           \ErrorException argument
-     *
-     * @psalm-param callable(FatalErrorException): void $listener
-     *
-     * @deprecated since version 2.1, to be removed in 3.0
-     */
-    public static function addFatalErrorListener(callable $listener): void
-    {
-        @trigger_error(sprintf('Method %s() is deprecated since version 2.1 and will be removed in 3.0. Use the addFatalErrorHandlerListener() method instead.', __METHOD__), \E_USER_DEPRECATED);
-
-        /** @psalm-suppress DeprecatedMethod */
-        $handler = self::registerOnce(self::DEFAULT_RESERVED_MEMORY_SIZE, false);
-        $handler->fatalErrorListeners[] = $listener;
-    }
-
-    /**
-     * Adds a listener to the current error handler to be called upon each
-     * invoked captured exception; if no handler is registered, this method
-     * will instantiate and register it.
-     *
-     * @param callable $listener A callable that will act as a listener;
-     *                           this callable will receive a single
-     *                           \Throwable argument
-     *
-     * @psalm-param callable(\Throwable): void $listener
-     *
-     * @deprecated since version 2.1, to be removed in 3.0
-     */
-    public static function addExceptionListener(callable $listener): void
-    {
-        @trigger_error(sprintf('Method %s() is deprecated since version 2.1 and will be removed in 3.0. Use the addExceptionHandlerListener() method instead.', __METHOD__), \E_USER_DEPRECATED);
-
-        /** @psalm-suppress DeprecatedMethod */
-        $handler = self::registerOnce(self::DEFAULT_RESERVED_MEMORY_SIZE, false);
-        $handler->exceptionListeners[] = $listener;
-    }
-
-    /**
      * Adds a listener to the current error handler that will be called every
      * time an error is captured.
      *
@@ -346,6 +278,20 @@ final class ErrorHandler
     }
 
     /**
+     * Sets the amount of memory to increase the memory limit by when we are capturing a out of memory error.
+     *
+     * @param int|null $valueInBytes the number of bytes to increase the memory limit by, or null to not increase the memory limit
+     */
+    public function setMemoryLimitIncreaseOnOutOfMemoryErrorInBytes(?int $valueInBytes): void
+    {
+        if (null !== $valueInBytes && $valueInBytes <= 0) {
+            throw new \InvalidArgumentException('The $valueInBytes argument must be greater than 0 or null.');
+        }
+
+        $this->memoryLimitIncreaseOnOutOfMemoryErrorValue = $valueInBytes;
+    }
+
+    /**
      * Handles errors by capturing them through the client according to the
      * configured bit field.
      *
@@ -363,7 +309,24 @@ final class ErrorHandler
      */
     private function handleError(int $level, string $message, string $file, int $line, ?array $errcontext = []): bool
     {
-        if (0 === error_reporting()) {
+        $isSilencedError = 0 === error_reporting();
+
+        if (\PHP_MAJOR_VERSION >= 8) {
+            // Starting from PHP8, when a silenced error occurs the `error_reporting()`
+            // function will return a bitmask of fatal errors that are unsilenceable.
+            // If by subtracting from this value those errors the result is 0, we can
+            // conclude that the error was silenced.
+            $isSilencedError = 0 === (error_reporting() & ~self::PHP8_UNSILENCEABLE_FATAL_ERRORS);
+
+            // However, starting from PHP8 some fatal errors are unsilenceable,
+            // so we have to check for them to avoid reporting any of them as
+            // silenced instead
+            if ($level === (self::PHP8_UNSILENCEABLE_FATAL_ERRORS & $level)) {
+                $isSilencedError = false;
+            }
+        }
+
+        if ($isSilencedError) {
             $errorAsException = new SilencedErrorException(self::ERROR_LEVELS_DESCRIPTION[$level] . ': ' . $message, 0, $level, $file, $line);
         } else {
             $errorAsException = new \ErrorException(self::ERROR_LEVELS_DESCRIPTION[$level] . ': ' . $message, 0, $level, $file, $line);
@@ -389,21 +352,32 @@ final class ErrorHandler
      */
     private function handleFatalError(): void
     {
-        // If there is not enough memory that can be used to handle the error
-        // do nothing
-        if (null === self::$reservedMemory) {
+        if (self::$disableFatalErrorHandler) {
             return;
         }
 
+        // Free the reserved memory that allows us to potentially handle OOM errors
         self::$reservedMemory = null;
+
         $error = error_get_last();
 
         if (!empty($error) && $error['type'] & (\E_ERROR | \E_PARSE | \E_CORE_ERROR | \E_CORE_WARNING | \E_COMPILE_ERROR | \E_COMPILE_WARNING)) {
+            // If we did not do so already and we are allowed to increase the memory limit, we do so when we detect an OOM error
+            if (false === self::$didIncreaseMemoryLimit
+                && null !== $this->memoryLimitIncreaseOnOutOfMemoryErrorValue
+                && 1 === preg_match(self::OOM_MESSAGE_MATCHER, $error['message'], $matches)
+            ) {
+                $currentMemoryLimit = (int) $matches['memory_limit'];
+
+                ini_set('memory_limit', (string) ($currentMemoryLimit + $this->memoryLimitIncreaseOnOutOfMemoryErrorValue));
+
+                self::$didIncreaseMemoryLimit = true;
+            }
+
             $errorAsException = new FatalErrorException(self::ERROR_LEVELS_DESCRIPTION[$error['type']] . ': ' . $error['message'], 0, $error['type'], $error['file'], $error['line']);
 
             $this->exceptionReflection->setValue($errorAsException, []);
 
-            $this->invokeListeners($this->errorListeners, $errorAsException);
             $this->invokeListeners($this->fatalErrorListeners, $errorAsException);
         }
     }
@@ -444,7 +418,7 @@ final class ErrorHandler
         // native PHP handler to prevent an infinite loop
         if ($exception === $previousExceptionHandlerException) {
             // Disable the fatal error handler or the error will be reported twice
-            self::$reservedMemory = null;
+            self::$disableFatalErrorHandler = true;
 
             throw $exception;
         }
@@ -456,11 +430,13 @@ final class ErrorHandler
      * Cleans and returns the backtrace without the first frames that belong to
      * this error handler.
      *
-     * @param array<int, mixed> $backtrace The backtrace to clear
-     * @param string            $file      The filename the backtrace was raised in
-     * @param int               $line      The line number the backtrace was raised at
+     * @param array<int, array<string, mixed>> $backtrace The backtrace to clear
+     * @param string                           $file      The filename the backtrace was raised in
+     * @param int                              $line      The line number the backtrace was raised at
      *
      * @return array<int, mixed>
+     *
+     * @psalm-param list<StacktraceFrame> $backtrace
      */
     private function cleanBacktraceFromErrorHandlerFrames(array $backtrace, string $file, int $line): array
     {

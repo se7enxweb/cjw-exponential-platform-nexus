@@ -5,10 +5,18 @@ declare(strict_types=1);
 namespace Sentry\State;
 
 use Sentry\Breadcrumb;
+use Sentry\CheckInStatus;
 use Sentry\ClientInterface;
+use Sentry\Event;
+use Sentry\EventHint;
+use Sentry\EventId;
 use Sentry\Integration\IntegrationInterface;
+use Sentry\MonitorConfig;
 use Sentry\SentrySdk;
 use Sentry\Severity;
+use Sentry\Tracing\Span;
+use Sentry\Tracing\Transaction;
+use Sentry\Tracing\TransactionContext;
 
 /**
  * An implementation of {@see HubInterface} that uses {@see SentrySdk} internally
@@ -52,7 +60,7 @@ final class HubAdapter implements HubInterface
     /**
      * {@inheritdoc}
      */
-    public function getLastEventId(): ?string
+    public function getLastEventId(): ?EventId
     {
         return SentrySdk::getCurrentHub()->getLastEventId();
     }
@@ -76,9 +84,9 @@ final class HubAdapter implements HubInterface
     /**
      * {@inheritdoc}
      */
-    public function withScope(callable $callback): void
+    public function withScope(callable $callback)
     {
-        SentrySdk::getCurrentHub()->withScope($callback);
+        return SentrySdk::getCurrentHub()->withScope($callback);
     }
 
     /**
@@ -100,33 +108,43 @@ final class HubAdapter implements HubInterface
     /**
      * {@inheritdoc}
      */
-    public function captureMessage(string $message, ?Severity $level = null): ?string
+    public function captureMessage(string $message, ?Severity $level = null, ?EventHint $hint = null): ?EventId
     {
-        return SentrySdk::getCurrentHub()->captureMessage($message, $level);
+        return SentrySdk::getCurrentHub()->captureMessage($message, $level, $hint);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function captureException(\Throwable $exception): ?string
+    public function captureException(\Throwable $exception, ?EventHint $hint = null): ?EventId
     {
-        return SentrySdk::getCurrentHub()->captureException($exception);
+        return SentrySdk::getCurrentHub()->captureException($exception, $hint);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function captureEvent(array $payload): ?string
+    public function captureEvent(Event $event, ?EventHint $hint = null): ?EventId
     {
-        return SentrySdk::getCurrentHub()->captureEvent($payload);
+        return SentrySdk::getCurrentHub()->captureEvent($event, $hint);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function captureLastError(): ?string
+    public function captureLastError(?EventHint $hint = null): ?EventId
     {
-        return SentrySdk::getCurrentHub()->captureLastError();
+        return SentrySdk::getCurrentHub()->captureLastError($hint);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param int|float|null $duration
+     */
+    public function captureCheckIn(string $slug, CheckInStatus $status, $duration = null, ?MonitorConfig $monitorConfig = null, ?string $checkInId = null): ?string
+    {
+        return SentrySdk::getCurrentHub()->captureCheckIn($slug, $status, $duration, $monitorConfig, $checkInId);
     }
 
     /**
@@ -140,29 +158,43 @@ final class HubAdapter implements HubInterface
     /**
      * {@inheritdoc}
      */
-    public static function getCurrent(): HubInterface
-    {
-        @trigger_error(sprintf('The %s() method is deprecated since version 2.2 and will be removed in 3.0. Use SentrySdk::getCurrentHub() instead.', __METHOD__), \E_USER_DEPRECATED);
-
-        return SentrySdk::getCurrentHub();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function setCurrent(HubInterface $hub): HubInterface
-    {
-        @trigger_error(sprintf('The %s() method is deprecated since version 2.2 and will be removed in 3.0. Use SentrySdk::getCurrentHub() instead.', __METHOD__), \E_USER_DEPRECATED);
-
-        return SentrySdk::setCurrentHub($hub);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getIntegration(string $className): ?IntegrationInterface
     {
         return SentrySdk::getCurrentHub()->getIntegration($className);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param array<string, mixed> $customSamplingContext Additional context that will be passed to the {@see SamplingContext}
+     */
+    public function startTransaction(TransactionContext $context, array $customSamplingContext = []): Transaction
+    {
+        return SentrySdk::getCurrentHub()->startTransaction($context, $customSamplingContext);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransaction(): ?Transaction
+    {
+        return SentrySdk::getCurrentHub()->getTransaction();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSpan(): ?Span
+    {
+        return SentrySdk::getCurrentHub()->getSpan();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSpan(?Span $span): HubInterface
+    {
+        return SentrySdk::getCurrentHub()->setSpan($span);
     }
 
     /**

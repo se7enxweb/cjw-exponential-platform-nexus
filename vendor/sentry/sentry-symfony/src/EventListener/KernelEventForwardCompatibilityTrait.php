@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sentry\SentryBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\KernelEvent;
@@ -11,7 +13,7 @@ use Symfony\Component\HttpKernel\Event\KernelEvent;
  */
 trait KernelEventForwardCompatibilityTrait
 {
-    private function isMainRequest(KernelEvent $event): bool
+    protected function isMainRequest(KernelEvent $event): bool
     {
         return method_exists($event, 'isMainRequest')
             ? $event->isMainRequest()

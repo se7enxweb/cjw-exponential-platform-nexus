@@ -1,35 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sentry\SentryBundle;
 
-use Jean85\PrettyVersions;
-use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
+use Sentry\SentryBundle\DependencyInjection\Compiler\CacheTracingPass;
+use Sentry\SentryBundle\DependencyInjection\Compiler\DbalTracingPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class SentryBundle extends Bundle
+final class SentryBundle extends Bundle
 {
     public const SDK_IDENTIFIER = 'sentry.php.symfony';
 
-    public static function getSdkVersion(): string
+    public function build(ContainerBuilder $container): void
     {
-        return PrettyVersions::getVersion('sentry/sentry-symfony')
-            ->getPrettyVersion();
-    }
+        parent::build($container);
 
-    /**
-     * This method avoids deprecations with sentry/sentry:^2.2
-     */
-    public static function getCurrentHub(): HubInterface
-    {
-        return SentrySdk::getCurrentHub();
-    }
-
-    /**
-     * This method avoids deprecations with sentry/sentry:^2.2
-     */
-    public static function setCurrentHub(HubInterface $hub): void
-    {
-        SentrySdk::setCurrentHub($hub);
+        $container->addCompilerPass(new DbalTracingPass());
+        $container->addCompilerPass(new CacheTracingPass());
     }
 }

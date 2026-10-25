@@ -4,32 +4,39 @@ declare(strict_types=1);
 
 namespace Sentry;
 
-use Jean85\PrettyVersions;
-use Sentry\Context\Context;
+use Sentry\Context\OsContext;
 use Sentry\Context\RuntimeContext;
-use Sentry\Context\ServerOsContext;
-use Sentry\Context\TagsContext;
-use Sentry\Context\UserContext;
+use Sentry\Profiling\Profile;
+use Sentry\Tracing\Span;
 
 /**
  * This is the base class for classes containing event data.
  *
  * @author Stefano Arlandini <sarlandini@alice.it>
  */
-final class Event implements \JsonSerializable
+final class Event
 {
+    public const DEFAULT_ENVIRONMENT = 'production';
+
     /**
      * @var EventId The ID
      */
     private $id;
 
     /**
-     * @var string The date and time of when this event was generated
+     * @var float|null The date and time of when this event was generated
      */
     private $timestamp;
 
     /**
-     * @var Severity The severity of this event
+     * This property is used if it's a Transaction event together with $timestamp it's the duration of the transaction.
+     *
+     * @var float|null The date and time of when this event was generated
+     */
+    private $startTimestamp;
+
+    /**
+     * @var Severity|null The severity of this event
      */
     private $level;
 
@@ -42,6 +49,11 @@ final class Event implements \JsonSerializable
      * @var string|null the name of the transaction (or culprit) which caused this exception
      */
     private $transaction;
+
+    /**
+     * @var CheckIn|null The check in data
+     */
+    private $checkIn;
 
     /**
      * @var string|null The name of the server (e.g. the host name)
@@ -64,7 +76,7 @@ final class Event implements \JsonSerializable
     private $messageFormatted;
 
     /**
-     * @var mixed[] The parameters to use to format the message
+     * @var string[] The parameters to use to format the message
      */
     private $messageParams = [];
 
@@ -84,19 +96,24 @@ final class Event implements \JsonSerializable
     private $request = [];
 
     /**
-     * @var ServerOsContext The server OS context data
+     * @var array<string, string> A list of tags associated to this event
      */
-    private $serverOsContext;
+    private $tags = [];
 
     /**
-     * @var RuntimeContext The runtime context data
+     * @var OsContext|null The server OS context data
+     */
+    private $osContext;
+
+    /**
+     * @var RuntimeContext|null The runtime context data
      */
     private $runtimeContext;
 
     /**
-     * @var UserContext The user context data
+     * @var UserDataBag|null The user context data
      */
-    private $userContext;
+    private $user;
 
     /**
      * @var array<string, array<string, mixed>> An arbitrary mapping of additional contexts associated to this event
@@ -104,14 +121,9 @@ final class Event implements \JsonSerializable
     private $contexts = [];
 
     /**
-     * @var Context<mixed> An arbitrary mapping of additional metadata
+     * @var array<string, mixed> An arbitrary mapping of additional metadata
      */
-    private $extraContext;
-
-    /**
-     * @var TagsContext A List of tags associated to this event
-     */
-    private $tagsContext;
+    private $extra = [];
 
     /**
      * @var string[] An array of strings used to dictate the deduplication of this event
@@ -124,13 +136,12 @@ final class Event implements \JsonSerializable
     private $breadcrumbs = [];
 
     /**
-     * @var array<int, array<string, mixed>> The exceptions
-     *
-     * @psalm-var list<array{
-     *     type: class-string,
-     *     value: string,
-     *     stacktrace: Stacktrace
-     * }>
+     * @var Span[] The array of spans if it's a transaction
+     */
+    private $spans = [];
+
+    /**
+     * @var ExceptionDataBag[] The exceptions
      */
     private $exceptions = [];
 
@@ -140,6 +151,14 @@ final class Event implements \JsonSerializable
     private $stacktrace;
 
     /**
+     * A place to stash data which is needed at some point in the SDK's
+     * event processing pipeline but which shouldn't get sent to Sentry.
+     *
+     * @var array<string, mixed>
+     */
+    private $sdkMetadata = [];
+
+    /**
      * @var string The Sentry SDK identifier
      */
     private $sdkIdentifier = Client::SDK_IDENTIFIER;
@@ -147,39 +166,55 @@ final class Event implements \JsonSerializable
     /**
      * @var string The Sentry SDK version
      */
-    private $sdkVersion;
+    private $sdkVersion = Client::SDK_VERSION;
 
     /**
-     * Class constructor.
-     *
-     * @param EventId|null $eventId The ID of the event
+     * @var EventType The type of the Event
      */
-    public function __construct(?EventId $eventId = null)
+    private $type;
+
+    /**
+     * @var Profile|null The profile data
+     */
+    private $profile;
+
+    private function __construct(?EventId $eventId, EventType $eventType)
     {
         $this->id = $eventId ?? EventId::generate();
-        $this->timestamp = gmdate('Y-m-d\TH:i:s\Z');
-        $this->level = Severity::error();
-        $this->serverOsContext = new ServerOsContext();
-        $this->runtimeContext = new RuntimeContext();
-        $this->userContext = new UserContext();
-        $this->extraContext = new Context();
-        $this->tagsContext = new TagsContext();
-        $this->sdkVersion = PrettyVersions::getVersion('sentry/sentry')->getPrettyVersion();
+        $this->timestamp = microtime(true);
+        $this->type = $eventType;
     }
 
     /**
-     * Gets the UUID of this event.
+     * Creates a new event.
      *
-     * @return string|EventId
+     * @param EventId|null $eventId The ID of the event
      */
-    public function getId(bool $returnAsString = true)
+    public static function createEvent(?EventId $eventId = null): self
     {
-        if ($returnAsString) {
-            @trigger_error(sprintf('Calling the method %s() and expecting it to return a string is deprecated since version 2.4 and will stop working in 3.0.', __METHOD__), \E_USER_DEPRECATED);
+        return new self($eventId, EventType::event());
+    }
 
-            return (string) $this->id;
-        }
+    /**
+     * Creates a new transaction event.
+     *
+     * @param EventId|null $eventId The ID of the event
+     */
+    public static function createTransaction(EventId $eventId = null): self
+    {
+        return new self($eventId, EventType::transaction());
+    }
 
+    public static function createCheckIn(?EventId $eventId = null): self
+    {
+        return new self($eventId, EventType::checkIn());
+    }
+
+    /**
+     * Gets the ID of this event.
+     */
+    public function getId(): EventId
+    {
         return $this->id;
     }
 
@@ -225,16 +260,26 @@ final class Event implements \JsonSerializable
 
     /**
      * Gets the timestamp of when this event was generated.
+     *
+     * @return float
      */
-    public function getTimestamp(): string
+    public function getTimestamp(): ?float
     {
         return $this->timestamp;
     }
 
     /**
+     * Sets the timestamp of when the Event was created.
+     */
+    public function setTimestamp(?float $timestamp): void
+    {
+        $this->timestamp = $timestamp;
+    }
+
+    /**
      * Gets the severity of this event.
      */
-    public function getLevel(): Severity
+    public function getLevel(): ?Severity
     {
         return $this->level;
     }
@@ -242,9 +287,9 @@ final class Event implements \JsonSerializable
     /**
      * Sets the severity of this event.
      *
-     * @param Severity $level The severity
+     * @param Severity|null $level The severity
      */
-    public function setLevel(Severity $level): void
+    public function setLevel(?Severity $level): void
     {
         $this->level = $level;
     }
@@ -285,6 +330,16 @@ final class Event implements \JsonSerializable
     public function setTransaction(?string $transaction): void
     {
         $this->transaction = $transaction;
+    }
+
+    public function setCheckIn(?CheckIn $checkIn): void
+    {
+        $this->checkIn = $checkIn;
+    }
+
+    public function getCheckIn(): ?CheckIn
+    {
+        return $this->checkIn;
     }
 
     /**
@@ -353,7 +408,7 @@ final class Event implements \JsonSerializable
      * Sets the error message.
      *
      * @param string      $message   The message
-     * @param mixed[]     $params    The parameters to use to format the message
+     * @param string[]    $params    The parameters to use to format the message
      * @param string|null $formatted The formatted message
      */
     public function setMessage(string $message, array $params = [], ?string $formatted = null): void
@@ -414,14 +469,16 @@ final class Event implements \JsonSerializable
     }
 
     /**
-     * Sets the data of the context with the given name.
+     * Sets data to the context by a given name.
      *
      * @param string               $name The name that uniquely identifies the context
      * @param array<string, mixed> $data The data of the context
      */
     public function setContext(string $name, array $data): self
     {
-        $this->contexts[$name] = $data;
+        if (!empty($data)) {
+            $this->contexts[$name] = $data;
+        }
 
         return $this;
     }
@@ -429,43 +486,116 @@ final class Event implements \JsonSerializable
     /**
      * Gets an arbitrary mapping of additional metadata.
      *
-     * @return Context<mixed>
+     * @return array<string, mixed>
      */
-    public function getExtraContext(): Context
+    public function getExtra(): array
     {
-        return $this->extraContext;
+        return $this->extra;
     }
 
     /**
-     * Gets a list of tags.
+     * Sets an arbitrary mapping of additional metadata.
+     *
+     * @param array<string, mixed> $extra The context object
      */
-    public function getTagsContext(): TagsContext
+    public function setExtra(array $extra): void
     {
-        return $this->tagsContext;
+        $this->extra = $extra;
+    }
+
+    /**
+     * Gets a list of tags associated to this event.
+     *
+     * @return array<string, string>
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Sets a list of tags associated to this event.
+     *
+     * @param array<string, string> $tags The tags to set
+     */
+    public function setTags(array $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+    /**
+     * Sets or updates a tag in this event.
+     *
+     * @param string $key   The key that uniquely identifies the tag
+     * @param string $value The value
+     */
+    public function setTag(string $key, string $value): void
+    {
+        $this->tags[$key] = $value;
+    }
+
+    /**
+     * Removes a given tag from the event.
+     *
+     * @param string $key The key that uniquely identifies the tag
+     */
+    public function removeTag(string $key): void
+    {
+        unset($this->tags[$key]);
     }
 
     /**
      * Gets the user context.
      */
-    public function getUserContext(): UserContext
+    public function getUser(): ?UserDataBag
     {
-        return $this->userContext;
+        return $this->user;
+    }
+
+    /**
+     * Sets the user context.
+     *
+     * @param UserDataBag|null $user The context object
+     */
+    public function setUser(?UserDataBag $user): void
+    {
+        $this->user = $user;
     }
 
     /**
      * Gets the server OS context.
      */
-    public function getServerOsContext(): ServerOsContext
+    public function getOsContext(): ?OsContext
     {
-        return $this->serverOsContext;
+        return $this->osContext;
+    }
+
+    /**
+     * Sets the server OS context.
+     *
+     * @param OsContext|null $osContext The context object
+     */
+    public function setOsContext(?OsContext $osContext): void
+    {
+        $this->osContext = $osContext;
     }
 
     /**
      * Gets the runtime context data.
      */
-    public function getRuntimeContext(): RuntimeContext
+    public function getRuntimeContext(): ?RuntimeContext
     {
         return $this->runtimeContext;
+    }
+
+    /**
+     * Sets the runtime context data.
+     *
+     * @param RuntimeContext|null $runtimeContext The context object
+     */
+    public function setRuntimeContext(?RuntimeContext $runtimeContext): void
+    {
+        $this->runtimeContext = $runtimeContext;
     }
 
     /**
@@ -531,13 +661,7 @@ final class Event implements \JsonSerializable
     /**
      * Gets the exception.
      *
-     * @return array<int, array<string, mixed>>
-     *
-     * @psalm-return list<array{
-     *     type: class-string,
-     *     value: string,
-     *     stacktrace: Stacktrace
-     * }>
+     * @return ExceptionDataBag[]
      */
     public function getExceptions(): array
     {
@@ -547,16 +671,16 @@ final class Event implements \JsonSerializable
     /**
      * Sets the exceptions.
      *
-     * @param array<int, array<string, mixed>> $exceptions The exceptions
-     *
-     * @psalm-param list<array{
-     *     type: class-string,
-     *     value: string,
-     *     stacktrace: Stacktrace
-     * }> $exceptions
+     * @param ExceptionDataBag[] $exceptions The exceptions
      */
     public function setExceptions(array $exceptions): void
     {
+        foreach ($exceptions as $exception) {
+            if (!$exception instanceof ExceptionDataBag) {
+                throw new \UnexpectedValueException(sprintf('Expected an instance of the "%s" class. Got: "%s".', ExceptionDataBag::class, get_debug_type($exception)));
+            }
+        }
+
         $this->exceptions = $exceptions;
     }
 
@@ -578,127 +702,98 @@ final class Event implements \JsonSerializable
         $this->stacktrace = $stacktrace;
     }
 
-    /**
-     * Gets the event as an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(): array
+    public function getType(): EventType
     {
-        $data = [
-            'event_id' => (string) $this->id,
-            'timestamp' => $this->timestamp,
-            'level' => (string) $this->level,
-            'platform' => 'php',
-            'sdk' => [
-                'name' => $this->sdkIdentifier,
-                'version' => $this->getSdkVersion(),
-            ],
-        ];
-
-        if (null !== $this->logger) {
-            $data['logger'] = $this->logger;
-        }
-
-        if (null !== $this->transaction) {
-            $data['transaction'] = $this->transaction;
-        }
-
-        if (null !== $this->serverName) {
-            $data['server_name'] = $this->serverName;
-        }
-
-        if (null !== $this->release) {
-            $data['release'] = $this->release;
-        }
-
-        if (null !== $this->environment) {
-            $data['environment'] = $this->environment;
-        }
-
-        if (!empty($this->fingerprint)) {
-            $data['fingerprint'] = $this->fingerprint;
-        }
-
-        if (!empty($this->modules)) {
-            $data['modules'] = $this->modules;
-        }
-
-        if (!$this->extraContext->isEmpty()) {
-            $data['extra'] = $this->extraContext->toArray();
-        }
-
-        if (!$this->tagsContext->isEmpty()) {
-            $data['tags'] = $this->tagsContext->toArray();
-        }
-
-        if (!$this->userContext->isEmpty()) {
-            $data['user'] = $this->userContext->toArray();
-        }
-
-        if (!$this->serverOsContext->isEmpty()) {
-            $data['contexts']['os'] = $this->serverOsContext->toArray();
-        }
-
-        if (!$this->runtimeContext->isEmpty()) {
-            $data['contexts']['runtime'] = $this->runtimeContext->toArray();
-        }
-
-        if (!empty($this->contexts)) {
-            $data['contexts'] = array_merge($data['contexts'] ?? [], $this->contexts);
-        }
-
-        if (!empty($this->breadcrumbs)) {
-            $data['breadcrumbs']['values'] = $this->breadcrumbs;
-        }
-
-        foreach (array_reverse($this->exceptions) as $exception) {
-            $exceptionData = [
-                'type' => $exception['type'],
-                'value' => $exception['value'],
-            ];
-
-            if (isset($exception['stacktrace'])) {
-                $exceptionData['stacktrace'] = [
-                    'frames' => $exception['stacktrace']->toArray(),
-                ];
-            }
-
-            $data['exception']['values'][] = $exceptionData;
-        }
-
-        if (null !== $this->stacktrace) {
-            $data['stacktrace'] = [
-                'frames' => $this->stacktrace->toArray(),
-            ];
-        }
-
-        if (!empty($this->request)) {
-            $data['request'] = $this->request;
-        }
-
-        if (null !== $this->message) {
-            if (empty($this->messageParams)) {
-                $data['message'] = $this->message;
-            } else {
-                $data['message'] = [
-                    'message' => $this->message,
-                    'params' => $this->messageParams,
-                    'formatted' => $this->messageFormatted ?? vsprintf($this->message, $this->messageParams),
-                ];
-            }
-        }
-
-        return $data;
+        return $this->type;
     }
 
     /**
-     * {@inheritdoc}
+     * Sets the SDK metadata with the given name.
      *
-     * @return array<string, mixed>
+     * @param string $name The name that uniquely identifies the SDK metadata
+     * @param mixed  $data The data of the SDK metadata
      */
-    public function jsonSerialize(): array
+    public function setSdkMetadata(string $name, $data): void
     {
-        return $this->toArray();
+        $this->sdkMetadata[$name] = $data;
+    }
+
+    /**
+     * Gets the SDK metadata.
+     *
+     * @return mixed
+     *
+     * @psalm-template T of string|null
+     *
+     * @psalm-param T $name
+     *
+     * @psalm-return (T is string ? mixed : array<string, mixed>|null)
+     */
+    public function getSdkMetadata(?string $name = null)
+    {
+        if (null !== $name) {
+            return $this->sdkMetadata[$name] ?? null;
+        }
+
+        return $this->sdkMetadata;
+    }
+
+    /**
+     * Gets a timestamp representing when the measuring of a transaction started.
+     */
+    public function getStartTimestamp(): ?float
+    {
+        return $this->startTimestamp;
+    }
+
+    /**
+     * Sets a timestamp representing when the measuring of a transaction started.
+     *
+     * @param float|null $startTimestamp The start time of the measurement
+     */
+    public function setStartTimestamp(?float $startTimestamp): void
+    {
+        $this->startTimestamp = $startTimestamp;
+    }
+
+    /**
+     * A list of timed application events that have a start and end time.
+     *
+     * @return Span[]
+     */
+    public function getSpans(): array
+    {
+        return $this->spans;
+    }
+
+    /**
+     * Sets a list of timed application events that have a start and end time.
+     *
+     * @param Span[] $spans The list of spans
+     */
+    public function setSpans(array $spans): void
+    {
+        $this->spans = $spans;
+    }
+
+    public function setProfile(?Profile $profile): void
+    {
+        $this->profile = $profile;
+    }
+
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    public function getTraceId(): ?string
+    {
+        $traceId = $this->getContexts()['trace']['trace_id'];
+
+        if (\is_string($traceId) && !empty($traceId)) {
+            return $traceId;
+        }
+
+        return null;
     }
 }

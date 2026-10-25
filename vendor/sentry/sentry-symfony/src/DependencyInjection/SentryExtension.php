@@ -1,226 +1,324 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sentry\SentryBundle\DependencyInjection;
 
-use Monolog\Logger as MonologLogger;
-use Sentry\ClientBuilderInterface;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Jean85\PrettyVersions;
+use LogicException;
+use Psr\Log\NullLogger;
+use Sentry\Client;
+use Sentry\ClientBuilder;
 use Sentry\Integration\IgnoreErrorsIntegration;
-use Sentry\Monolog\Handler;
+use Sentry\Integration\IntegrationInterface;
+use Sentry\Integration\RequestFetcherInterface;
+use Sentry\Integration\RequestIntegration;
 use Sentry\Options;
-use Sentry\SentryBundle\ErrorTypesParser;
+use Sentry\SentryBundle\EventListener\ConsoleListener;
 use Sentry\SentryBundle\EventListener\ErrorListener;
 use Sentry\SentryBundle\EventListener\MessengerListener;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Sentry\SentryBundle\EventListener\TracingConsoleListener;
+use Sentry\SentryBundle\EventListener\TracingRequestListener;
+use Sentry\SentryBundle\EventListener\TracingSubRequestListener;
+use Sentry\SentryBundle\SentryBundle;
+use Sentry\SentryBundle\Tracing\Doctrine\DBAL\ConnectionConfigurator;
+use Sentry\SentryBundle\Tracing\Doctrine\DBAL\TracingDriverMiddleware;
+use Sentry\SentryBundle\Tracing\Twig\TwigTracingExtension;
+use Sentry\Serializer\RepresentationSerializer;
+use Sentry\Serializer\Serializer;
+use Sentry\Transport\TransportFactoryInterface;
+use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\ErrorHandler\Error\FatalError;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
-/**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
- */
-class SentryExtension extends Extension
+final class SentryExtension extends ConfigurableExtension
 {
     /**
-     * {@inheritDoc}
-     *
-     * @throws InvalidConfigurationException
+     * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container): void
+    public function getXsdValidationBasePath(): string
     {
-        $configuration = new Configuration();
-        $processedConfiguration = $this->processConfiguration($configuration, $configs);
+        return __DIR__ . '/../Resources/config/schema';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNamespace(): string
+    {
+        return 'https://sentry.io/schema/dic/sentry-symfony';
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param array<array-key, mixed> $mergedConfig
+     */
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
+    {
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        $this->passConfigurationToOptions($container, $processedConfiguration);
-
-        $container->getDefinition(ClientBuilderInterface::class)
-            ->setConfigurator([ClientBuilderConfigurator::class, 'configure']);
-
-        foreach ($processedConfiguration['listener_priorities'] as $key => $priority) {
-            $container->setParameter('sentry.listener_priorities.' . $key, $priority);
-        }
-
-        $this->configureErrorListener($container, $processedConfiguration);
-        $this->configureMessengerListener($container, $processedConfiguration['messenger']);
-        $this->configureMonologHandler($container, $processedConfiguration['monolog']);
-    }
-
-    private function passConfigurationToOptions(ContainerBuilder $container, array $processedConfiguration): void
-    {
-        $options = $container->getDefinition(Options::class);
-        $options->addArgument(['dsn' => $processedConfiguration['dsn']]);
-
-        $processedOptions = $processedConfiguration['options'];
-        $mappableOptions = [
-            'attach_stacktrace',
-            'capture_silenced_errors',
-            'context_lines',
-            'default_integrations',
-            'enable_compression',
-            'environment',
-            'http_proxy',
-            'logger',
-            'max_request_body_size',
-            'max_breadcrumbs',
-            'max_value_length',
-            'prefixes',
-            'project_root',
-            'release',
-            'sample_rate',
-            'send_attempts',
-            'send_default_pii',
-            'server_name',
-            'tags',
-        ];
-
-        foreach ($mappableOptions as $optionName) {
-            if (\array_key_exists($optionName, $processedOptions)) {
-                $setterMethod = 'set' . str_replace('_', '', ucwords($optionName, '_'));
-                $options->addMethodCall($setterMethod, [$processedOptions[$optionName]]);
-            }
-        }
-
-        if (\array_key_exists('in_app_exclude', $processedOptions)) {
-            $options->addMethodCall('setInAppExcludedPaths', [$processedOptions['in_app_exclude']]);
-        }
-
-        if (\array_key_exists('in_app_include', $processedOptions)) {
-            $options->addMethodCall('setInAppIncludedPaths', [$processedOptions['in_app_include']]);
-        }
-
-        if (\array_key_exists('error_types', $processedOptions)) {
-            $parsedValue = (new ErrorTypesParser($processedOptions['error_types']))->parse();
-            $options->addMethodCall('setErrorTypes', [$parsedValue]);
-        }
-
-        if (\array_key_exists('before_send', $processedOptions)) {
-            $beforeSendCallable = $this->valueToCallable($processedOptions['before_send']);
-            $options->addMethodCall('setBeforeSendCallback', [$beforeSendCallable]);
-        }
-
-        if (\array_key_exists('before_breadcrumb', $processedOptions)) {
-            $beforeBreadcrumbCallable = $this->valueToCallable($processedOptions['before_breadcrumb']);
-            $options->addMethodCall('setBeforeBreadcrumbCallback', [$beforeBreadcrumbCallable]);
-        }
-
-        if (\array_key_exists('class_serializers', $processedOptions)) {
-            $classSerializers = [];
-            foreach ($processedOptions['class_serializers'] as $class => $serializer) {
-                $classSerializers[$class] = $this->valueToCallable($serializer);
-            }
-
-            $options->addMethodCall('setClassSerializers', [$classSerializers]);
-        }
-
-        $integrations = [];
-        if (\array_key_exists('integrations', $processedOptions)) {
-            foreach ($processedOptions['integrations'] as $integrationName) {
-                $integrations[] = new Reference(substr($integrationName, 1));
-            }
-        }
-
-        if (\array_key_exists('excluded_exceptions', $processedOptions) && $processedOptions['excluded_exceptions']) {
-            $ignoreOptions = [
-                'ignore_exceptions' => $processedOptions['excluded_exceptions'],
-            ];
-
-            $integrations[] = new Definition(IgnoreErrorsIntegration::class, [$ignoreOptions]);
-        }
-
-        $integrationsCallable = new Definition('callable', [$integrations]);
-        $integrationsCallable->setFactory([IntegrationFilterFactory::class, 'create']);
-
-        $options->addMethodCall('setIntegrations', [$integrationsCallable]);
+        $this->registerConfiguration($container, $mergedConfig);
+        $this->registerErrorListenerConfiguration($container, $mergedConfig);
+        $this->registerMessengerListenerConfiguration($container, $mergedConfig['messenger']);
+        $this->registerTracingConfiguration($container, $mergedConfig['tracing']);
+        $this->registerDbalTracingConfiguration($container, $mergedConfig['tracing']);
+        $this->registerTwigTracingConfiguration($container, $mergedConfig['tracing']);
+        $this->registerCacheTracingConfiguration($container, $mergedConfig['tracing']);
     }
 
     /**
-     * @param string|Reference $value
-     * @return string|Reference
+     * @param array<string, mixed> $config
      */
-    private function valueToCallable($value)
+    private function registerConfiguration(ContainerBuilder $container, array $config): void
     {
-        if (is_string($value) && 0 === strpos($value, '@')) {
-            return new Reference(substr($value, 1));
+        $options = $config['options'];
+
+        if (\array_key_exists('dsn', $config)) {
+            $options['dsn'] = $config['dsn'];
         }
 
-        return $value;
+        if (!$container->hasParameter('kernel.build_dir')) {
+            $options['in_app_exclude'] = array_filter($options['in_app_exclude'], static function (string $value): bool {
+                return '%kernel.build_dir%' !== $value;
+            });
+        }
+
+        if (isset($options['traces_sampler'])) {
+            $options['traces_sampler'] = new Reference($options['traces_sampler']);
+        }
+
+        if (isset($options['before_send'])) {
+            $options['before_send'] = new Reference($options['before_send']);
+        }
+
+        if (isset($options['before_breadcrumb'])) {
+            $options['before_breadcrumb'] = new Reference($options['before_breadcrumb']);
+        }
+
+        if (isset($options['class_serializers'])) {
+            $options['class_serializers'] = array_map(static function (string $value): Reference {
+                return new Reference($value);
+            }, $options['class_serializers']);
+        }
+
+        if (isset($options['integrations'])) {
+            $options['integrations'] = $this->configureIntegrationsOption($options['integrations'], $config);
+        }
+
+        $container
+            ->register('sentry.client.options', Options::class)
+            ->setPublic(false)
+            ->setArgument(0, $options);
+
+        $serializer = (new Definition(Serializer::class))
+            ->setPublic(false)
+            ->setArgument(0, new Reference('sentry.client.options'));
+
+        $representationSerializerDefinition = (new Definition(RepresentationSerializer::class))
+            ->setPublic(false)
+            ->setArgument(0, new Reference('sentry.client.options'));
+
+        $loggerReference = null === $config['logger']
+            ? new Reference(NullLogger::class, ContainerBuilder::IGNORE_ON_INVALID_REFERENCE)
+            : new Reference($config['logger']);
+
+        $factoryBuilderDefinition = $container->getDefinition(TransportFactoryInterface::class);
+        $factoryBuilderDefinition->setArgument('$logger', $loggerReference);
+
+        $clientBuilderDefinition = (new Definition(ClientBuilder::class))
+            ->setArgument(0, new Reference('sentry.client.options'))
+            ->addMethodCall('setSdkIdentifier', [SentryBundle::SDK_IDENTIFIER])
+            ->addMethodCall('setSdkVersion', [PrettyVersions::getVersion('sentry/sentry-symfony')->getPrettyVersion()])
+            ->addMethodCall('setTransportFactory', [new Reference($config['transport_factory'])])
+            ->addMethodCall('setSerializer', [$serializer])
+            ->addMethodCall('setRepresentationSerializer', [$representationSerializerDefinition])
+            ->addMethodCall('setLogger', [$loggerReference]);
+
+        $container
+            ->setDefinition('sentry.client', new Definition(Client::class))
+            ->setPublic(false)
+            ->setFactory([$clientBuilderDefinition, 'getClient']);
     }
 
-    private function configureErrorListener(ContainerBuilder $container, array $processedConfiguration): void
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function registerErrorListenerConfiguration(ContainerBuilder $container, array $config): void
     {
-        if (! $processedConfiguration['register_error_listener']) {
+        if (!$config['register_error_listener']) {
             $container->removeDefinition(ErrorListener::class);
-
-            return;
         }
 
-        $this->tagExceptionListener($container);
+        $container->getDefinition(ConsoleListener::class)->setArgument(1, $config['register_error_listener']);
     }
 
-    private function configureMessengerListener(ContainerBuilder $container, array $processedConfiguration): void
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function registerMessengerListenerConfiguration(ContainerBuilder $container, array $config): void
     {
-        if (! $processedConfiguration['enabled']) {
+        if (!$this->isConfigEnabled($container, $config)) {
             $container->removeDefinition(MessengerListener::class);
 
             return;
         }
 
-        $container->getDefinition(MessengerListener::class)->setArgument(1, $processedConfiguration['capture_soft_fails']);
+        $container->getDefinition(MessengerListener::class)->setArgument(1, $config['capture_soft_fails']);
     }
 
     /**
-     * BC layer for Symfony < 4.3
+     * @param array<string, mixed> $config
      */
-    private function tagExceptionListener(ContainerBuilder $container): void
+    private function registerTracingConfiguration(ContainerBuilder $container, array $config): void
     {
-        $listener = $container->getDefinition(ErrorListener::class);
-        $method = class_exists(ExceptionEvent::class) && method_exists(ExceptionEvent::class, 'getThrowable')
-            ? 'onException'
-            : 'onKernelException';
+        $container->setParameter('sentry.tracing.enabled', $config['enabled']);
 
-        $tagAttributes = [
-            'event' => KernelEvents::EXCEPTION,
-            'method' => $method,
-            'priority' => '%sentry.listener_priorities.request_error%',
-        ];
-
-        $listener->addTag('kernel.event_listener', $tagAttributes);
-    }
-
-    private function configureMonologHandler(ContainerBuilder $container, array $monologConfiguration): void
-    {
-        $errorHandler = $monologConfiguration['error_handler'];
-
-        if (! $errorHandler['enabled']) {
-            $container->removeDefinition(Handler::class);
+        if (!$this->isConfigEnabled($container, $config)) {
+            $container->removeDefinition(TracingRequestListener::class);
+            $container->removeDefinition(TracingSubRequestListener::class);
+            $container->removeDefinition(TracingConsoleListener::class);
 
             return;
         }
 
-        if (! class_exists(Handler::class)) {
-            throw new LogicException(
-                sprintf('Missing class "%s", try updating "sentry/sentry" to a newer version.', Handler::class)
-            );
+        $container->getDefinition(TracingConsoleListener::class)->replaceArgument(1, $config['console']['excluded_commands']);
+    }
+
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function registerDbalTracingConfiguration(ContainerBuilder $container, array $config): void
+    {
+        $isConfigEnabled = $this->isConfigEnabled($container, $config)
+            && $this->isConfigEnabled($container, $config['dbal']);
+
+        if ($isConfigEnabled && !class_exists(DoctrineBundle::class)) {
+            throw new LogicException('DBAL tracing support cannot be enabled because the doctrine/doctrine-bundle Composer package is not installed.');
         }
 
-        if (! class_exists(MonologLogger::class)) {
-            throw new LogicException(
-                sprintf('You cannot use "%s" if Monolog is not available.', Handler::class)
-            );
+        $container->setParameter('sentry.tracing.dbal.enabled', $isConfigEnabled);
+        $container->setParameter('sentry.tracing.dbal.connections', $isConfigEnabled ? $config['dbal']['connections'] : []);
+
+        if (!$isConfigEnabled) {
+            $container->removeDefinition(ConnectionConfigurator::class);
+            $container->removeDefinition(TracingDriverMiddleware::class);
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function registerTwigTracingConfiguration(ContainerBuilder $container, array $config): void
+    {
+        $isConfigEnabled = $this->isConfigEnabled($container, $config)
+            && $this->isConfigEnabled($container, $config['twig']);
+
+        if ($isConfigEnabled && !class_exists(TwigBundle::class)) {
+            throw new LogicException('Twig tracing support cannot be enabled because the symfony/twig-bundle Composer package is not installed.');
         }
 
-        $container
-            ->getDefinition(Handler::class)
-            ->replaceArgument('$level', MonologLogger::toMonologLevel($errorHandler['level']))
-            ->replaceArgument('$bubble', $errorHandler['bubble']);
+        if (!$isConfigEnabled) {
+            $container->removeDefinition(TwigTracingExtension::class);
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function registerCacheTracingConfiguration(ContainerBuilder $container, array $config): void
+    {
+        $isConfigEnabled = $this->isConfigEnabled($container, $config)
+            && $this->isConfigEnabled($container, $config['cache']);
+
+        if ($isConfigEnabled && !class_exists(CacheItem::class)) {
+            throw new LogicException('Cache tracing support cannot be enabled because the symfony/cache Composer package is not installed.');
+        }
+
+        $container->setParameter('sentry.tracing.cache.enabled', $isConfigEnabled);
+    }
+
+    /**
+     * @param string[]             $integrations
+     * @param array<string, mixed> $config
+     *
+     * @return array<Reference|Definition>
+     */
+    private function configureIntegrationsOption(array $integrations, array $config): array
+    {
+        $integrations = array_map(static function (string $value): Reference {
+            return new Reference($value);
+        }, $integrations);
+
+        $integrations = $this->configureErrorListenerIntegration($integrations, $config['register_error_listener']);
+        $integrations = $this->configureRequestIntegration($integrations, $config['options']['default_integrations'] ?? true);
+
+        return $integrations;
+    }
+
+    /**
+     * @param array<Reference|Definition> $integrations
+     *
+     * @return array<Reference|Definition>
+     */
+    private function configureErrorListenerIntegration(array $integrations, bool $registerErrorListener): array
+    {
+        if ($registerErrorListener && !$this->isIntegrationEnabled(IgnoreErrorsIntegration::class, $integrations)) {
+            // Prepend this integration to the beginning of the array so that
+            // we can save some performance by skipping the rest of the integrations
+            // if the error must be ignored
+            array_unshift($integrations, new Definition(IgnoreErrorsIntegration::class, [
+                [
+                    'ignore_exceptions' => [
+                        FatalError::class,
+                        FatalErrorException::class,
+                    ],
+                ],
+            ]));
+        }
+
+        return $integrations;
+    }
+
+    /**
+     * @param array<Reference|Definition> $integrations
+     *
+     * @return array<Reference|Definition>
+     */
+    private function configureRequestIntegration(array $integrations, bool $useDefaultIntegrations): array
+    {
+        if ($useDefaultIntegrations && !$this->isIntegrationEnabled(RequestIntegration::class, $integrations)) {
+            $integrations[] = new Definition(RequestIntegration::class, [new Reference(RequestFetcherInterface::class)]);
+        }
+
+        return $integrations;
+    }
+
+    /**
+     * @param class-string<IntegrationInterface> $integrationClass
+     * @param array<Reference|Definition>        $integrations
+     */
+    private function isIntegrationEnabled(string $integrationClass, array $integrations): bool
+    {
+        foreach ($integrations as $integration) {
+            if ($integration instanceof Reference && $integrationClass === (string) $integration) {
+                return true;
+            }
+
+            if ($integration instanceof Definition && $integrationClass === $integration->getClass()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

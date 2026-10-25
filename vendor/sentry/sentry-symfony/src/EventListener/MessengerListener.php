@@ -1,28 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sentry\SentryBundle\EventListener;
 
-use Sentry\FlushableClientInterface;
+use Sentry\Event;
 use Sentry\State\HubInterface;
+use Sentry\State\Scope;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\Stamp\BusNameStamp;
 
 final class MessengerListener
 {
     /**
-     * @var HubInterface
+     * @var HubInterface The current hub
      */
     private $hub;
 
     /**
-     * @var bool
+     * @var bool Whether to capture errors thrown while processing a message that
+     *           will be retried
      */
     private $captureSoftFails;
 
     /**
-     * @param HubInterface $hub
-     * @param bool         $captureSoftFails
+     * @param HubInterface $hub              The current hub
+     * @param bool         $captureSoftFails Whether to capture errors thrown
+     *                                       while processing a message that
+     *                                       will be retried
      */
     public function __construct(HubInterface $hub, bool $captureSoftFails = true)
     {
@@ -31,42 +38,59 @@ final class MessengerListener
     }
 
     /**
-     * @param WorkerMessageFailedEvent $event
+     * This method is called for each message that failed to be handled.
+     *
+     * @param WorkerMessageFailedEvent $event The event
      */
-    public function onWorkerMessageFailed(WorkerMessageFailedEvent $event): void
+    public function handleWorkerMessageFailedEvent(WorkerMessageFailedEvent $event): void
     {
-        if (! $this->captureSoftFails && $event->willRetry()) {
-            // Don't capture soft fails. I.e. those that will be scheduled for retry.
+        if (!$this->captureSoftFails && $event->willRetry()) {
             return;
         }
 
-        $error = $event->getThrowable();
+        $this->hub->withScope(function (Scope $scope) use ($event): void {
+            $envelope = $event->getEnvelope();
+            $exception = $event->getThrowable();
 
-        if ($error instanceof HandlerFailedException) {
-            foreach ($error->getNestedExceptions() as $nestedException) {
-                $this->hub->captureException($nestedException);
+            $scope->setTag('messenger.receiver_name', $event->getReceiverName());
+            $scope->setTag('messenger.message_class', \get_class($envelope->getMessage()));
+
+            /** @var BusNameStamp|null $messageBusStamp */
+            $messageBusStamp = $envelope->last(BusNameStamp::class);
+
+            if (null !== $messageBusStamp) {
+                $scope->setTag('messenger.message_bus', $messageBusStamp->getBusName());
             }
-        } else {
-            $this->hub->captureException($error);
-        }
 
-        $this->flush();
+            if ($exception instanceof HandlerFailedException) {
+                foreach ($exception->getNestedExceptions() as $nestedException) {
+                    $this->hub->captureException($nestedException);
+                }
+            } else {
+                $this->hub->captureException($exception);
+            }
+        });
+
+        $this->flushClient();
     }
 
     /**
-     * @param WorkerMessageHandledEvent $event
+     * This method is called for each handled message.
+     *
+     * @param WorkerMessageHandledEvent $event The event
      */
-    public function onWorkerMessageHandled(WorkerMessageHandledEvent $event): void
+    public function handleWorkerMessageHandledEvent(WorkerMessageHandledEvent $event): void
     {
         // Flush normally happens at shutdown... which only happens in the worker if it is run with a lifecycle limit
         // such as --time=X or --limit=Y. Flush immediately in a background worker.
-        $this->flush();
+        $this->flushClient();
     }
 
-    private function flush(): void
+    private function flushClient(): void
     {
         $client = $this->hub->getClient();
-        if ($client instanceof FlushableClientInterface) {
+
+        if (null !== $client) {
             $client->flush();
         }
     }

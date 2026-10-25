@@ -27,7 +27,7 @@ final class FrameContextifierIntegration implements IntegrationInterface
     /**
      * Creates a new instance of this integration.
      *
-     * @param LoggerInterface $logger A PSR-3 logger
+     * @param LoggerInterface|null $logger A PSR-3 logger
      */
     public function __construct(?LoggerInterface $logger = null)
     {
@@ -60,11 +60,9 @@ final class FrameContextifierIntegration implements IntegrationInterface
             }
 
             foreach ($event->getExceptions() as $exception) {
-                if (!isset($exception['stacktrace'])) {
-                    continue;
+                if (null !== $exception->getStacktrace()) {
+                    $integration->addContextToStacktraceFrames($maxContextLines, $exception->getStacktrace());
                 }
-
-                $integration->addContextToStacktraceFrames($maxContextLines, $exception['stacktrace']);
             }
 
             return $event;
@@ -80,7 +78,7 @@ final class FrameContextifierIntegration implements IntegrationInterface
     private function addContextToStacktraceFrames(int $maxContextLines, Stacktrace $stacktrace): void
     {
         foreach ($stacktrace->getFrames() as $frame) {
-            if ($frame->isInternal()) {
+            if ($frame->isInternal() || null === $frame->getAbsoluteFilePath()) {
                 continue;
             }
 

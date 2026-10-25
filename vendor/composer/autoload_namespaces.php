@@ -12,7 +12,6 @@ return array(
     'Twig_Extensions_' => array($vendorDir . '/twig/extensions/lib'),
     'Twig_' => array($vendorDir . '/se7enxweb/twig/lib'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
-    'PHPExcel' => array($vendorDir . '/phpoffice/phpexcel/Classes'),
     'Netgen\\Bundle\\RemoteMediaBundle' => array($vendorDir . '/se7enxweb/remote-media-bundle'),
     'JsonpCallbackValidator' => array($vendorDir . '/willdurand/jsonp-callback-validator/src'),
     'Hautelook\\TemplatedUriBundle' => array($vendorDir . '/ibexa/templated-uri-bundle'),
