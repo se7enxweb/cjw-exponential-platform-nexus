@@ -12,7 +12,7 @@ final class GeneratedConfig
 	public const EXTENSIONS = array (
   'composer/pcre' => 
   array (
-    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/repos/cjw-exponential-platform-nexus--composer211/vendor/composer/pcre',
+    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/alpha.se7enx.com/var/tmp/t275/cjw-nexus/vendor/composer/pcre',
     'relative_install_path' => '../../../composer/pcre',
     'extra' => 
     array (
@@ -26,7 +26,7 @@ final class GeneratedConfig
   ),
   'phpstan/phpstan-doctrine' => 
   array (
-    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/repos/cjw-exponential-platform-nexus--composer211/vendor/phpstan/phpstan-doctrine',
+    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/alpha.se7enx.com/var/tmp/t275/cjw-nexus/vendor/phpstan/phpstan-doctrine',
     'relative_install_path' => '../../phpstan-doctrine',
     'extra' => 
     array (
@@ -41,7 +41,7 @@ final class GeneratedConfig
   ),
   'phpstan/phpstan-symfony' => 
   array (
-    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/repos/cjw-exponential-platform-nexus--composer211/vendor/phpstan/phpstan-symfony',
+    'install_path' => '/var/www/vhosts/alpha.se7enx.com/doc/alpha.se7enx.com/var/tmp/t275/cjw-nexus/vendor/phpstan/phpstan-symfony',
     'relative_install_path' => '../../phpstan-symfony',
     'extra' => 
     array (

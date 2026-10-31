@@ -1,3 +1,0 @@
-services:
-    Netgen\ContentBrowser\Registry\BackendRegistry: "@netgen_content_browser.registry.backend"
-    Netgen\ContentBrowser\Registry\ConfigRegistry: "@netgen_content_browser.registry.config"

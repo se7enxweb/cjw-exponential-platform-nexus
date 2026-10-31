@@ -59,9 +59,6 @@ class Drawing extends BaseDrawing
      */
     public function getExtension(): string
     {
-        if (Preg::isMatch('~^data:image/([^;]+);base64,~', $this->path, $matches)) {
-            return $matches[1];
-        }
         $exploded = explode('.', basename($this->path));
 
         return $exploded[count($exploded) - 1];
@@ -139,6 +136,7 @@ class Drawing extends BaseDrawing
             if (str_starts_with($path, 'https:') || str_starts_with($path, 'http:')) {
                 $ctxArray = [
                     'http' => [
+                        'follow_location' => 0,
                         'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                         'header' => [
                             //'Connection: keep-alive', // unacceptable performance
@@ -208,6 +206,20 @@ class Drawing extends BaseDrawing
     }
 
     /**
+     * Set isURL.
+     *
+     * @return $this
+     *
+     * @deprecated 3.7.0 not needed, property is set by setPath
+     */
+    public function setIsURL(bool $isUrl): self
+    {
+        $this->isUrl = $isUrl;
+
+        return $this;
+    }
+
+    /**
      * Get hash code.
      *
      * @return string Hash code
@@ -234,7 +246,7 @@ class Drawing extends BaseDrawing
     }
 
     /**
-     * Get Image file extension for Save.
+     * Get Image file extention for Save.
      */
     public function getImageFileExtensionForSave(bool $includeDot = true): string
     {

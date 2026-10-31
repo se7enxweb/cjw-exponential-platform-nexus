@@ -142,6 +142,7 @@ abstract class JsonApiTestCase extends BaseJsonApiTestCase
         );
 
         $itemRendererMock
+            ->expects(self::any())
             ->method('renderItem')
             ->willReturn('rendered item');
     }

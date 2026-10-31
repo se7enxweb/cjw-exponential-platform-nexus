@@ -815,7 +815,6 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
         'Netgen\\ContentBrowser\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/content-browser/lib',
-            1 => __DIR__ . '/..' . '/netgen/content-browser/lib',
         ),
         'Netgen\\Bundle\\SiteLegacyBundle\\' =>
         array (
@@ -931,7 +930,6 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
         'Netgen\\Bundle\\ContentBrowserBundle\\' =>
         array (
             0 => __DIR__ . '/..' . '/se7enxweb/content-browser/bundle',
-            1 => __DIR__ . '/..' . '/netgen/content-browser/bundle',
         ),
         'Netgen\\Bundle\\BirthdayBundle\\' =>
         array (
@@ -1440,7 +1438,6 @@ class ComposerStaticInite80d6b55f3b1a2f04625611863d9635a
             'eZ\\Publish\\Composer' =>
             array (
                 0 => __DIR__ . '/..' . '/se7enxweb/exponential-legacy-installer/src',
-                1 => __DIR__ . '/..' . '/se7enxweb/ezpublish-legacy-installer/src',
             ),
             'eZ' =>
             array (

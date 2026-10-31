@@ -23,6 +23,7 @@ final class PagerFactoryTest extends TestCase
         $this->adapterMock = $this->createMock(AdapterInterface::class);
 
         $this->adapterMock
+            ->expects(self::any())
             ->method('getNbResults')
             ->willReturn(500);
 
@@ -51,7 +52,7 @@ final class PagerFactoryTest extends TestCase
     /**
      * @return int[][]
      */
-    public static function buildPagerDataProvider(): iterable
+    public static function buildPagerDataProvider(): array
     {
         return [
             [5, 20, 5, 20],

@@ -23,9 +23,14 @@
             </errorLevel>
         </InvalidArgument>
 
-        <UndefinedMethod>
+        <PossiblyUndefinedMethod>
             <errorLevel type="suppress">
                 <referencedMethod name="Symfony\Component\Config\Definition\Builder\NodeDefinition::children" />
+            </errorLevel>
+        </PossiblyUndefinedMethod>
+
+        <UndefinedMethod>
+            <errorLevel type="suppress">
                 <referencedMethod name="Symfony\Component\HttpKernel\Event\KernelEvent::isMasterRequest" />
             </errorLevel>
         </UndefinedMethod>

@@ -1,6 +1,0 @@
-ngcb_api:
-    resource: "routing/api.yaml"
-    prefix: /api
-
-ngcb_root:
-    path: /

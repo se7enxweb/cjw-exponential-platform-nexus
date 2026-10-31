@@ -6,7 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'eZ\\Publish\\Composer' => array($vendorDir . '/se7enxweb/exponential-legacy-installer/src', $vendorDir . '/se7enxweb/ezpublish-legacy-installer/src'),
+    'eZ\\Publish\\Composer' => array($vendorDir . '/se7enxweb/exponential-legacy-installer/src'),
     'eZ' => array($vendorDir . '/se7enxweb/ezpublish-kernel'),
     'WebDriver' => array($vendorDir . '/instaclick/php-webdriver/lib'),
     'Twig_Extensions_' => array($vendorDir . '/twig/extensions/lib'),

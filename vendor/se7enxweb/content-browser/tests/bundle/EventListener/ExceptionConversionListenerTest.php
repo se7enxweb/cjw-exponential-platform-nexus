@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -72,7 +73,10 @@ final class ExceptionConversionListenerTest extends TestCase
         self::assertInstanceOf($convertedClass, $eventException);
         self::assertSame($exception->getMessage(), $eventException->getMessage());
         self::assertSame($exception->getCode(), $eventException->getCode());
-        self::assertSame($statusCode, $eventException->getStatusCode());
+
+        if ($eventException instanceof HttpExceptionInterface) {
+            self::assertSame($statusCode, $eventException->getStatusCode());
+        }
 
         $converted ?
             self::assertSame($exception, $eventException->getPrevious()) :
@@ -150,7 +154,7 @@ final class ExceptionConversionListenerTest extends TestCase
     /**
      * @return array<int, mixed[]>
      */
-    public static function onExceptionDataProvider(): iterable
+    public static function onExceptionDataProvider(): array
     {
         return [
             [
