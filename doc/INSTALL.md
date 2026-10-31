@@ -188,7 +188,7 @@ php -d memory_limit=2000M bin/console ezplatform:install cjw-exponential-media
 ```
 
 This installs the JAC Example site with its content, content classes, sections, languages
-(ger-DE and eng-GB) and Netgen Layouts, from the
+(ger-DE and eng-GB) and Exponential Layouts, from the
 [`se7enxweb/cjw-exponential-media-site-data`](https://github.com/se7enxweb/cjw-exponential-media-site-data)
 package on MySQL/MariaDB and from `src/AppBundle/Resources/database/sql/sqlite/` on SQLite.
 `composer run ezplatform-install` runs the same command.
@@ -258,7 +258,7 @@ With one host name, the siteaccesses are reached by the first part of the path:
 | `/admin/` | Platform admin |
 | `/ngadminui/` | Netgen Admin UI |
 | `/legacy_admin/` | Legacy admin |
-| `/nglayouts/admin/` | Netgen Layouts admin (sign in on the front site at `/login` first) |
+| `/nglayouts/admin/` | Exponential Layouts admin (sign in on the front site at `/login` first) |
 
 ## Siteaccess Configuration
 

@@ -37,7 +37,7 @@ final class SpacerHandler extends BlockDefinitionHandler
     }
 
     /**
-     * Set params for netgen layouts.
+     * Set params for Exponential Layouts.
      *
      * @param ParameterBuilderInterface $builder
      */
@@ -63,7 +63,7 @@ final class SpacerHandler extends BlockDefinitionHandler
     }
 
     /**
-     * Get params from netgen layouts, works with them and returns they to the templates.
+     * Get params from Exponential Layouts, works with them and returns they to the templates.
      *
      * @param DynamicParameters $params
      * @param Block $block

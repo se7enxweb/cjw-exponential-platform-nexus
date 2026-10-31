@@ -22,7 +22,7 @@ parameters:
     netgen_admin_ui.is_admin_ui_siteaccess: false
     netgen_admin_ui.legacy_routes: [ez_urlalias]
 
-# Switches Netgen Layouts and Netgen Content Browser to use filter search service adapter from Site API
+# Switches Exponential Layouts and Netgen Content Browser to use filter search service adapter from Site API
 netgen_layouts_ez_platform_site_api:
     search_service_adapter: filter
 

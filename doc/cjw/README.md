@@ -1,7 +1,7 @@
 # Netgen Media Site
 
 Netgen Media Site is a blueprint installation of eZ Platform used by Netgen to bootstrap new client projects.
-It integrates most of Netgen open source tools and bundles, including [Netgen Layouts](https://github.com/netgen-layouts).
+It integrates most of Netgen open source tools and bundles, including [the upstream layouts packages](https://github.com/netgen-layouts).
 
 * [Installation instructions](/doc/netgen/INSTALL.md)
 * [Installation with Docker and eZ Launchpad](/doc/netgen/LAUNCHPAD.md)

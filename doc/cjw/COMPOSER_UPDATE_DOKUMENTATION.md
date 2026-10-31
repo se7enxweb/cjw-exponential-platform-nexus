@@ -117,7 +117,7 @@ php composer.phar require \
 php composer.phar require netgen/richtext-datatype-bundle:^1.1 --ignore-platform-reqs
 ```
 
-### 3.4 Netgen Layouts (mit Doctrine Downgrade)
+### 3.4 Exponential Layouts (mit Doctrine Downgrade)
 
 ```bash
 php composer.phar require \
@@ -129,7 +129,7 @@ php composer.phar require \
   --ignore-platform-reqs --no-scripts
 ```
 
-**Wichtig:** Doctrine Migrations musste auf v2.2 downgraded werden, da Netgen Layouts v1.4 nicht mit v3.x kompatibel ist.
+**Wichtig:** Doctrine Migrations musste auf v2.2 downgraded werden, da Exponential Layouts v1.4 nicht mit v3.x kompatibel ist.
 
 ### 3.5 se7enxweb Layout Integration
 
@@ -240,7 +240,7 @@ php composer.phar require se7enxweb/tagsbundle:^3.4 --ignore-platform-reqs
 - netgen/content-browser-ui: 1.4.1
 - netgen/richtext-datatype-bundle: 1.1.1
 
-### Netgen Layouts
+### Exponential Layouts
 - netgen/layouts-core: 1.4.13
 - netgen/layouts-standard: 1.4.3
 - netgen/layouts-ui: 1.4.5

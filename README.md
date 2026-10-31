@@ -231,19 +231,19 @@ The platform emphasizes **structured content**, **developer control**, and **edi
 In short, Netgen Media Site is not just a website builder — it is a programmable content platform designed for teams that require precision, scalability, and deep integration capabilities.
 
 
-# What is Netgen Layouts?
+# What is Exponential Layouts?
 
-**Netgen Layouts** is a visual layout management engine and page composition framework designed to separate *content structure* from *presentation layout*. It enables developers, editors, and designers to build complex, reusable page layouts without tightly coupling layout logic to templates or content models.
+**Exponential Layouts** is a visual layout management engine and page composition framework designed to separate *content structure* from *presentation layout*. It enables developers, editors, and designers to build complex, reusable page layouts without tightly coupling layout logic to templates or content models.
 
-Rather than treating a page as a static template, Netgen Layouts introduces a dynamic layout layer that controls how content is organized, positioned, and rendered — making it possible to design modular, multi-zone page structures that adapt to different contexts and content sources.
+Rather than treating a page as a static template, Exponential Layouts introduces a dynamic layout layer that controls how content is organized, positioned, and rendered — making it possible to design modular, multi-zone page structures that adapt to different contexts and content sources.
 
-At its core, Netgen Layouts acts as an orchestration layer between your content repository, rendering engine, and frontend delivery pipeline.
+At its core, Exponential Layouts acts as an orchestration layer between your content repository, rendering engine, and frontend delivery pipeline.
 
 ---
 
 ## Architectural Overview
 
-Netgen Layouts is built around a modular, Symfony-based architecture with a strong emphasis on composability and extensibility.
+Exponential Layouts is built around a modular, Symfony-based architecture with a strong emphasis on composability and extensibility.
 
 Key architectural concepts include:
 
@@ -285,7 +285,7 @@ Rendering is decoupled from layout definition, ensuring flexibility without sacr
 
 ## Core Capabilities
 
-Netgen Layouts provides advanced layout management features:
+Exponential Layouts provides advanced layout management features:
 
 - Drag-and-drop visual layout editing
 - Multi-zone page composition
@@ -303,7 +303,7 @@ These features enable editorial teams to control presentation while developers r
 
 ## Developer Experience
 
-For developers, Netgen Layouts offers:
+For developers, Exponential Layouts offers:
 
 - Symfony-native service architecture
 - Dependency injection and event hooks
@@ -327,7 +327,7 @@ Layout changes can be previewed and staged, supporting structured publishing wor
 
 ## Use Cases
 
-Netgen Layouts excels in environments where presentation flexibility is critical:
+Exponential Layouts excels in environments where presentation flexibility is critical:
 
 - Enterprise CMS deployments
 - Media and publishing platforms
@@ -340,11 +340,11 @@ Netgen Layouts excels in environments where presentation flexibility is critical
 
 ## Philosophy
 
-Netgen Layouts embraces the principle that **layout is infrastructure** — not just decoration. By elevating layout management to a first-class system component, it enables scalable, maintainable digital architectures that empower both developers and editors.
+Exponential Layouts embraces the principle that **layout is infrastructure** — not just decoration. By elevating layout management to a first-class system component, it enables scalable, maintainable digital architectures that empower both developers and editors.
 
 ---
 
-In essence, Netgen Layouts transforms page composition from rigid template coding into a modular, configurable system that scales with organizational complexity.
+In essence, Exponential Layouts transforms page composition from rigid template coding into a modular, configurable system that scales with organizational complexity.
 
 
 # What is Netgen AdminUI Bundle?
